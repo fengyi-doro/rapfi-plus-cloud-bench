@@ -120,6 +120,18 @@ def render():
                        f"{len(model['probes'])} 个上游权重对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}，"
                        f"空点策略第一选择一致 {sum(p['top1_agree'] for p in model['probes'])}/{len(model['probes'])}。"
                        f"[模型清单]({(folder/'oracle.json').relative_to(ROOT).as_posix()})")
+        probe_files = sorted((ROOT/"cloud_report/root_costs").glob(f"*/root-cost-{folder.name}/root-cost.json"))
+        if probe_files:
+            path = probe_files[-1]
+            probe = load(path)
+            if probe["match_commit"] != p["commit"] or probe["binary_sha256"] != s["binary_hashes"]["Linux"][name]:
+                raise ValueError(f"mismatched fixed-depth probe for {name}")
+            lo, hi = probe["ci95_delta_ms"]
+            detail += (f" 云端在相同 {probe['positions']} 个局面、深度上限 {probe['depth_cap']} 下交叉测量。"
+                       f"同一个 V4 可执行文件关闭 / 开启该实验时平均 {probe['mean_ms']['off']:.3f} / "
+                       f"{probe['mean_ms']['on']:.3f} ms/手，整手净差 {probe['mean_delta_ms']:+.3f} ms，"
+                       f"配对 95% 区间 [{lo:+.3f}, {hi:+.3f}] ms。"
+                       f"[固定深度 Run]({probe['run']}) · [逐手 JSON]({path.relative_to(ROOT).as_posix()})")
         extra += [f"**{name}**　{metrics}{detail}",
                   f"复盘 {audit['games']:,} 局、{audit['board_moves_replayed']:,} 手，裁决分歧 {audit['referee_mismatches']}，"
                   f"JSON/PSQ 分歧 {audit['json_psq_mismatches']}，超时 {audit['hard_flags']}，非法着或禁手 {audit['illegal_moves']}。"
