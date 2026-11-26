@@ -55,6 +55,22 @@ def delta(first, second):
     return [100 * x for x in (change, change-1.96*se, change+1.96*se)]
 
 
+def win_interval(scores, rule):
+    groups = [scores[r] for r in (("Standard", "Renju") if rule == "All" else (rule,))]
+    pairs = sum(g["pairs"] for g in groups)
+    variance = 0.
+    for g in groups:
+        # The WW bin holds two wins. Every remaining win belongs to a separate pair.
+        sweeps = g["penta"][4]
+        singles = g["W"] - 2 * sweeps
+        n = g["pairs"]
+        mean = g["W"] / (2 * n)
+        variance += n * max(0., (sweeps + .25 * singles - n * mean**2) / (n - 1))
+    center = scores[rule]["W"] / scores[rule]["games"]
+    margin = 1.96 * math.sqrt(variance) / pairs
+    return max(0., center-margin), min(1., center+margin)
+
+
 def render():
     baseline = load(ROOT / "cloud_report/summary.json")
     reference_hash = baseline["binary_hashes"]["Linux"]["orig"]
@@ -85,8 +101,9 @@ def render():
         for rule in ("All", "Standard", "Renju"):
             r = scores[rule]
             lo, hi = r["ci95_elo"]
+            win_lo, win_hi = win_interval(scores, rule)
             rows.append(f"| {name} | {category} | {label} | {rule} | {r['W']} / {r['D']} / {r['L']} | "
-                        f"{r['W']/r['games']:.2%} | {r['score']:.2%} | {r['elo']:+.2f} "
+                        f"{r['W']/r['games']:.2%} [{win_lo:.2%}, {win_hi:.2%}] | {r['score']:.2%} | {r['elo']:+.2f} "
                         f"[{lo:+.2f}, {hi:+.2f}] | {r['los']:.4%} | {link+' · '+local if rule=='All' else ''} |")
         audit = Counter()
         for shard in s["shards"]:
@@ -101,6 +118,15 @@ def render():
                    f"得分率变化 {diff[0]:+.2f} 个百分点，配对差值 95% 区间 [{diff[1]:+.2f}, {diff[2]:+.2f}]。") if diff else ""
         detail = (f"挑战方 {timing['turns']:,} 手，整手平均 {timing['mean_ms']:.3f} ms、P95 {timing['p95_ms']:.3f} ms。"
                   if timing["turns"] else "")
+        if layout == "isolated-1t" and p.get("root_mode") != "control":
+            for _, peer in reversed(previous):
+                if peer["protocol"].get("lane_layout") == layout and peer["protocol"].get("root_mode") == "control":
+                    q = peer["scores"]["All"]
+                    d = delta(peer, s)
+                    metrics += (f"与同为独占 1T 的 V4＋F10 对照相比，实胜率相差 "
+                                f"{100*(a['W']/a['games']-q['W']/q['games']):+.2f} 个百分点，"
+                                f"得分率相差 {d[0]:+.2f} 个百分点，配对 95% 区间 [{d[1]:+.2f}, {d[2]:+.2f}]。")
+                    break
         if timing.get("threat_extensions"):
             detail += f"实际增加搜索深度 {timing['threat_extensions']:,} 次。"
         if three := timing.get("three"):
@@ -164,7 +190,8 @@ def render():
                              f"{r['W']/r['games']:.2%} | {90-100*r['W']/r['games']:.2f} 个百分点 |")
     table = ["## 90% 实胜率进度", "", "下表按每组实际赢局占比选取已观测到的最高点估计。各组使用相同的原版对手。", "",
              "| 实验组 | 挑战方 | 胜 / 总局数 | 实胜率 | 距 90% |", "|---|---|---:|---:|---:|", *best_rows, "",
-             "## 已完成的云端对局", "", "| 挑战方 | 实验组 | 线程（挑战方 / 原版） | 规则 | 胜 / 和 / 负 | 实胜率 | 得分率 | Elo [95% CI] | LOS | Run 与汇总 |",
+             "## 已完成的云端对局", "", "实胜率的 95% 区间按 Standard 和 Renju 分层，将同一开局两局的胜局比例作为一个观测计算标准误。Elo 区间采用云端按开局配对的自助法。", "",
+             "| 挑战方 | 实验组 | 线程（挑战方 / 原版） | 规则 | 胜 / 和 / 负 | 实胜率 [95% CI] | 得分率 | Elo [95% CI] | LOS | Run 与汇总 |",
              "|---|---|---|---|---:|---:|---:|---:|---:|---|", *rows, "",
              "## 逐手开销与独立复盘", "", "\n\n".join(extra)]
     if scaling:

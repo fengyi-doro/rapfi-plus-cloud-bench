@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import random
 import re
+import shutil
 import statistics
 import subprocess
 import time
@@ -147,7 +148,7 @@ def label(out, shard):
     print(f"shard {shard}: {len(ids)} positions, {len(tasks)} one-CPU teachers")
 
 
-def train(out):
+def train(out, compare_precision=False):
     import torch
     from torch import nn
     from torch.nn import functional as F
@@ -278,9 +279,11 @@ def train(out):
                       output_names=["out_policy", "out_value"], opset_version=17, dynamo=False,
                       dynamic_axes={k:{0:"batch"} for k in ("input_spatial", "input_global", "out_policy", "out_value")})
 
+    calibration_indices = rng.choice(ids[0], min(256 if compare_precision else 80, len(ids[0])), replace=False)
+
     class Calibration(CalibrationDataReader):
         def __init__(self):
-            self.samples = iter(rng.choice(ids[0], min(80,len(ids[0])), replace=False))
+            self.samples = iter(calibration_indices)
         def get_next(self):
             index = next(self.samples, None)
             return None if index is None else features(packets[index].numpy().tobytes(), 39)
@@ -290,6 +293,41 @@ def train(out):
                     activation_type=QuantType.QInt8, weight_type=QuantType.QInt8,
                     op_types_to_quantize=["Conv", "MatMul", "Gemm"])
     fp, quant = session(fp_path), session(model)
+    precision = "static per-channel S8S8 QDQ"
+    alternatives = {}
+    if compare_precision:
+        # Decide on the validation split before opening the test positions.
+        u8_path = Path("student-u8.onnx")
+        quantize_static(fp_path, u8_path, Calibration(), quant_format=QuantFormat.QDQ, per_channel=False,
+                        activation_type=QuantType.QUInt8, weight_type=QuantType.QUInt8,
+                        op_types_to_quantize=["Conv", "MatMul", "Gemm"])
+        variants = {"FP32":(fp, fp_path), precision:(quant, model), "static U8U8 QDQ":(session(u8_path), u8_path)}
+        validations = {k:[] for k in variants}
+        for j, i in enumerate(rng.choice(ids[1], min(128, len(ids[1])), replace=False)):
+            packet = packets[i].numpy().tobytes()
+            empty = np.flatnonzero(np.frombuffer(packet, np.uint8, offset=3) == 0)
+            names = list(variants)
+            timings, values = {}, {}
+            for k in names[j%3:] + names[:j%3]:
+                start = time.perf_counter_ns()
+                values[k] = predict(variants[k][0], packet)
+                timings[k] = (time.perf_counter_ns() - start) / 1e6
+            native = values["FP32"]
+            for k, val in values.items():
+                validations[k].append((timings[k], abs(float(native[-1]-val[-1])),
+                                       bool(native[empty].argmax()==val[empty].argmax())))
+        for k, measured in validations.items():
+            ms, differences, agrees = zip(*measured)
+            alternatives[k] = dict(median_ms=statistics.median(ms), max_score_delta=max(differences),
+                                   mean_score_delta=statistics.mean(differences), policy_top1=statistics.mean(agrees))
+        qualified = [k for k, a in alternatives.items() if a["max_score_delta"] <= .08
+                     and a["mean_score_delta"] <= .015 and a["policy_top1"] >= .90]
+        precision = min(qualified, key=lambda k:alternatives[k]["median_ms"])
+        quant, chosen_path = variants[precision]
+        if chosen_path != model:
+            model.unlink()
+            model = out/chosen_path.name
+            shutil.copyfile(chosen_path, model)
     probes = []
     selected = []
     for rule in (1, 2):
@@ -307,7 +345,7 @@ def train(out):
                            teacher_top1=bool(empty[q[empty].argmax()]==pt[i].argmax().item()),
                            teacher_score_error=abs(float(q[-1] - (vt[i, 0]+.5*vt[i, 2]).item()))))
     op = dict(Counter(n.op_type for n in onnx.load(model).graph.node))
-    if not op.get("DequantizeLinear"):
+    if precision != "FP32" and not op.get("DequantizeLinear"):
         raise ValueError("exported student does not contain quantized weights")
     sha = digest(model)
     run = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
@@ -319,7 +357,7 @@ def train(out):
                 median_probe_ms=statistics.median(p["ms"] for p in probes),
                 max_wdl_score_delta=max(p["eval_abs_delta"] for p in probes), training_run=run,
                 training_data=manifest, parameters=sum(p.numel() for p in student.parameters()),
-                epochs=history, test=test, precision="static per-channel S8S8 QDQ")
+                epochs=history, test=test, precision=precision, validation_precision=alternatives)
     dump(out/"oracle.json", info)
     print(f"student {sha}, {info['bytes']} bytes, {info['median_probe_ms']:.3f} ms, test {test}", flush=True)
 
@@ -329,10 +367,11 @@ if __name__ == "__main__":
     parser.add_argument("stage", choices=("prepare", "label", "train"))
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--shard", type=int)
+    parser.add_argument("--compare-precision", action="store_true")
     args = parser.parse_args()
     if args.stage == "prepare":
         prepare(args.out)
     elif args.stage == "label":
         label(args.out, args.shard)
     else:
-        train(args.out)
+        train(args.out, args.compare_precision)

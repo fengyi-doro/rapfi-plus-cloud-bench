@@ -131,7 +131,8 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
     timing_end=max(datetime.fromisoformat(s["timing"]["end"]) for s in shard_rows)
     result=dict(players=reference["players"],scores=scores,sprt=check,
                 per_platform={k:paired_stats(gs,challenger) for k,gs in scores_by_platform.items()},
-                pair_ledger=[dict(opening=k,half_points=v) for k,v in zip(ordered,tally)],
+                pair_ledger=[dict(opening=k, half_points=v, wins=sum(g["winner"] == challenger for g in by_id[k]))
+                             for k, v in zip(ordered,tally)],
                 reasons=dict(Counter(g["reason"] for g in games)),shards=sorted(shard_rows,key=lambda s:s["shard"]),
                 playing_span_seconds=(timing_end-timing_start).total_seconds(),binary_hashes=identities,
                 protocol=reference)
