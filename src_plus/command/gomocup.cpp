@@ -324,7 +324,8 @@ void getOption()
     else if (token == "TIME_INCREMENT") {
         std::cin >> val;
         const char *policy = std::getenv("RAPFI_CLOCK_POLICY");
-        options.incrementTime = policy && std::string_view(policy) == "fischer"
+        options.guardedIncrement = policy && std::string_view(policy) == "guarded";
+        options.incrementTime = policy && (std::string_view(policy) == "fischer" || options.guardedIncrement)
                                     ? std::clamp<int64_t>(val, 0, INT32_MAX) : 0;
     }
     else if (token == "GAME_TYPE" || token == "THREAD_SPLIT_DEPTH"

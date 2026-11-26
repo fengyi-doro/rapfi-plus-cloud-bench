@@ -141,6 +141,9 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         active += delta
         peak = max(peak, active)
     result["peak_simultaneous_games"] = peak
+    result["flags_by_player"] = dict(Counter(g["turns"][-1]["engine"] for g in games if g["reason"] == "time"))
+    result["illegal_by_player"] = dict(Counter(g["turns"][-1]["engine"] for g in games
+        if g["reason"] == "illegal_coordinate" or g["reason"].startswith("forbidden")))
     result["games_per_minute_playing"] = len(games) * 60 / result["playing_span_seconds"]
     if pairs==500 and shards==20:
         result["five_minute_play_target_met"]=result["playing_span_seconds"]<=300
@@ -164,6 +167,11 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                 calls=len(prior), total_ns=sum(prior), per_turn_ms=sum(prior)/len(wall)/1e6,
                 per_call_ms=sum(prior)/len(prior)/1e6, p50_call_ms=prior[(len(prior)-1)//2]/1e6,
                 p95_call_ms=prior[math.ceil(.95*len(prior))-1]/1e6)
+            for group, used in (("with_prior", True), ("without_prior", False)):
+                depths = sorted(t["depth"] for t in all_turns if ("root_prior_ns" in t) == used and t["depth"] is not None)
+                result["move_timing"][name]["root_prior"][group] = dict(
+                    recorded_depths=len(depths), median_depth=depths[(len(depths)-1)//2] if depths else None,
+                    zero_depth=sum(v == 0 for v in depths))
         if reference["root_mode"] == "proof" and name == challenger:
             result["move_timing"][name]["proof"] = {
                 k:sum(t.get(k, 0) for t in all_turns)

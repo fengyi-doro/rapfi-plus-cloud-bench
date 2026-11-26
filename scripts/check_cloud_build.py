@@ -34,6 +34,8 @@ def check(directory, profile):
         digest = sha(binary)
         if digest != manifest["sha256"]:
             raise ValueError(f"executable hash mismatch: {binary}")
+        if manifest["variant"] == "orig" and profile == "v4" and digest != "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9":
+            raise ValueError("original executable differs from the inaugural cloud baseline")
         result = subprocess.run(["qemu-x86_64", "-cpu", "Haswell", str(binary), "--config", str(ROOT / "config.toml")],
                                 input="\n".join(commands), text=True, capture_output=True, timeout=120)
         required_weights = ("standard_bs15", "renju_bs15_black", "renju_bs15_white")

@@ -195,7 +195,7 @@ void SearchContext::checkExit(uint32_t elapsedCalls)
     if (options.maxNodes)
         callsCnt = std::min(1024U, uint32_t(options.maxNodes / 1024U));
     else
-        callsCnt = 1024;
+        callsCnt = options.guardedIncrement && options.incrementTime > 0 ? 64 : 1024;
 
     // Do not stop searching in pondering mode
     if (inPonder.load(std::memory_order_relaxed))
@@ -446,7 +446,7 @@ void SearchEngine::runSearch(SearchThread &main)
     ctx.timectl.init(ctx.options.turnTime,
                      ctx.options.matchTime,
                      ctx.options.timeLeft,
-                     {main.board->ply(), main.board->movesLeft(), ctx.options.incrementTime});
+                     {main.board->ply(), main.board->movesLeft(), ctx.options.incrementTime, ctx.options.guardedIncrement});
 
     // Run the algorithm's main search routine and finalize its result
     if (const RootMove *finalMove = searcher()->searchMain(main))

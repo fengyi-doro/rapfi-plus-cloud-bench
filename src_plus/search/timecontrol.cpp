@@ -60,7 +60,7 @@ namespace Search {
 void TimeControl::init(Time turnTime, Time matchTime, Time matchTimeLeft, MoveParams params)
 {
     startTime = now();
-    if (matchTime > 0 && params.increment > 0 && matchTimeLeft < std::numeric_limits<Time>::max() / 8) {
+    if (!params.guarded && matchTime > 0 && params.increment > 0 && matchTimeLeft < std::numeric_limits<Time>::max() / 8) {
         // Future increments can influence the soft budget, but the current
         // move may spend only the time already credited to the player.
         const Time bank = std::max(matchTimeLeft, Time(0));
@@ -88,6 +88,13 @@ void TimeControl::init(Time turnTime, Time matchTime, Time matchTimeLeft, MovePa
         optimumTime = std::min(optimumTime, std::min(turn, match));
     }
 
+    if (params.guarded && matchTime > 0 && params.increment > 0 && !ampleMatchTime) {
+        // Spend part of the upcoming increment on a healthy clock. As the bank
+        // approaches ten increments, taper back to the base allocation.
+        const Time surplus = std::max<Time>(0, matchTimeLeft - 10 * params.increment);
+        const Time bonus = std::min(params.increment / 2, surplus / 24);
+        optimumTime = std::min(maximumTime, optimumTime + bonus);
+    }
     assert(optimum() <= maximum());
 }
 

@@ -62,6 +62,8 @@ def render():
     extra = []
     scaling = []
     previous = []
+    top = {"纯 Mix9SVQ、1T":[("历史 V4", baseline["scores"]["All"])],
+           "外部权重、1T":[], "4T 对 1T":[]}
     for folder in sorted(ARCHIVE.iterdir()) if ARCHIVE.is_dir() else []:
         if not (folder / "run.json").is_file():
             continue
@@ -76,12 +78,14 @@ def render():
         layout = p.get("lane_layout") or "packed-1t"
         threads = p.get("threads_by_player") or {name:1, "orig":1}
         label = "4T / 1T 独占" if threads[name] == 4 else ("1T / 1T 独占" if layout == "isolated-1t" else "1T / 1T")
+        category = "4T 对 1T" if threads[name] == 4 else ("外部权重、1T" if p.get("oracle_sha256") else "纯 Mix9SVQ、1T")
+        top[category].append((name, scores["All"]))
         link = f"[{folder.name}]({run['url']})"
         local = f"[JSON]({(folder/'summary.json').relative_to(ROOT).as_posix()})"
         for rule in ("All", "Standard", "Renju"):
             r = scores[rule]
             lo, hi = r["ci95_elo"]
-            rows.append(f"| {name} | {label} | {rule} | {r['W']} / {r['D']} / {r['L']} | "
+            rows.append(f"| {name} | {category} | {label} | {rule} | {r['W']} / {r['D']} / {r['L']} | "
                         f"{r['W']/r['games']:.2%} | {r['score']:.2%} | {r['elo']:+.2f} "
                         f"[{lo:+.2f}, {hi:+.2f}] | {r['los']:.4%} | {link+' · '+local if rule=='All' else ''} |")
         audit = Counter()
@@ -99,6 +103,8 @@ def render():
                   if timing["turns"] else "")
         if timing.get("threat_extensions"):
             detail += f"实际增加搜索深度 {timing['threat_extensions']:,} 次。"
+        if proof := timing.get("proof"):
+            detail += f"根部证明直接选出胜着 {proof['root_proven_win']:,} 手，排除已证败着 {proof['root_proven_losses']:,} 个。"
         if prior := timing.get("root_prior"):
             detail += (f"根评估在 {prior['calls']:,} 手触发，单次均值 {prior['per_call_ms']:.3f} ms，"
                        f"P50 / P95 为 {prior['p50_call_ms']:.3f} / {prior['p95_call_ms']:.3f} ms。"
@@ -107,12 +113,15 @@ def render():
             model = load(folder / "oracle.json")
             detail += (f"CPU 模型合计 {model['bytes']:,} 字节，MatMulInteger / DequantizeLinear 节点分别为 "
                        f"{model['operators'].get('MatMulInteger', 0)} / {model['operators'].get('DequantizeLinear', 0)}。"
-                       f"{len(model['probes'])} 个上游权重对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}。"
+                       f"{len(model['probes'])} 个上游权重对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}，"
+                       f"空点策略第一选择一致 {sum(p['top1_agree'] for p in model['probes'])}/{len(model['probes'])}。"
                        f"[模型清单]({(folder/'oracle.json').relative_to(ROOT).as_posix()})")
         extra += [f"**{name}**　{metrics}{detail}",
                   f"复盘 {audit['games']:,} 局、{audit['board_moves_replayed']:,} 手，裁决分歧 {audit['referee_mismatches']}，"
                   f"JSON/PSQ 分歧 {audit['json_psq_mismatches']}，超时 {audit['hard_flags']}，非法着或禁手 {audit['illegal_moves']}。"
                   f"20 个分片比赛跨度 {s['playing_span_seconds']:.2f} 秒，同时在赛峰值 {s['peak_simultaneous_games']} 局。{link}"]
+        if s.get("flags_by_player"):
+            extra[-1] += f" 超时判负分别为挑战方 {s['flags_by_player'].get(name,0)} 局、原版 {s['flags_by_player'].get('orig',0)} 局。"
         if layout == "isolated-4t":
             for _, peer in reversed(previous):
                 if (peer["protocol"].get("lane_layout") == "isolated-1t"
@@ -127,8 +136,16 @@ def render():
                     break
         previous.append((name, s))
     header = REPORT.read_text(encoding="utf-8-sig").split(MARK, 1)[0].rstrip()
-    table = ["## 已完成的云端对局", "", "| 挑战方 | 线程（挑战方 / 原版） | 规则 | 胜 / 和 / 负 | 实胜率 | 得分率 | Elo [95% CI] | LOS | Run 与汇总 |",
-             "|---|---|---|---:|---:|---:|---:|---:|---|", *rows, "",
+    best_rows = []
+    for category, group in top.items():
+        if group:
+            name, r = max(group, key=lambda entry:(entry[1]["W"]/entry[1]["games"], entry[1]["score"]))
+            best_rows.append(f"| {category} | {name} | {r['W']}/{r['games']} | "
+                             f"{r['W']/r['games']:.2%} | {90-100*r['W']/r['games']:.2f} 个百分点 |")
+    table = ["## 90% 实胜率进度", "", "下表按每组实际赢局占比选取已观测到的最高点估计。各组使用相同的原版对手。", "",
+             "| 实验组 | 挑战方 | 胜 / 总局数 | 实胜率 | 距 90% |", "|---|---|---:|---:|---:|", *best_rows, "",
+             "## 已完成的云端对局", "", "| 挑战方 | 实验组 | 线程（挑战方 / 原版） | 规则 | 胜 / 和 / 负 | 实胜率 | 得分率 | Elo [95% CI] | LOS | Run 与汇总 |",
+             "|---|---|---|---|---:|---:|---:|---:|---:|---|", *rows, "",
              "## 逐手开销与独立复盘", "", "\n\n".join(extra)]
     if scaling:
         table += ["", "## Lazy SMP 增量", "", "\n\n".join(scaling)]

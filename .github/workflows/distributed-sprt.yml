@@ -38,7 +38,7 @@ on:
       clock_policy:
         description: Challenger time allocation with the same external Fischer clock
         type: choice
-        options: [standard, fischer]
+        options: [standard, fischer, guarded]
         default: standard
       oracle_family:
         description: Public KataGomo model used by kata search mode

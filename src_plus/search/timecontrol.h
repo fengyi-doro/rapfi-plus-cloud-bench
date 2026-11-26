@@ -35,6 +35,7 @@ public:
         int ply;
         int movesLeft;
         Time increment = 0;
+        bool guarded = false;
     };
 
     /// IterParams struct contains all info needed per depth in
