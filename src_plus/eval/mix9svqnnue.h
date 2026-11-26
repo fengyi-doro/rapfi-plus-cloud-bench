@@ -51,6 +51,7 @@ public:
     void afterUndo(const Board &board, Pos pos);
 
     ValueType evaluateValue(const Board &board, AccLevel level);
+    bool      writeValueHead(const Board &board, std::ostream &out) override;
     void      evaluatePolicy(const Board &board, PolicyBuffer &policyBuffer, AccLevel level);
 
 private:

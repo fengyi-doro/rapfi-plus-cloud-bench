@@ -22,6 +22,7 @@
 #include "../core/types.h"
 
 #include <cassert>
+#include <iosfwd>
 #include <stdexcept>
 #include <string>
 
@@ -162,6 +163,8 @@ public:
 
     /// Evaluates value for current side to move with the specified level of accuracy.
     virtual ValueType evaluateValue(const Board &board, AccLevel level = ACC_LEVEL_BEST) = 0;
+    /// Export the native final-layer inputs and base logits for offline readout training.
+    virtual bool writeValueHead(const Board &, std::ostream &) { return false; }
     /// Evaluates policy for current side to move.
     virtual void evaluatePolicy(const Board  &board,
                                 PolicyBuffer &policyBuffer,

@@ -767,6 +767,19 @@ void traceBoard()
     }
 }
 
+void traceValueHead()
+{
+    Search::Engine.waitForIdle();
+    Search::Engine.ctx.options = options;
+    auto &th = *Search::Engine.main();
+    th.setBoardAndEvaluator(*board);
+    std::ostringstream output;
+    if (th.evaluator && th.evaluator->writeValueHead(*th.board, output))
+        MESSAGEL("VALUE_HEAD " << output.str());
+    else
+        ERRORL("Current evaluator does not expose native readout features");
+}
+
 void traceSearch()
 {
     Search::Engine.waitForIdle();
@@ -943,6 +956,7 @@ bool runProtocol()
     else if (cmd == "YXDBMERGE")           CheckBoardOK([] { auto ctx = dbCommandContext(); mergeDatabase(ctx); });
     else if (cmd == "SWAP2BOARD")          CheckBoardOK(swap2board);
     else if (cmd == "TRACEBOARD")          CheckBoardOK(traceBoard);
+    else if (cmd == "TRACEVALUEHEAD")      CheckBoardOK(traceValueHead);
     else if (cmd == "TRACESEARCH")         CheckBoardOK(traceSearch);
     else if (!GUIMode)                     ERRORL("Unknown command: " << cmd);
     // clang-format on

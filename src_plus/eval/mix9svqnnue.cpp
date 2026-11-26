@@ -35,7 +35,9 @@
 
 #include "mix9_orbit.h"
 
+#include <iomanip>
 #include <mutex>
+#include <ostream>
 
 namespace Evaluation::mix9svq {
 
@@ -187,7 +189,7 @@ public:
     using MixAccumulatorState::undo;
 
     /// Calculate value (win/loss/draw tuple) of current network state.
-    std::tuple<float, float, float> evaluateValue(const Weight &w);
+    std::tuple<float, float, float> evaluateValue(const Weight &w, int8_t *readoutFeatures = nullptr);
     /// Calculate policy value of current network state.
     void evaluatePolicy(const Weight &w, PolicyBuffer &policyBuffer);
 
@@ -647,7 +649,7 @@ void Accumulator::move(const Weight &w, Color pieceColor, int x, int y)
     }
 }
 
-std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w)
+std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w, int8_t *readoutFeatures)
 {
     const auto &valueSum = valueSumTable[currentVersion];
     const auto &bucket   = w.buckets[getBucketIndex()];
@@ -718,6 +720,8 @@ std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w)
                                      bucket.value_l2.weight,
                                      bucket.value_l2.bias);
     simd::crelu<ValueDim, 128>(layer2, layer2i32);
+    if (readoutFeatures)
+        std::copy_n(layer2, ValueDim, readoutFeatures);
 
     // linear 3 final
     alignas(Alignment) int32_t layer3i32[4];
@@ -864,6 +868,18 @@ ValueType Evaluator::evaluateValue(const Board &board, AccLevel level)
     auto [win, loss, draw] = accumulator[self]->evaluateValue(*weight[self]);
 
     return ValueType(win, loss, draw, true);
+}
+
+bool Evaluator::writeValueHead(const Board &board, std::ostream &out)
+{
+    const Color side = board.sideToMove();
+    flushMoveCache(side);
+    std::array<int8_t, ValueDim> features;
+    auto [win, loss, draw] = accumulator[side]->evaluateValue(*weight[side], features.data());
+    out << std::setprecision(9) << int(rule) << ' ' << int(side) << ' ' << win << ' ' << loss << ' ' << draw;
+    for (int8_t channel : features)
+        out << ' ' << int(channel);
+    return true;
 }
 
 void Evaluator::evaluatePolicy(const Board &board, PolicyBuffer &policyBuffer, AccLevel level)

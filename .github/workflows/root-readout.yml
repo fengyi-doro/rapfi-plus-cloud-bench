@@ -1,0 +1,114 @@
+name: Fit native Mix9SVQ value readouts
+run-name: Fit three frozen-trunk value heads on public 2024 games
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiments/cpu-root-search]
+    paths: ['.github/workflows/root-readout.yml']
+permissions:
+  contents: read
+  actions: read
+env:
+  OPENBLAS_NUM_THREADS: 1
+  OMP_NUM_THREADS: 1
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          test "$(git rev-parse HEAD:src_orig)" = 5a506c21eda356315d2cfb650db0332dcc760b2f
+          test "$(git rev-parse HEAD:data/runtime_files.json)" = 1a980665618ad0ff03a912bede98a56ae7efdc67
+          python -m pip install ziglang==0.14.1
+          python scripts/build_v3.py v4 --target linux --profile v4 --out dist -j 4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feature-engine
+          path: dist/pbrain-rapfi-v4
+          if-no-files-found: error
+          retention-days: 7
+  extract:
+    needs: build
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      SHARD: ${{ matrix.shard }}
+      RAPFI_ARENA_BIN: dist
+      RAPFI_BUILD_PROFILE: v4
+      RAPFI_ROOT_MODE: control
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/
+            /data/v3/cloud_openings.json
+            /data/runtime_files.json
+            /config.toml
+            /*.bin
+            /*.lz4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install psutil==7.0.0 numpy==2.2.6
+      - uses: actions/download-artifact@v4
+        with:
+          name: feature-engine
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45834059076
+          name: training-input
+          path: training-input
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45834059076
+          name: labels-${{ matrix.shard }}
+          path: teacher-labels
+      - run: |
+          chmod +x dist/pbrain-rapfi-v4
+          python scripts/cloud_readout.py extract --shard "$SHARD" --out features
+      - uses: actions/upload-artifact@v4
+        with:
+          name: features-${{ matrix.shard }}
+          path: features/*.npz
+          if-no-files-found: error
+          retention-days: 7
+  fit:
+    needs: extract
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.2.6 scipy==1.15.3
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45834059076
+          name: training-input
+          path: training-input
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: features-*
+          merge-multiple: true
+          path: features
+      - run: python scripts/cloud_readout.py fit --out readout
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitted-value-readout
+          path: readout/
+          if-no-files-found: error
+          retention-days: 30
