@@ -228,5 +228,7 @@
         "orig": "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9"
       }
     }
-  }
+  },
+  "package_sha256": "81bfc788c05aa0ee61f87fd51337bca8903c6a80ed7b631174fa53bdeeb0de62",
+  "package_bytes": 39560887
 }
