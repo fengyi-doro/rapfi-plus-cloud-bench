@@ -23,8 +23,12 @@ COORD = re.compile(r"(-?\d+),(-?\d+)")
 
 class DeadlineExpired(TimeoutError):
     def __init__(self, command, elapsed_ns):
+        self.command = command
         self.elapsed_ns = elapsed_ns
         super().__init__(f"response deadline for {command[:40]} at {elapsed_ns} ns")
+
+    def __reduce__(self):
+        return type(self), (self.command, self.elapsed_ns)
 
 
 if os.name == "nt":

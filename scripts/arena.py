@@ -9,7 +9,7 @@ import threading
 import time
 import psutil
 from datasets import DATA, ROOT, SEED, dump, sha
-from engine import DeadlineExpired, Engine, filename, topology, utc
+from engine import COORD, DeadlineExpired, Engine, filename, topology, utc
 from bit_gate import board_command
 from rules import BITS, FIVES, SIXES, black_status, exact, has_win, valid_history
 
@@ -69,7 +69,9 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
         # The previous turn fixes this player's next bank. Acknowledge its INFO
         # while the opponent is thinking. The move clock starts only after ABOUT.
         def announce(e,ns):
-            cmd=f"INFO time_left {ns//1_000_000}\nABOUT"
+            # STOP synchronizes with the finish callback that printed the preceding move.
+            # A plain INFO can otherwise arrive while the protocol still reports thinking.
+            cmd=f"STOP\nINFO time_left {ns//1_000_000}\nABOUT"
             return e.submit(cmd),cmd
         pending=({e:announce(e,initial) for e in engines} if resident is not None and not parallel_reset else {})
         pids = [e.proc.pid for e in engines]
@@ -84,7 +86,7 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
                 e.sync(f"STOP\nINFO time_left {left_ms}")
             elif e in pending:
                 stamp,cmd=pending.pop(e)
-                assert cmd.startswith(f"INFO time_left {left_ms}\n")
+                assert cmd.startswith(f"STOP\nINFO time_left {left_ms}\n")
                 e.collect(stamp,cmd,lambda s:"author=" in s)
             else:
                 assert parallel_reset and bank[color]==initial and len(turns)<2
@@ -101,6 +103,10 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
                 result["after_ns"] = 0
                 winner, reason = names[1-color], "time"
                 if resident is not None:
+                    # Drain the interrupted search outside the already-decided game clock.
+                    # The engine ignores ABOUT until it has returned the final coordinate.
+                    if result.get("no_coordinate"):
+                        e.exchange("STOP", COORD.fullmatch)
                     e.sync("STOP")
                 break
             bank[color] = before - result["wall_ns"] + increment
