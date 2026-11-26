@@ -141,6 +141,7 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
     return dict(opening=opening["id"], leg=leg, rule=rule, black=names[0], white=names[1],
                 lane=lane, cores=dict(zip(names,cores)), pids=dict(zip(names,pids)), started=started, ended=utc(),
                 search_threads={name:e.search_threads for name,e in zip(names,engines,strict=True)},
+                oracle_models={name:e.oracle_models[rule] for name,e in zip(names,engines,strict=True) if e.oracle_models},
                 started_qpc_ns=started_qpc, ended_qpc_ns=time.perf_counter_ns(),
                 boot_time=int(psutil.boot_time()) if boot_epoch is None else boot_epoch,
                 initial_ns=initial, increment_ns=increment, opening_plies=len(opening["moves"]),

@@ -105,8 +105,9 @@ def render():
                        f"摊到挑战方所有手为 {prior['per_turn_ms']:.3f} ms/手。")
         if (folder / "oracle.json").exists():
             model = load(folder / "oracle.json")
-            detail += (f"CPU 模型 {model['bytes']:,} 字节，INT8 MatMul 共 {model['operators']['MatMulInteger']} 个。"
-                       f"{len(model['probes'])} 个 FP32 对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}。"
+            detail += (f"CPU 模型合计 {model['bytes']:,} 字节，MatMulInteger / DequantizeLinear 节点分别为 "
+                       f"{model['operators'].get('MatMulInteger', 0)} / {model['operators'].get('DequantizeLinear', 0)}。"
+                       f"{len(model['probes'])} 个上游权重对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}。"
                        f"[模型清单]({(folder/'oracle.json').relative_to(ROOT).as_posix()})")
         extra += [f"**{name}**　{metrics}{detail}",
                   f"复盘 {audit['games']:,} 局、{audit['board_moves_replayed']:,} 手，裁决分歧 {audit['referee_mismatches']}，"
@@ -114,7 +115,9 @@ def render():
                   f"20 个分片比赛跨度 {s['playing_span_seconds']:.2f} 秒，同时在赛峰值 {s['peak_simultaneous_games']} 局。{link}"]
         if layout == "isolated-4t":
             for _, peer in reversed(previous):
-                if peer["protocol"].get("lane_layout") == "isolated-1t" and peer["protocol"]["root_mode"] == p["root_mode"]:
+                if (peer["protocol"].get("lane_layout") == "isolated-1t"
+                        and all(peer["protocol"].get(k) == p.get(k) for k in ("root_mode","clock_policy","oracle_sha256"))
+                        and peer["binary_hashes"]["Linux"][peer["players"][0]] == s["binary_hashes"]["Linux"][name]):
                     peer_all = peer["scores"]["All"]
                     d = delta(peer, s)
                     scaling.append(f"同架构同为每台 runner 独占一局，4T 相对 1T 的实胜率变化 "

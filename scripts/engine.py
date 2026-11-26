@@ -192,11 +192,12 @@ class Engine:
         self.cpu_pool = sorted(cpu_pool) if cpu_pool else None
         self.search_threads = search_threads
         self.oracle_reader = None
+        self.oracle_models = {}
         child_options = {}
         oracle_connection = child_connection = None
         if variant == os.environ.get("RAPFI_CANDIDATE_LABEL") and os.environ.get("RAPFI_ROOT_MODE") == "kata":
             from kata_oracle import playing_session, serve
-            net = playing_session(Path(os.environ["RAPFI_ARENA_BIN"]))
+            net, self.oracle_models = playing_session(Path(os.environ["RAPFI_ARENA_BIN"]))
             oracle_connection, child_connection = socket.socketpair()
             fd = child_connection.fileno()
             child_options = dict(pass_fds=(fd,), env=dict(os.environ, RAPFI_ORACLE_FD=str(fd)))

@@ -226,6 +226,8 @@ def verify(directory, book=None):
         assert (game["initial_ns"],game["increment_ns"])==(initial,increment)
         bank = [initial,initial]
         names = game["black"],game["white"]
+        if "oracle_by_rule" in design:
+            assert game["oracle_models"] == {design["players"][0]:design["oracle_by_rule"][str(rule)]}
         if design.get("per_rule_engines"):
             expected_weights = ({"mix9svqstandard_bs15.bin.lz4"} if rule == 1 else
                                 {"mix9svqrenju_bs15_black.bin.lz4", "mix9svqrenju_bs15_white.bin.lz4"})

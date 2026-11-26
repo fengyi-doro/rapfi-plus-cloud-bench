@@ -40,6 +40,11 @@ on:
         type: choice
         options: [standard, fischer]
         default: standard
+      oracle_family:
+        description: Public KataGomo model used by kata search mode
+        type: choice
+        options: [b24, nano]
+        default: b24
 
 permissions:
   contents: read
@@ -52,6 +57,7 @@ env:
   RAPFI_ROOT_MODE: ${{ inputs.search_mode || 'control' }}
   RAPFI_LANE_LAYOUT: ${{ inputs.lane_layout || 'packed-1t' }}
   RAPFI_CLOCK_POLICY: ${{ inputs.clock_policy || 'standard' }}
+  RAPFI_ORACLE_FAMILY: ${{ inputs.oracle_family || 'b24' }}
   OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
 
@@ -112,12 +118,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: oracle-dist
-          key: katagomo-92ec1e7c-cpu-ort-1.22.1-${{ hashFiles('scripts/kata_oracle.py', 'data/positions.json') }}
+          key: katagomo-${{ env.RAPFI_ORACLE_FAMILY }}-cpu-ort-1.22.1-${{ hashFiles('scripts/kata_oracle.py', 'data/positions.json') }}
       - if: env.RAPFI_ROOT_MODE == 'kata' && steps.oracle.outputs.cache-hit != 'true'
-        name: Quantize the official B24 projection weights and compare CPU outputs with FP32
+        name: Verify the public model and compare the CPU playing heads with the published weights
         run: |
           python -m pip install numpy==2.2.6 onnx==1.18.0 onnxruntime==1.22.1
-          python scripts/kata_oracle.py oracle-dist --positions data/positions.json
+          python scripts/kata_oracle.py oracle-dist --positions data/positions.json --family "$RAPFI_ORACLE_FAMILY"
       - if: env.RAPFI_ROOT_MODE == 'kata'
         uses: actions/upload-artifact@v4
         with:

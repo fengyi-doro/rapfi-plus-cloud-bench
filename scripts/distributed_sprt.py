@@ -81,7 +81,8 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if d["opening_ids"]!=planned: raise ValueError(("shard schedule mismatch",ix))
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
-            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256","clock_policy")}
+            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256","clock_policy",
+            "oracle_family","oracle_by_rule")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -112,6 +113,10 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             manifest = json.loads((build_info.parent/"oracle.json").read_bytes())
             if reference["oracle_sha256"] != manifest["model_sha256"] or manifest["providers"] != ["CPUExecutionProvider"]:
                 raise ValueError("playing oracle differs from the verified CPU model")
+            if reference["oracle_by_rule"]:
+                expected = {str(r):manifest["models"].get(str(r), manifest["models"].get("both"))["sha256"] for r in (1, 2)}
+                if reference["oracle_by_rule"] != expected or reference["oracle_family"] != manifest["family"]:
+                    raise ValueError("rule-specific model differs from the build")
             dump(out/"oracle.json", manifest)
     by_id={}
     for g in games: by_id.setdefault(g["opening"],[]).append(g)
