@@ -15,7 +15,7 @@ def check(directory, profile):
         raise ValueError("toolchain, profile or compilation flags differ between engines")
     if shared["target"] != "linux" or shared["profile"] != profile:
         raise ValueError("cached engines are for a different target or build profile")
-    required = {"-march=x86-64", "-mavx2", "-mfma", "-mbmi2", "-DRAPFI_AVX2_ONLY"}
+    required = {"-march=x86_64_v3", "-mavx2", "-mfma", "-mbmi2", "-DRAPFI_AVX2_ONLY"}
     flags = shared["flags"]
     if not required.issubset(flags) or any("vnni" in f.lower() or "avx512" in f.lower() or "native" in f for f in flags):
         raise ValueError(f"unexpected ISA flags: {flags}")

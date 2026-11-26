@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parent
 ZIG = [sys.executable, "-m", "ziglang"]
-FLAGS = ["-O3", "-march=x86-64", "-mavx2", "-mfma", "-mbmi2", "-ffp-contract=off", "-DNDEBUG",
+FLAGS = ["-O3", "-march=x86_64_v3", "-mavx2", "-mfma", "-mbmi2", "-ffp-contract=off", "-DNDEBUG",
          "-DUSE_AVX2", "-DUSE_SSE", "-DMULTI_THREADING", "-Wno-deprecated-declarations"]
 CPP = ["c++", "-std=c++20", "-fno-char8_t", "-include", "bit"]
 INCLUDES = ["external/cpptoml/include", "external/cxxopts/include", "external/lz4/include",

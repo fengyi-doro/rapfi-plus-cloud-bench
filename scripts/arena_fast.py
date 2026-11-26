@@ -180,8 +180,12 @@ def run_locked(args):
     excluded = set(args.exclude)
     limit = min(args.lanes, len(openings))
     if args.vcpu_lanes:
-        required = {"avx2", "bmi2", "fma"}
-        missing = required.difference(hardware.get("cpu_flags", []))
+        required = {"avx", "avx2", "bmi1", "bmi2", "f16c", "fma", "movbe", "xsave",
+                    "cx16", "lahf_lm", "popcnt", "pni", "ssse3", "sse4_1", "sse4_2"}
+        flags = set(hardware.get("cpu_flags", []))
+        missing = required - flags
+        if not flags.intersection({"abm", "lzcnt"}):
+            missing.add("lzcnt")
         if missing:
             raise ValueError(f"runner lacks required CPU features: {sorted(missing)}")
         available = sorted(set(psutil.Process().cpu_affinity()) - excluded)
