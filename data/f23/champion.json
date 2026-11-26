@@ -1,0 +1,15 @@
+{
+  "name": "Rapfi Plus v5",
+  "architecture": "Mix9SVQ / CPU / Linux x86-64-v3 AVX2",
+  "baseline_commit": "9f4858626bffebc1d9e47de243c304bb69180108",
+  "src_plus_tree": "904dc8e1f995417f105c33af9c4bda468bb68479",
+  "selected_f23_modules": [],
+  "binary_sha256": "299e3ba3daaed9d3d317285e0c349b4543938b707829729120ecc651841b60d4",
+  "orig_binary_sha256": "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9",
+  "build_profile": "v4",
+  "cloud_build": 45847415698,
+  "individual_ablation": 45847727373,
+  "interaction_ablation": 45850420120,
+  "certification_1t_vs_1t": 45849673591,
+  "certification_4t_vs_1t": 45851428940
+}

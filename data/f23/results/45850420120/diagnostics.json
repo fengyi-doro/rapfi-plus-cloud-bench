@@ -1,0 +1,70 @@
+{
+  "renju_positions": 9069,
+  "ordinary": 172,
+  "augmented": 252,
+  "additional_white_to_move": 41,
+  "additional_black_to_move": 39,
+  "native_replay_mismatches": 0,
+  "independent_certificate_mismatches": 0,
+  "cpu": 0,
+  "depth_cap": 7,
+  "positions": 32,
+  "repeats": 2,
+  "costs": {
+    "orig": {
+      "observations": 64,
+      "nodes": 93974,
+      "wall_ms": 290.665046,
+      "mean_ms": 4.54164134375,
+      "completed_depth7": 58
+    },
+    "v4": {
+      "observations": 64,
+      "nodes": 93974,
+      "wall_ms": 267.060399,
+      "mean_ms": 4.172818734375,
+      "completed_depth7": 58
+    },
+    "f23-b1-b4": {
+      "observations": 64,
+      "nodes": 93844,
+      "wall_ms": 265.930713,
+      "mean_ms": 4.155167390625,
+      "completed_depth7": 58
+    },
+    "f23-b1-b2-b3-b4": {
+      "observations": 64,
+      "nodes": 94060,
+      "wall_ms": 265.705012,
+      "mean_ms": 4.1516408125,
+      "completed_depth7": 58
+    }
+  },
+  "tactics": {
+    "orig-d4": {
+      "positions": 41,
+      "certified": 31,
+      "mate_reports": 29
+    },
+    "v4-d4": {
+      "positions": 41,
+      "certified": 31,
+      "mate_reports": 29
+    },
+    "v4-d8": {
+      "positions": 41,
+      "certified": 32,
+      "mate_reports": 33
+    },
+    "f23-b1-b4-d8": {
+      "positions": 41,
+      "certified": 32,
+      "mate_reports": 33
+    },
+    "f23-b1-b2-b3-b4-d8": {
+      "positions": 41,
+      "certified": 32,
+      "mate_reports": 33
+    }
+  }
+}

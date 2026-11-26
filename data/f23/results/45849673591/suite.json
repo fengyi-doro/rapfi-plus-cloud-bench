@@ -1,0 +1,183 @@
+{
+  "phase": "cert1",
+  "run": "45849673591",
+  "sha": "a2ed1df58ef01628831f4722a4c8e49c76a31b3c",
+  "build": "45847415698",
+  "results": {
+    "rapfi-plus-v5-1t-vs-orig": {
+      "players": [
+        "rapfi-plus-v5-1t",
+        "orig"
+      ],
+      "mask": 0,
+      "layout": "isolated-1t",
+      "scores": {
+        "All": {
+          "games": 1000,
+          "pairs": 500,
+          "W": 436,
+          "D": 182,
+          "L": 382,
+          "penta": [
+            21,
+            44,
+            329,
+            72,
+            34
+          ],
+          "score": 0.527,
+          "elo": 18.779789789894043,
+          "ci95_elo": [
+            6.2545160855161335,
+            31.354042247812043
+          ],
+          "los": 0.998505227582986,
+          "bootstrap_superiority": 0.99879,
+          "net_pairs": 41,
+          "net_games": 54,
+          "sweeps": 13,
+          "standard_error": 0.009094550201823837,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Standard": {
+          "games": 500,
+          "pairs": 250,
+          "W": 205,
+          "D": 126,
+          "L": 169,
+          "penta": [
+            7,
+            29,
+            150,
+            49,
+            15
+          ],
+          "score": 0.536,
+          "elo": 25.05872365515569,
+          "ci95_elo": [
+            7.644816404437001,
+            42.599336405616064
+          ],
+          "los": 0.9976953170900813,
+          "bootstrap_superiority": 0.99795,
+          "net_pairs": 28,
+          "net_games": 36,
+          "sweeps": 8,
+          "standard_error": 0.01270676384409336,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Renju": {
+          "games": 500,
+          "pairs": 250,
+          "W": 231,
+          "D": 56,
+          "L": 213,
+          "penta": [
+            14,
+            15,
+            179,
+            23,
+            19
+          ],
+          "score": 0.518,
+          "elo": 12.513088602553408,
+          "ci95_elo": [
+            -5.559443806623582,
+            29.95345180759873
+          ],
+          "los": 0.9166760151285729,
+          "bootstrap_superiority": 0.91668,
+          "net_pairs": 13,
+          "net_games": 18,
+          "sweeps": 5,
+          "standard_error": 0.013014665808403136,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        }
+      },
+      "audit": {
+        "pairs": 500,
+        "games": 1000,
+        "board_moves_replayed": 75948,
+        "timed_turns": 75948,
+        "json_psq_mismatches": 0,
+        "referee_mismatches": 0,
+        "hard_flags": 0,
+        "illegal_moves": 4,
+        "overlapping_vcpu_assignments": 0
+      },
+      "span_seconds": 204.447643,
+      "cpu_capacity": 80,
+      "peak_simultaneous_games": 20,
+      "binaries": {
+        "rapfi-plus-v5-1t": "299e3ba3daaed9d3d317285e0c349b4543938b707829729120ecc651841b60d4",
+        "orig": "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9"
+      },
+      "flags": {},
+      "illegal": {
+        "orig": 4
+      },
+      "move_timing": {
+        "rapfi-plus-v5-1t": {
+          "turns": 37985,
+          "mean_ms": 42.089956667079115,
+          "p95_ms": 135.37688,
+          "threat_extensions": 0
+        },
+        "orig": {
+          "turns": 37963,
+          "mean_ms": 48.17328937352159,
+          "p95_ms": 139.851984,
+          "threat_extensions": 0
+        }
+      },
+      "mother_ci95": [
+        7.411704546336098,
+        29.934331861194828
+      ],
+      "counts": {
+        "Standard": {
+          "root_calls": 0,
+          "main_calls": 0,
+          "vcf_calls": 0,
+          "root_proofs": 0,
+          "main_proofs": 0,
+          "vcf_proofs": 0,
+          "exhausted": 0,
+          "singular_extensions": 0,
+          "quiet_malus": 0,
+          "residual_updates": 0,
+          "residual_uses": 0,
+          "lmr_adjustments": 0,
+          "proof_white_nodes": 0,
+          "proof_ns": 0
+        },
+        "Renju": {
+          "root_calls": 0,
+          "main_calls": 0,
+          "vcf_calls": 0,
+          "root_proofs": 0,
+          "main_proofs": 0,
+          "vcf_proofs": 0,
+          "exhausted": 0,
+          "singular_extensions": 0,
+          "quiet_malus": 0,
+          "residual_updates": 0,
+          "residual_uses": 0,
+          "lmr_adjustments": 0,
+          "proof_white_nodes": 0,
+          "proof_ns": 0
+        }
+      },
+      "record_comparison": {
+        "delta_elo": -10.123858592225648,
+        "ci95_delta_elo": [
+          -27.28489108839437,
+          6.977528082746888
+        ],
+        "historical_elo": 28.90364838211969,
+        "delta_win_percentage_points": -1.9
+      }
+    }
+  },
+  "decision": {}
+}
