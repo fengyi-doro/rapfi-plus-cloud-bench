@@ -68,6 +68,6 @@ B1 在原有奇异延伸门槛前一层，对可信战术 TT 着追加排除搜�
 
 首次云编译发现旧头文件重复引用。修正后的首次证书回归发现 1,024 节点上限漏掉两条长线，分别需要 16,635 和 56,259 个白方节点。两次失败均发生在开赛前。修订后才启动正式筛选。[首次构建](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45846476702) · [首次构建修正](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45846805357) · [预算回归](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45847129841) · [正式单项构建](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45847415698) · [组合构建](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45850203845)
 
-初版认证包的 SHA256SUMS 行分隔有误。最终交付包合并两场认证记录，云端解包逐文件校验，并发布整个归档的 SHA-256。[最终打包与验包](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45852450242)
+初版认证包的 SHA256SUMS 行分隔有误。最终交付包合并两场认证记录，云端解包逐文件校验，整包 SHA-256 为 `81bfc788c05aa0ee61f87fd51337bca8903c6a80ed7b631174fa53bdeeb0de62`。[最终打包与验包](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45852450242)
 
 本机子进程实测为 Idle，亲和性仅含逻辑核 15，Windows 效率类别为 0，OMP_NUM_THREADS=1，GPU 后端已屏蔽。编译、求证、对局及独立回放均在 GitHub Actions 执行。[实验分支](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/tree/experiments/f23-search-v5) · [云端认证包](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45852450242/artifacts/15132724884)
