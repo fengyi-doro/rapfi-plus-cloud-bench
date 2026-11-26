@@ -16,6 +16,7 @@ struct RootPrior
 {
     Value value = VALUE_NONE;
     bool orderingOnly = false;
+    unsigned childCount = 0;
     std::array<Score, FULL_BOARD_CELL_COUNT> policy;
 };
 

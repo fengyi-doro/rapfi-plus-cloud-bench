@@ -131,6 +131,8 @@ def render():
             detail += f"实际增加搜索深度 {timing['threat_extensions']:,} 次。"
         if timing.get("threat_history_updates"):
             detail += f"威胁条件历史在发生 β 截断后更新 {timing['threat_history_updates']:,} 次。"
+        if timing.get("child_positions"):
+            detail += f"根部批量评估共覆盖 {timing['child_positions']:,} 个实际候选子局面。"
         if three := timing.get("three"):
             detail += (f"根部活三起手尝试 {three['three_attempts']:,} 着，"
                        f"覆盖所有合法应手的胜着 {three['three_wins']:,} 次，"

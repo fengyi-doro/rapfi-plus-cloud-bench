@@ -121,6 +121,43 @@ void evaluateKata(SearchThread &thread, RootPrior &prior)
         Color piece = board.get(Pos(i % 15, i / 15));
         request[3 + i] = piece == side ? 1 : piece == ~side ? 2 : 0;
     }
+    const char *usage = std::getenv("RAPFI_ORACLE_USAGE");
+    if (usage && std::string_view(usage) == "children") {
+        std::vector<Pos> moves;
+        for (const auto &move : thread.rootMoves) {
+            moves.push_back(move.pv[0]);
+            prior.policy[move.pv[0]] = local.score(move.pv[0]);
+        }
+        const size_t count = std::min<size_t>(6, moves.size());
+        std::partial_sort(moves.begin(), moves.begin() + count, moves.end(),
+                          [&](Pos a, Pos b) { return local.score(a) > local.score(b); });
+        std::array<uint8_t, 7> candidates {};
+        candidates[0] = uint8_t(count);
+        for (size_t j = 0; j < count; ++j)
+            candidates[j+1] = uint8_t(moves[j].y()*15 + moves[j].x());
+        request[0] |= 128;
+        transfer(fd, request.data(), request.size(), true);
+        transfer(fd, candidates.data(), count+1, true);
+        std::array<float, 6> scores {};
+        transfer(fd, scores.data(), count*sizeof(float), false);
+        float mean = 0, best = 0;
+        for (size_t j = 0; j < count; ++j) {
+            if (!std::isfinite(scores[j]) || scores[j] < 0 || scores[j] > 1)
+                throw std::runtime_error("invalid root-child WDL");
+            mean += scores[j] / float(count);
+            best = std::max(best, scores[j]);
+        }
+        // Centre the child scores within this root. The teacher and local
+        // head can have different WDL calibration even on the same board.
+        for (size_t j = 0; j < count; ++j) {
+            float logits = std::clamp(4.f * (scores[j] - mean), -.9f, .9f);
+            prior.policy[moves[j]] = Score(std::clamp(int(local.score(moves[j])) + int(std::lround(logits*Policy::ScoreScale)),
+                                                       -32000, 32000));
+        }
+        prior.value = Evaluation::winRateToValue(localWin + .20f*std::clamp(best-localWin, -.25f, .25f));
+        prior.childCount = unsigned(count);
+        return;
+    }
     std::array<float, 226> response;
     transfer(fd, request.data(), request.size(), true);
     transfer(fd, response.data(), sizeof(response), false);
@@ -157,12 +194,14 @@ void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view e
 {
     prior.value = VALUE_NONE;
     prior.orderingOnly = false;
+    prior.childCount = 0;
     if (experiment != "d4" && experiment != "kata")
         return;
     const auto &board = *thread.board;
     const auto &opts = thread.options();
     const char *usage = std::getenv("RAPFI_ORACLE_USAGE");
-    prior.orderingOnly = experiment == "kata" && usage && std::string_view(usage) == "selective";
+    prior.orderingOnly = experiment == "kata" && usage
+                         && (std::string_view(usage) == "selective" || std::string_view(usage) == "children");
     if (prior.orderingOnly && thread.engine.ctx.timectl.optimum() < 45)
         return;
     if (!thread.evaluator || !opts.timeLimit || opts.balanceMode || board.size() != 15
@@ -185,7 +224,9 @@ void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view e
     }
     const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start).count();
-    if (prior.value != VALUE_NONE)
+    if (prior.childCount)
+        MESSAGEL("ROOT_PRIOR " << experiment << ' ' << elapsed << ' ' << prior.childCount);
+    else if (prior.value != VALUE_NONE)
         MESSAGEL("ROOT_PRIOR " << experiment << ' ' << elapsed);
     else
         MESSAGEL("ROOT_GATE_NS " << elapsed);

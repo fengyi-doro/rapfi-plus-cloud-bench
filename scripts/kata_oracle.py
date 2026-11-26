@@ -111,6 +111,34 @@ def playing_session(directory):
     return rule_sessions, hashes
 
 
+def child_values(net, packet, candidates):
+    if not 4 <= len(candidates) <= 6 or len(set(candidates)) != len(candidates):
+        raise ValueError("invalid batch of root candidates")
+    rule, side, _ = packet[:3]
+    parents = np.frombuffer(packet, np.uint8, offset=3)
+    if rule not in (1, 2) or side not in (0, 1) or parents.max() > 2:
+        raise ValueError("invalid parent position")
+    cells = np.where(parents == 0, 0, 3 - parents).astype(np.uint8)
+    inputs = []
+    for p in candidates:
+        if p >= 225 or cells[p]:
+            raise ValueError("candidate is not an empty intersection")
+        cells[p] = 2
+        inputs.append(features(bytes((rule, side ^ 1, p)) + cells.tobytes(), global_width(net)))
+        cells[p] = 0
+    if net.get_inputs()[0].shape[0] == 1:
+        wdl = np.concatenate([net.run(["out_value"], x)[0] for x in inputs])
+    else:
+        batch = {k:np.concatenate([x[k] for x in inputs]) for k in inputs[0]}
+        wdl, = net.run(["out_value"], batch)
+    if wdl.shape != (len(candidates), 3) or not np.isfinite(wdl).all():
+        raise ValueError("invalid batch of child WDL outputs")
+    probabilities = np.exp(wdl - wdl.max(axis=1, keepdims=True))
+    probabilities /= probabilities.sum(axis=1, keepdims=True)
+    # Children are encoded from the opponent's perspective.
+    return (probabilities[:, 1] + .5 * probabilities[:, 2]).astype("<f4")
+
+
 def serve(connection, net, lane_cpu):
     # Linux thread affinity is inherited from the referee. Explicitly verify
     # which vCPU performs each model call even in a four-vCPU search lane.
@@ -119,7 +147,18 @@ def serve(connection, net, lane_cpu):
         while packet := stream.read(228):
             if len(packet) != 228 or os.sched_getaffinity(0) != {lane_cpu}:
                 raise ValueError("truncated oracle request or CPU affinity mismatch")
-            connection.sendall(predict(net[packet[0]], packet).tobytes())
+            if packet[0] & 128:
+                count = stream.read(1)
+                if not count or not 4 <= count[0] <= 6:
+                    raise ValueError("invalid child batch size")
+                candidates = stream.read(count[0])
+                if len(candidates) != count[0]:
+                    raise ValueError("incomplete child batch")
+                parent = bytes((packet[0] & 127,)) + packet[1:]
+                values = child_values(net[parent[0]], parent, candidates)
+            else:
+                values = predict(net[packet[0]], packet)
+            connection.sendall(values.tobytes())
 
 
 def position_packets(rows):

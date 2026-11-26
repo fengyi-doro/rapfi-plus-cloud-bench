@@ -48,7 +48,7 @@ on:
       oracle_usage:
         description: When and how the challenge search uses the KataGomo prior
         type: choice
-        options: [broad, selective]
+        options: [broad, selective, children]
         default: broad
       proof_first:
         description: Check for certified root wins and losses before another root experiment

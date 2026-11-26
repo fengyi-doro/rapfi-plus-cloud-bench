@@ -54,9 +54,13 @@ def root_metrics(lines):
             metrics.update(three_attempts=int(attempts), three_wins=int(win), three_verified_replies=int(replies),
                            three_nodes=int(nodes), three_ns=int(duration))
         if line.startswith("MESSAGE ROOT_PRIOR "):
-            _, _, mode, ns = line.split()
+            _, _, mode, ns, *batch = line.split()
             if "root_prior_ns" in metrics or mode != os.environ.get("RAPFI_ROOT_MODE") or int(ns) <= 0:
                 raise ValueError(f"invalid root timing: {line}")
+            if batch:
+                if len(batch) != 1 or not 4 <= int(batch[0]) <= 6:
+                    raise ValueError(f"invalid root-child batch: {line}")
+                metrics["root_children"] = int(batch[0])
             metrics.update(root_prior=mode, root_prior_ns=int(ns))
     if os.environ.get("RAPFI_ROOT_MODE") == "vct" and ("three_ns" in metrics or "root_proof_ns" in metrics):
         metrics.update(root_prior="vct", root_prior_ns=metrics.get("three_ns", 0) + metrics.get("root_proof_ns", 0))

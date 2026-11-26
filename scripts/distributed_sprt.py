@@ -185,7 +185,12 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             result["move_timing"][name]["proof"] = {
                 k:sum(t.get(k, 0) for t in all_turns)
                 for k in ("root_proven_win", "root_proven_losses", "root_proof_nodes", "root_proof_ns")}
-        if reference["oracle_usage"] == "selective" and name == challenger:
+        if reference["oracle_usage"] == "children" and name == challenger:
+            batches = [t["root_children"] for t in all_turns if "root_children" in t]
+            if len(batches) != len(prior) or any(not 4 <= n <= 6 for n in batches):
+                raise ValueError("invalid root-child batch coverage")
+            result["move_timing"][name]["child_positions"] = sum(batches)
+        if reference["oracle_usage"] in ("selective", "children") and name == challenger:
             result["move_timing"][name]["gate_skip_ns"] = sum(t.get("root_gate_ns", 0) for t in all_turns)
         turns=[t for g in games for t in g["turns"] if t["engine"]==name and t["nodes"] is not None]
         counts=sum(t["nodes"] for t in turns)
