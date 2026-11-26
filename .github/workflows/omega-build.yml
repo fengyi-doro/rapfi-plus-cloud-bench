@@ -1,0 +1,66 @@
+name: Build Omega Cloud CPU
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiments/omega-cloud-cpu]
+    paths: ['.github/workflows/omega-build.yml', 'omega_cloud/*.cpp', 'omega_cloud/*.h', 'omega_cloud/f15/**', 'omega_cloud/f17/**', 'omega_cloud/prepare.sh', 'omega_cloud/smoke.py']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash omega_cloud/prepare.sh
+      - id: frozen
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45827645286
+          name: engines-linux
+          path: frozen
+      - if: steps.frozen.outcome != 'success'
+        uses: actions/checkout@v4
+        with:
+          ref: a0a0e070817f8f58bbf5b0fc178fa8c23723be6c
+          path: baseline
+      - if: steps.frozen.outcome != 'success'
+        run: |
+          python -m pip install ziglang==0.14.1
+          (cd baseline && for engine in orig v4; do python scripts/build_v3.py "$engine" --target linux --profile v4 --out "$GITHUB_WORKSPACE/frozen" -j 4; done)
+      - name: Check the historical Rapfi executables and shared playing weights
+        run: |
+          cd frozen
+          sha256sum -c <<'HASHES'
+          5aa7e0e5e899403f140bda091b95606e117bfb3abd68a0c139287aafcb41824a  pbrain-rapfi-plus-v4
+          622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9  pbrain-rapfi-orig
+          HASHES
+          cp pbrain-rapfi-* ../dist/
+          chmod +x ../dist/pbrain-rapfi-*
+          cd ..
+          python -c 'import json,hashlib,pathlib; assert all(hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest()==h for f,h in json.load(open("data/runtime_files.json")).items())'
+      - name: Compile the MCTS solver and Linux shield
+        run: |
+          g++ -std=c++20 -O3 -DNDEBUG -mavx2 -mbmi2 -mfma -DUSE_SSE -DUSE_AVX2 -pthread \
+            -ffunction-sections -fdata-sections -Wl,--gc-sections \
+            -Isrc_plus -Isrc_plus/external/lz4/include -Isrc_plus/external/simde/include -Idist/include \
+            omega_cloud/protocol.cpp omega_cloud/search.cpp omega_cloud/shield.cpp omega_cloud/solver_bridge.cpp \
+            src_plus/search/ab/rzone.cpp -Ldist -Wl,-rpath,'$ORIGIN' -lonnxruntime -o dist/pbrain-omega-cloud
+          python omega_cloud/smoke.py
+      - name: Package the exact tested binaries, models and CPU runtime
+        run: |
+          cp Copying.txt Networks-LICENSE.txt dist/licenses/
+          echo "$GITHUB_SHA" > dist/build-commit
+          cd dist
+          sha256sum pbrain-* *.onnx libonnxruntime.so build-commit > SHA256SUMS
+          cat SHA256SUMS
+          tar czf ../omega-linux.tar.gz pbrain-* *.onnx libonnxruntime.so libonnxruntime.so.1 licenses build-commit SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omega-linux
+          path: omega-linux.tar.gz
+          if-no-files-found: error
+          retention-days: 30
