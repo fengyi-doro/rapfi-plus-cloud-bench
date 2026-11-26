@@ -1,0 +1,47 @@
+name: Recover verified colour outcomes
+on:
+  workflow_dispatch:
+    inputs:
+      match_runs:
+        description: JSON list of verified thousand-game matches
+        type: string
+        default: '[45827645286,45829526044,45830818380,45832263308,45833773520]'
+  push:
+    branches: [experiments/cpu-root-search]
+    paths: ['.github/workflows/paired-outcomes.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        run: ${{ fromJSON(inputs.match_runs || '[45827645286,45829526044,45830818380,45832263308,45833773520]') }}
+    env:
+      MATCH_RUN: ${{ matrix.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ matrix.run }}
+          name: pentanomial-elo-los-sprt
+          path: summary
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ matrix.run }}
+          pattern: shard-*
+          path: shards
+      - run: python3 scripts/cloud_color_outcomes.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: colour-${{ matrix.run }}
+          path: outcomes/outcomes.json
+          if-no-files-found: error
+          retention-days: 14

@@ -45,14 +45,32 @@ def delta(first, second):
     # from paired changes, treating each rule as its own stratum.
     def ledger(s):
         return {r["opening"]:r["half_points"] / 4 for r in s["pair_ledger"]}
-    a, b = ledger(first), ledger(second)
-    if a.keys() != b.keys():
+    return paired_change(ledger(first), ledger(second))
+
+
+def paired_change(a, b):
+    if not a or not b or a.keys() != b.keys():
         return None
     strata = [[b[k] - a[k] for k in a if k.startswith(prefix)] for prefix in ("S", "R")]
     n = len(a)
     change = sum(map(sum, strata)) / n
     se = math.sqrt(sum(len(group) * statistics.variance(group) for group in strata) / n**2)
     return [100 * x for x in (change, change-1.96*se, change+1.96*se)]
+
+
+def colour_data(run_id, summary):
+    paths = sorted((ROOT/"cloud_report/colour").glob(f"*/colour-{run_id}/outcomes.json"))
+    if not paths:
+        wins = {r["opening"]:r["wins"]/2 for r in summary["pair_ledger"] if "wins" in r}
+        return {}, wins, None
+    value = load(paths[-1])
+    wins = value["pair_wins"]
+    if (value["match_run"] != int(run_id) or value["commit"] != summary["protocol"]["commit"]
+            or value["book_sha256"] != summary["protocol"]["book_sha256"]
+            or {r["opening"] for r in summary["pair_ledger"]} != wins.keys()
+            or sum(wins.values()) != summary["scores"]["All"]["W"]):
+        raise ValueError(f"colour audit does not match run {run_id}")
+    return value, {k:v/2 for k,v in wins.items()}, paths[-1]
 
 
 def win_interval(scores, rule):
@@ -78,6 +96,8 @@ def render():
     extra = []
     scaling = []
     previous = []
+    _, base_wins, _ = colour_data(45827645286, baseline)
+    wins_by_name = {}
     top = {"纯 Mix9SVQ、1T":[("历史 V4", baseline["scores"]["All"])],
            "外部权重、1T":[], "4T 对 1T":[]}
     for folder in sorted(ARCHIVE.iterdir()) if ARCHIVE.is_dir() else []:
@@ -91,6 +111,8 @@ def render():
                 or p["book_sha256"] != baseline["protocol"]["book_sha256"]):
             raise ValueError(f"baseline or run identity differs in {folder}")
         name = s["players"][0]
+        colour, wins, colour_path = colour_data(folder.name, s)
+        wins_by_name[name] = wins
         layout = p.get("lane_layout") or "packed-1t"
         threads = p.get("threads_by_player") or {name:1, "orig":1}
         label = "4T / 1T 独占" if threads[name] == 4 else ("1T / 1T 独占" if layout == "isolated-1t" else "1T / 1T")
@@ -118,6 +140,8 @@ def render():
                    f"得分率变化 {diff[0]:+.2f} 个百分点，配对差值 95% 区间 [{diff[1]:+.2f}, {diff[2]:+.2f}]。") if diff else ""
         detail = (f"挑战方 {timing['turns']:,} 手，整手平均 {timing['mean_ms']:.3f} ms、P95 {timing['p95_ms']:.3f} ms。"
                   if timing["turns"] else "")
+        if wd := paired_change(base_wins, wins):
+            metrics += f"实胜率变化的配对 95% 区间为 [{wd[1]:+.2f}, {wd[2]:+.2f}] 个百分点。"
         if layout == "isolated-1t" and p.get("root_mode") != "control":
             for _, peer in reversed(previous):
                 if peer["protocol"].get("lane_layout") == layout and peer["protocol"].get("root_mode") == "control":
@@ -165,7 +189,7 @@ def render():
                        f"空点策略第一选择一致 {sum(p['top1_agree'] for p in model['probes'])}/{len(model['probes'])}。"
                        f"[模型清单]({(folder/'oracle.json').relative_to(ROOT).as_posix()})")
             if model.get("family") == "distilled":
-                detail += (f"比赛使用 {model['precision']} 学生。在独立源棋谱测试集上与 B24 教师"
+                detail += (f" 比赛使用 {model['precision']} 学生。在独立源棋谱测试集上与 B24 教师"
                            f"首选着一致率 {model['test']['teacher_top1']:.1%}，WDL 得分平均绝对差 "
                            f"{model['test']['mean_abs_score_error']:.4f}。[精度选择 Run]({model['training_run']})")
         probe_files = sorted((ROOT/"cloud_report/root_costs").glob(f"*/root-cost-{folder.name}/root-cost.json"))
@@ -184,8 +208,14 @@ def render():
                   f"复盘 {audit['games']:,} 局、{audit['board_moves_replayed']:,} 手，裁决分歧 {audit['referee_mismatches']}，"
                   f"JSON/PSQ 分歧 {audit['json_psq_mismatches']}，超时 {audit['hard_flags']}，非法着或禁手 {audit['illegal_moves']}。"
                   f"20 个分片比赛跨度 {s['playing_span_seconds']:.2f} 秒，同时在赛峰值 {s['peak_simultaneous_games']} 局。{link}"]
-        if s.get("flags_by_player"):
-            extra[-1] += f" 超时判负分别为挑战方 {s['flags_by_player'].get(name,0)} 局、原版 {s['flags_by_player'].get('orig',0)} 局。"
+        flags = s.get("flags_by_player", colour.get("flags_by_player"))
+        if flags is not None:
+            extra[-1] += f" 超时判负分别为挑战方 {flags.get(name,0)} 局、原版 {flags.get('orig',0)} 局。"
+        if colour:
+            black, white = (colour["colour"]["All"][c] for c in ("black", "white"))
+            extra[-1] += (f" 挑战方执黑 {black['W']} 胜 {black['D']} 和 {black['L']} 负，"
+                          f"执白 {white['W']} 胜 {white['D']} 和 {white['L']} 负。"
+                          f"[逐色 JSON]({colour_path.relative_to(ROOT).as_posix()}) · [逐局提取 Run]({colour['run']})")
         if layout == "isolated-4t":
             for _, peer in reversed(previous):
                 if (peer["protocol"].get("lane_layout") == "isolated-1t"
@@ -197,7 +227,24 @@ def render():
                                    f"{100*(a['W']/a['games']-peer_all['W']/peer_all['games']):+.2f} 个百分点，"
                                    f"得分率变化 {d[0]:+.2f} 个百分点，配对 95% 区间 [{d[1]:+.2f}, {d[2]:+.2f}]。"
                                    f"对同一原版的 Elo 点估计差为 {a['elo']-peer_all['elo']:+.2f}。{link}")
+                    wd = paired_change(wins_by_name[peer["players"][0]], wins)
+                    if wd:
+                        scaling[-1] += f" 实胜率增量的配对 95% 区间为 [{wd[1]:+.2f}, {wd[2]:+.2f}] 个百分点。"
                     break
+            if p.get("root_mode") == "rotate-smp":
+                for peer_name, peer in reversed(previous):
+                    if (peer["protocol"].get("lane_layout") == layout and peer["protocol"].get("root_mode") == "control"
+                            and peer["protocol"].get("clock_policy") == p.get("clock_policy")
+                            and peer["binary_hashes"]["Linux"][peer_name] == s["binary_hashes"]["Linux"][name]):
+                        points = delta(peer, s)
+                        wins_delta = paired_change(wins_by_name[peer_name], wins)
+                        line = (f"两个挑战配置使用同一二进制、各用 4T 对 1T 原版。旋转搜索相对标准 Lazy SMP 的得分率变化 "
+                                f"{points[0]:+.2f} 个百分点，配对 95% 区间 [{points[1]:+.2f}, {points[2]:+.2f}]。")
+                        if wins_delta:
+                            line += (f"实胜率变化 {wins_delta[0]:+.2f} 个百分点，配对 95% 区间 "
+                                     f"[{wins_delta[1]:+.2f}, {wins_delta[2]:+.2f}]。")
+                        scaling.append(line + link)
+                        break
         previous.append((name, s))
     header = REPORT.read_text(encoding="utf-8-sig").split(MARK, 1)[0].rstrip()
     best_rows = []
