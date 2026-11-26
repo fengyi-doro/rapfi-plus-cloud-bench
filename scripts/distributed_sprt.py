@@ -161,7 +161,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             for rule, label in ((1, "Standard"), (2, "Renju")):
                 counters = [t["f23_counts"] for g in games if g["rule"] == rule
                             for t in g["turns"] if t["engine"] == name and "f23_counts" in t]
-                by_rule[label] = [sum(c[i] for c in counters) for i in range(12)]
+                by_rule[label] = [sum(c[i] for c in counters) for i in range(14)]
             if expected & 1 and any(by_rule["Standard"][:7]):
                 raise ValueError("Renju F15 activated in Standard")
             result.setdefault("f23_telemetry", {})[name] = dict(mask=expected, measured_turns=len(measured), counts=by_rule)

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <optional>
+#include <chrono>
 #include "f15/certificate.hpp"
 #include "searcher.h"
 #include "searchstack.h"
@@ -54,9 +55,18 @@ struct Win {
     Pos gain;
 };
 
+struct WorkClock {
+    SearchThread &thread;
+    Time deadline;
+    unsigned checks = 0;
+};
+
 inline bool cancelled(void *context)
 {
-    auto &thread = *static_cast<SearchThread *>(context);
+    auto &clock = *static_cast<WorkClock *>(context);
+    auto &thread = clock.thread;
+    if (clock.deadline && (++clock.checks & 15) == 0 && now() >= clock.deadline)
+        return true;
     if (thread.isMainThread())
         thread.engine.ctx.checkExit();
     return thread.engine.isTerminating();
@@ -91,11 +101,17 @@ inline std::optional<Win> probe(Board &board, SearchStack *ss, Site site)
 
     auto &counts = thread.searchDataAs<ABSearchData>()->f23Counts;
     ++counts[site];
-    const uint64_t budget = site == RootProbe ? 1024 : (site == MainProbe ? 12 : 6);
-    auto proof = f15::Vcf(true, {budget, cancelled, &thread}).solve(position, WHITE);
+    const bool timedRoot = site == RootProbe && thread.options().timeLimit;
+    const uint64_t budget = site == RootProbe ? (timedRoot ? 65536 : UINT64_MAX)
+                                              : (site == MainProbe ? 12 : 6);
+    WorkClock clock {thread, timedRoot ? now() + std::clamp<Time>(thread.engine.ctx.timectl.optimum() / 8, 1, 8) : 0};
+    const auto start = std::chrono::steady_clock::now();
+    auto proof = f15::Vcf(true, {budget, cancelled, &clock}).solve(position, WHITE);
+    const bool valid = proof.win && !proof.exhausted && f15::replayCertificate(position, WHITE, proof.line);
+    counts[12] += proof.nodes;
+    counts[13] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
     if (proof.exhausted) ++counts[6];
-    if (!proof.win || proof.exhausted || !f15::replayCertificate(position, WHITE, proof.line))
-        return {};
+    if (!valid) return {};
     // A defender may legally ignore an unplayable block or a fork and
     // concede on White's next placement. The line bounds the longest defence.
     const int distance = 2 * int(proof.line.size()) - 1 + (proof.line.back().kind == f15::Five ? 0 : 2);

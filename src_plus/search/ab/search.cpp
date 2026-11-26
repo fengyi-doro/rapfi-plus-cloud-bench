@@ -63,7 +63,7 @@ enum NodeType { Root, PV, NonPV };
 #if RAPFI_F23_MASK
 void printF23Counts(SearchThread &thread)
 {
-    std::array<uint64_t, 12> totals {};
+    std::array<uint64_t, 14> totals {};
     for (size_t t = 0; t < thread.engine.size(); ++t) {
         const auto &counts = thread.engine[t]->searchDataAs<ABSearchData>()->f23Counts;
         for (size_t i = 0; i < counts.size(); ++i) totals[i] += counts[i];

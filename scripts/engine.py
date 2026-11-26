@@ -38,7 +38,7 @@ def root_metrics(lines):
     for line in lines:
         if line.startswith("MESSAGE F23 "):
             values = list(map(int, line.split()[2:]))
-            if len(values) != 13 or "f23_mask" in metrics:
+            if len(values) != 15 or "f23_mask" in metrics:
                 raise ValueError(f"malformed F23 counters: {line}")
             metrics.update(f23_mask=values[0], f23_counts=values[1:])
         if line.startswith("MESSAGE ROOT_THREATS "):

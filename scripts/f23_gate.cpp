@@ -55,7 +55,7 @@ int main(int argc, char **argv)
                     ordinaryWins += base.win;
                     if (i % 2 && !base.win) {
                         ++addedWhite;
-                        auto capped = Vcf(true, {1024}).solve(position, 1);
+                        auto capped = Vcf(true, {65536}).solve(position, 1);
                         if (!capped.win || !replayCertificate(position, 1, capped.line)) return 5;
                     }
                 }

@@ -16,7 +16,7 @@ BASE_SHA = "9f4858626bffebc1d9e47de243c304bb69180108"
 ARMS = {"a": 1, "b1": 2, "b2": 4, "b3": 8, "b4": 16}
 COUNTERS = ("root_calls", "main_calls", "vcf_calls", "root_proofs", "main_proofs",
             "vcf_proofs", "exhausted", "singular_extensions", "quiet_malus",
-            "residual_updates", "residual_uses", "lmr_adjustments")
+            "residual_updates", "residual_uses", "lmr_adjustments", "proof_white_nodes", "proof_ns")
 
 
 def arm_name(mask):
@@ -50,7 +50,7 @@ def controls(out):
     return load(source / "v4.json")
 
 
-def link_arm(mask, shared, historical, out):
+def link_arm(mask, shared, out):
     label = arm_name(mask)
     tree = Path("src_plus")
     dest = Path("build") / label
@@ -90,7 +90,7 @@ def main(masks):
             raise ValueError(f"historical toolchain parity failed: {key}")
     binaries = {"orig": ORIG, "v4": V4}
     with ThreadPoolExecutor(max_workers=3) as pool:
-        for entry in pool.map(lambda mask: link_arm(mask, shared, historical, out), sorted(set(masks) - {0})):
+        for entry in pool.map(lambda mask: link_arm(mask, shared, out), sorted(set(masks) - {0})):
             binaries[entry[0]] = entry[1]
     dump(out / "f23-build.json", dict(binaries=binaries, runtime=runtime, baseline_commit=BASE_SHA,
                                      masks={arm_name(m): m for m in set(masks)}, flags=shared["flags"],
