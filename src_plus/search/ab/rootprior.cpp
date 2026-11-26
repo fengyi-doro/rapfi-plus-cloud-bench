@@ -95,6 +95,23 @@ void evaluateKata(SearchThread &thread, RootPrior &prior)
     const Board &board = *thread.board;
     const Color side = board.sideToMove();
     const Pos last = board.getLastMove();
+    auto &ev = *thread.evaluator;
+    Policy local(15);
+    for (const auto &move : thread.rootMoves)
+        local.setComputeFlag(move.pv[0]);
+    ev.evaluatePolicy(board, local);
+    float localWin = ev.evaluateValue(board).winningRate();
+    Score bestLocal = std::numeric_limits<Score>::min(), second = bestLocal;
+    for (const auto &move : thread.rootMoves) {
+        const Score s = local.score(move.pv[0]);
+        if (s >= bestLocal) {
+            second = bestLocal;
+            bestLocal = s;
+        } else
+            second = std::max(second, s);
+    }
+    if (prior.orderingOnly && (localWin < .2f || localWin > .8f || bestLocal - second > 1.5f * Policy::ScoreScale))
+        return;
     std::array<uint8_t, 228> request {};
     request[0] = uint8_t(thread.options().rule.rule);
     request[1] = uint8_t(side);
@@ -109,28 +126,27 @@ void evaluateKata(SearchThread &thread, RootPrior &prior)
     const float globalWinRate = response.back();
     if (!std::isfinite(globalWinRate) || globalWinRate < 0 || globalWinRate > 1)
         throw std::runtime_error("invalid KataGomo WDL");
-    auto &ev = *thread.evaluator;
-    Policy local(15);
-    for (const auto &move : thread.rootMoves)
-        local.setComputeFlag(move.pv[0]);
-    ev.evaluatePolicy(board, local);
     float bestGlobal = -std::numeric_limits<float>::infinity();
-    Score bestLocal = std::numeric_limits<Score>::min();
     for (const auto &move : thread.rootMoves) {
         const Pos p = move.pv[0];
         const float logit = response[p.y() * 15 + p.x()];
         if (!std::isfinite(logit))
             throw std::runtime_error("invalid KataGomo policy");
         bestGlobal = std::max(bestGlobal, logit);
-        bestLocal = std::max(bestLocal, local.score(p));
     }
     for (const auto &move : thread.rootMoves) {
         const Pos p = move.pv[0];
         float global = bestLocal + Policy::ScoreScale * (response[p.y() * 15 + p.x()] - bestGlobal);
         float score = .4f * local.score(p) + .6f * global;
+        if (prior.orderingOnly) {
+            const float correction = std::clamp(.35f * (global - local.score(p)),
+                                                -1.5f * Policy::ScoreScale, 1.5f * Policy::ScoreScale);
+            score = local.score(p) + correction;
+        }
         prior.policy[p] = Score(std::lround(std::clamp(score, -32000.f, 32000.f)));
     }
-    prior.value = Evaluation::winRateToValue(.5f * (ev.evaluateValue(board).winningRate() + globalWinRate));
+    const float globalWeight = prior.orderingOnly ? .25f : .5f;
+    prior.value = Evaluation::winRateToValue(localWin + globalWeight * (globalWinRate - localWin));
 }
 #endif
 
@@ -139,10 +155,15 @@ void evaluateKata(SearchThread &thread, RootPrior &prior)
 void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view experiment)
 {
     prior.value = VALUE_NONE;
+    prior.orderingOnly = false;
     if (experiment != "d4" && experiment != "kata")
         return;
     const auto &board = *thread.board;
     const auto &opts = thread.options();
+    const char *usage = std::getenv("RAPFI_ORACLE_USAGE");
+    prior.orderingOnly = experiment == "kata" && usage && std::string_view(usage) == "selective";
+    if (prior.orderingOnly && thread.engine.ctx.timectl.optimum() < 45)
+        return;
     if (!thread.evaluator || !opts.timeLimit || opts.balanceMode || board.size() != 15
         || board.ply() < 10 || board.ply() > 80 || opts.timeLeft < 400 || thread.rootMoves.size() < 4)
         return;
@@ -163,7 +184,10 @@ void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view e
     }
     const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start).count();
-    MESSAGEL("ROOT_PRIOR " << experiment << ' ' << elapsed);
+    if (prior.value != VALUE_NONE)
+        MESSAGEL("ROOT_PRIOR " << experiment << ' ' << elapsed);
+    else
+        MESSAGEL("ROOT_GATE_NS " << elapsed);
 }
 
 Pos prepareRootProof(SearchThread &thread, Value &mate)
@@ -222,8 +246,7 @@ Pos prepareRootProof(SearchThread &thread, Value &mate)
     }
     const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start).count();
-    MESSAGEL("ROOT_PRIOR proof " << elapsed);
-    MESSAGEL("ROOT_PROOF " << int(bool(winning)) << ' ' << removed << ' ' << attack.nodes + defence.nodes);
+    MESSAGEL("ROOT_PROOF " << int(bool(winning)) << ' ' << removed << ' ' << attack.nodes + defence.nodes << ' ' << elapsed);
     return winning;
 }
 

@@ -105,6 +105,10 @@ def render():
             detail += f"实际增加搜索深度 {timing['threat_extensions']:,} 次。"
         if proof := timing.get("proof"):
             detail += f"根部证明直接选出胜着 {proof['root_proven_win']:,} 手，排除已证败着 {proof['root_proven_losses']:,} 个。"
+            if "root_proof_ns" in proof:
+                detail += f"胜证计算摊到所有挑战方落子为 {proof['root_proof_ns']/timing['turns']/1e6:.3f} ms/手。"
+        if "gate_skip_ns" in timing:
+            detail += f"决定跳过全局网络的局面检查摊到所有手为 {timing['gate_skip_ns']/timing['turns']/1e6:.3f} ms/手。"
         if prior := timing.get("root_prior"):
             detail += (f"根评估在 {prior['calls']:,} 手触发，单次均值 {prior['per_call_ms']:.3f} ms，"
                        f"P50 / P95 为 {prior['p50_call_ms']:.3f} / {prior['p95_call_ms']:.3f} ms。"
@@ -125,7 +129,7 @@ def render():
         if layout == "isolated-4t":
             for _, peer in reversed(previous):
                 if (peer["protocol"].get("lane_layout") == "isolated-1t"
-                        and all(peer["protocol"].get(k) == p.get(k) for k in ("root_mode","clock_policy","oracle_sha256"))
+                        and all(peer["protocol"].get(k) == p.get(k) for k in ("root_mode","clock_policy","oracle_sha256","oracle_usage","proof_first"))
                         and peer["binary_hashes"]["Linux"][peer["players"][0]] == s["binary_hashes"]["Linux"][name]):
                     peer_all = peer["scores"]["All"]
                     d = delta(peer, s)

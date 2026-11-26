@@ -45,6 +45,15 @@ on:
         type: choice
         options: [b24, nano, nano-native, nano-u8]
         default: b24
+      oracle_usage:
+        description: When and how the challenge search uses the KataGomo prior
+        type: choice
+        options: [broad, selective]
+        default: broad
+      proof_first:
+        description: Check for certified root wins and losses before another root experiment
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -58,6 +67,8 @@ env:
   RAPFI_LANE_LAYOUT: ${{ inputs.lane_layout || 'packed-1t' }}
   RAPFI_CLOCK_POLICY: ${{ inputs.clock_policy || 'standard' }}
   RAPFI_ORACLE_FAMILY: ${{ inputs.oracle_family || 'b24' }}
+  RAPFI_ORACLE_USAGE: ${{ inputs.oracle_usage || 'broad' }}
+  RAPFI_PROOF_FIRST: ${{ inputs.proof_first && 'true' || 'false' }}
   OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
 

@@ -323,7 +323,8 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
         }
     }
 
-    if (rootExperiment == "proof") {
+    const char *proofFirst = std::getenv("RAPFI_PROOF_FIRST");
+    if (rootExperiment == "proof" || (proofFirst && std::string_view(proofFirst) == "true")) {
         Value mate = VALUE_NONE;
         if (Pos move = prepareRootProof(th, mate)) {
             ctx.bestMove = move;
@@ -1488,7 +1489,7 @@ moves_loop:
     if constexpr (RootNode) {
         const auto &prior = thisThread->engine.main()->searchDataAs<ABSearchData>()->rootPrior;
         if (prior.value != VALUE_NONE)
-            mp.useRootPolicy(prior.policy.data());
+            mp.useRootPolicy(prior.policy.data(), prior.orderingOnly);
     }
     // or a beta cutoff occurs.
     while (Pos move = mp()) {

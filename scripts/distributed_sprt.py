@@ -82,7 +82,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
             "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256","clock_policy",
-            "oracle_family","oracle_by_rule")}
+            "oracle_family","oracle_by_rule","oracle_usage","proof_first")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -172,10 +172,12 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                 result["move_timing"][name]["root_prior"][group] = dict(
                     recorded_depths=len(depths), median_depth=depths[(len(depths)-1)//2] if depths else None,
                     zero_depth=sum(v == 0 for v in depths))
-        if reference["root_mode"] == "proof" and name == challenger:
+        if (reference["root_mode"] == "proof" or reference["proof_first"]) and name == challenger:
             result["move_timing"][name]["proof"] = {
                 k:sum(t.get(k, 0) for t in all_turns)
-                for k in ("root_proven_win", "root_proven_losses", "root_proof_nodes")}
+                for k in ("root_proven_win", "root_proven_losses", "root_proof_nodes", "root_proof_ns")}
+        if reference["oracle_usage"] == "selective" and name == challenger:
+            result["move_timing"][name]["gate_skip_ns"] = sum(t.get("root_gate_ns", 0) for t in all_turns)
         turns=[t for g in games for t in g["turns"] if t["engine"]==name and t["nodes"] is not None]
         counts=sum(t["nodes"] for t in turns)
         ns=sum(t["wall_ns"] for t in turns)

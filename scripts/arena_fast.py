@@ -236,10 +236,12 @@ def run_locked(args):
         design["build_profile"] = os.environ.get("RAPFI_BUILD_PROFILE")
         design["root_mode"] = os.environ.get("RAPFI_ROOT_MODE", "control")
         design["clock_policy"] = os.environ.get("RAPFI_CLOCK_POLICY", "standard")
+        design["proof_first"] = os.environ.get("RAPFI_PROOF_FIRST") == "true"
         if design["root_mode"] == "kata":
             manifest = json.loads((Path(os.environ["RAPFI_ARENA_BIN"])/"oracle.json").read_bytes())
             design["oracle_sha256"] = manifest["model_sha256"]
             design["oracle_family"] = manifest["family"]
+            design["oracle_usage"] = os.environ.get("RAPFI_ORACLE_USAGE", "broad")
             design["oracle_by_rule"] = {str(r):manifest["models"].get(str(r), manifest["models"].get("both"))["sha256"] for r in (1, 2)}
     if any(sha(ROOT/p) != h for p,h in design["runtime"].items()):
         raise ValueError("weight/config checksum mismatch")

@@ -15,6 +15,7 @@ namespace Search::AB {
 struct RootPrior
 {
     Value value = VALUE_NONE;
+    bool orderingOnly = false;
     std::array<Score, FULL_BOARD_CELL_COUNT> policy;
 };
 

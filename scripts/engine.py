@@ -39,8 +39,14 @@ def root_metrics(lines):
         if line.startswith("MESSAGE ROOT_THREATS "):
             metrics["root_threat_extensions"] = int(line.split()[-1])
         if line.startswith("MESSAGE ROOT_PROOF "):
-            _, _, win, excluded, nodes = line.split()
+            _, _, win, excluded, nodes, *duration = line.split()
             metrics.update(root_proven_win=int(win), root_proven_losses=int(excluded), root_proof_nodes=int(nodes))
+            if duration:
+                metrics["root_proof_ns"] = int(duration[0])
+                if os.environ.get("RAPFI_ROOT_MODE") == "proof":
+                    metrics.update(root_prior="proof", root_prior_ns=int(duration[0]))
+        if line.startswith("MESSAGE ROOT_GATE_NS "):
+            metrics["root_gate_ns"] = int(line.split()[-1])
         if line.startswith("MESSAGE ROOT_PRIOR "):
             _, _, mode, ns = line.split()
             if "root_prior_ns" in metrics or mode != os.environ.get("RAPFI_ROOT_MODE") or int(ns) <= 0:

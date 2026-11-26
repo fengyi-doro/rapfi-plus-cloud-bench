@@ -61,7 +61,11 @@ public:
     float curMoveNormalizePolicy() const { return curPolicy; }
     /// Get adjusted score of current move.
     Score curMoveScore() const { return curScore; }
-    void useRootPolicy(const Score *scores) { rootPolicy = scores; }
+    void useRootPolicy(const Score *scores, bool onlyOrder)
+    {
+        rootPolicy = scores;
+        rootOrderingOnly = onlyOrder;
+    }
 #ifdef POLICY_TRAINING
     Tuning::PolicyTraceEvent     *policyTraceEvent() { return traceEvent.get(); }
     Tuning::PolicyTraceCandidate *policyTraceCandidate(Pos move);
@@ -112,6 +116,7 @@ private:
     float       curPolicy;
     ScoredMove *curMove, *endMove;
     const Score *rootPolicy = nullptr;
+    bool rootOrderingOnly = false;
     ScoredMove  moves[MAX_MOVES];
 #ifdef POLICY_TRAINING
     bool                                      traceEligible;

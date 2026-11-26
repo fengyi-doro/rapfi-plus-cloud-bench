@@ -344,7 +344,7 @@ void MovePicker::scoreAllMoves()
         for (auto &m : *this)
             policyBuf->setComputeFlag(m.pos);
 
-        if (rootPolicy) {
+        if (rootPolicy && !rootOrderingOnly) {
             for (auto &m : *this)
                 (*policyBuf)[m.pos] = float(rootPolicy[m.pos]) / PolicyBuffer::ScoreScale;
         } else
@@ -433,7 +433,12 @@ void MovePicker::scoreAndSortMoves()
     }
     else {
         scoreAllMoves<ScoreType(POLICY | ExtraFlags)>();
-        fastPartialSort(curMove, endMove, 0, ScoredMove::ScoreComparator {});
+        if (rootOrderingOnly) {
+            // Preserve the local score used by LMR and pruning, changing only the order.
+            auto priority = [this](const ScoredMove &m) { return rootPolicy[m.pos] + m.score - m.rawScore; };
+            std::stable_sort(curMove, endMove, [&](const auto &a, const auto &b) { return priority(a) > priority(b); });
+        } else
+            fastPartialSort(curMove, endMove, 0, ScoredMove::ScoreComparator {});
     }
 #ifdef POLICY_TRAINING
     capturePolicyTraceOrder();
