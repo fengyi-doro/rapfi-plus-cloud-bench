@@ -66,6 +66,7 @@ def run(stage, root, out, previous):
     counters, overlap, fixtures = Counter(), [], set()
     telemetry = defaultdict(Counter)
     accepted = []
+    forced_fouls = []
     identity = None
     for folder in shards:
         design = json.loads((folder/"design.json").read_bytes())
@@ -76,6 +77,7 @@ def run(stage, root, out, previous):
         assert identity==provenance
         records, result = verify(folder,BOOK)
         fixtures.update(result["rule_fixtures"])
+        forced_fouls.extend(result["no_legal_black_reply"])
         for key in ("games","timed_turns","board_moves_replayed","hard_flags","json_psq_mismatches",
                     "referee_mismatches","illegal_moves","overlapping_vcpu_assignments"):
             counters[key] += result[key]
@@ -111,7 +113,8 @@ def run(stage, root, out, previous):
     span=(datetime.fromisoformat(max(t for t,_ in overlap))-datetime.fromisoformat(min(t for t,_ in overlap))).total_seconds()
     summary=dict(stage=stage,opponent=OPPONENT[stage],scores=make_scores(accepted),audit=dict(counters),
                  fixtures=sorted(fixtures),identity=identity,telemetry=telemetry,peak_games=peak,peak_vcpus=4*peak,
-                 play_span_s=span,reasons=dict(Counter(g["reason"] for g in accepted)),move_penalties=move_penalties(accepted),
+                 play_span_s=span,reasons=dict(Counter(g["reason"] for g in accepted)),
+                 move_penalties=move_penalties(accepted),forced_fouls=forced_fouls,
                  losses_on_time=dict(Counter(g["black"] if g["winner"]==g["white"] else g["white"]
                                              for g in accepted if g["reason"]=="time")))
     out.mkdir(exist_ok=True)
