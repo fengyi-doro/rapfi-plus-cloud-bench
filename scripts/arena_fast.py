@@ -218,6 +218,7 @@ def run_locked(args):
         design["one_vcpu_per_game"] = True
         design["per_rule_engines"] = True
         design["build_profile"] = os.environ.get("RAPFI_BUILD_PROFILE")
+        design["root_mode"] = os.environ.get("RAPFI_ROOT_MODE", "control")
     if any(sha(ROOT/p) != h for p,h in design["runtime"].items()):
         raise ValueError("weight/config checksum mismatch")
     if (out/"design.json").exists():

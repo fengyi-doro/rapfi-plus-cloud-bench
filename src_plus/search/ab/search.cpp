@@ -40,10 +40,12 @@
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
 #include <iomanip>
 #include <limits>
 #include <optional>
 #include <random>
+#include <string_view>
 #include <tuple>
 
 using namespace Search;
@@ -52,6 +54,11 @@ using namespace Search::AB;
 namespace {
 
 enum NodeType { Root, PV, NonPV };
+
+const std::string_view rootExperiment = [] {
+    const char *mode = std::getenv("RAPFI_ROOT_MODE");
+    return std::string_view(mode ? mode : "control");
+}();
 
 #ifdef POLICY_TRAINING
 struct DeferredPolicyTrace
@@ -251,6 +258,7 @@ void ABSearchData::clearData(SearchThread &th)
     completedDepth  = 0;
     bestMoveChanges = 0;
     singularRoot    = false;
+    rootThreatExtensions = 0;
     mainHistory.init(0);
     counterMoveHistory.init(std::make_pair(Pos::NONE, NONE));
 }
@@ -341,6 +349,13 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
     // Starts worker threads, then starts main thread
     ctx.printer.printSearchStarts(th, ctx.timectl);
     th.engine.runOnAllThreads([this](SearchThread &t) { search(t); }, true);
+
+    if (rootExperiment == "threat") {
+        unsigned extensions = 0;
+        for (size_t i = 0; i < th.engine.size(); ++i)
+            extensions += th.engine[i]->searchDataAs<ABSearchData>()->rootThreatExtensions;
+        MESSAGEL("ROOT_THREATS " << extensions);
+    }
 
     // Select best thread according to eval and completed depth when needed
     SearchThread *bestThread = &th;
@@ -1707,6 +1722,17 @@ moves_loop:
             // Additional extension for near B4 ttmove
             if (ss->moveP4[self] >= E_BLOCK4 && mt.distSelf <= 6)
                 extension += (mt.distSelf <= 4 ? NEARB4_EXT_DIST4 : NEARB4_EXT_DIST6);
+        }
+
+        if constexpr (RootNode) {
+            // Add a reply for a forcing threat or a move that both builds and parries a live three.
+            if (rootExperiment == "threat" && !oppo5 && !options.balanceMode && depth >= 3
+                && moveCount <= 4 && ss->moveP4[self] >= H_FLEX3
+                && (ss->moveP4[self] >= E_BLOCK4 || ss->moveP4[oppo] >= H_FLEX3)
+                && extension < Depth(1.0f)) {
+                extension = Depth(1.0f);
+                ++searchData->rootThreatExtensions;
+            }
         }
 
         // Fail high reduction (~8 elo)

@@ -25,6 +25,11 @@ on:
         type: string
         default: "1500+40"
         required: true
+      search_mode:
+        description: Challenger root search experiment
+        type: choice
+        options: [control, threat]
+        default: control
 
 permissions:
   contents: read
@@ -34,6 +39,7 @@ env:
   TIME_CONTROL: ${{ inputs.time_control }}
   RAPFI_CANDIDATE_LABEL: ${{ inputs.candidate_label }}
   RAPFI_BUILD_PROFILE: ${{ inputs.candidate_profile }}
+  RAPFI_ROOT_MODE: ${{ inputs.search_mode || 'control' }}
   OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
 
@@ -54,6 +60,11 @@ jobs:
       - id: plan
         name: Validate the clock, candidate label and pair budget
         run: python scripts/cloud_schedule.py
+      - name: Check the original source, runtime manifest and opening book against the inaugural match
+        run: |
+          test "$(git rev-parse HEAD:src_orig)" = 5a506c21eda356315d2cfb650db0332dcc760b2f
+          test "$(git rev-parse HEAD:data/runtime_files.json)" = 1a980665618ad0ff03a912bede98a56ae7efdc67
+          test "$(git rev-parse HEAD:data/v3/cloud_openings.json)" = 10d9933c22ed7bbb81d7593b3eec7d52a03e0740
       - id: engines
         uses: actions/cache@v4
         with:

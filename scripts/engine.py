@@ -323,6 +323,9 @@ class Engine:
                       eval=final[3] if final else fields.get("EVAL"),
                       draw_offer=any(s.strip().upper() == "MESSAGE DRAW_OFFER" for s in lines),
                       engine_ms=int(fields["TOTALTIME"]) if "TOTALTIME" in fields else None)
+        for line in lines:
+            if line.startswith("MESSAGE ROOT_THREATS "):
+                result["root_threat_extensions"] = int(line.split()[-1])
         if measure_cycles:
             after = self.cycle_snapshot()
             proc_delta = cycles(int(self.proc._handle), K.QueryProcessCycleTime) - process_before

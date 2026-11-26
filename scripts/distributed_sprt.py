@@ -81,7 +81,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if d["opening_ids"]!=planned: raise ValueError(("shard schedule mismatch",ix))
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
-            "one_vcpu_per_game","build_profile","per_rule_engines")}
+            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -138,6 +138,12 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
     if all(len({o["mother"] for o in source if o["rule"]==r and o["id"] in by_id})==12 for r in (1,2)):
         result["mother_cluster_ci95_elo"]=mother_interval(games,source,challenger)
     for name in reference["players"]:
+        all_turns = [t for g in games for t in g["turns"] if t["engine"] == name]
+        wall = sorted(t["wall_ns"] for t in all_turns)
+        result.setdefault("move_timing", {})[name] = dict(
+            turns=len(wall), mean_ms=sum(wall)/len(wall)/1e6 if wall else None,
+            p95_ms=wall[math.ceil(.95*len(wall))-1]/1e6 if wall else None,
+            threat_extensions=sum(t.get("root_threat_extensions", 0) for t in all_turns))
         turns=[t for g in games for t in g["turns"] if t["engine"]==name and t["nodes"] is not None]
         counts=sum(t["nodes"] for t in turns)
         ns=sum(t["wall_ns"] for t in turns)
