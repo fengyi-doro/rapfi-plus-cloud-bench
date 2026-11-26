@@ -237,6 +237,9 @@ def run_locked(args):
         design["root_mode"] = os.environ.get("RAPFI_ROOT_MODE", "control")
         design["clock_policy"] = os.environ.get("RAPFI_CLOCK_POLICY", "standard")
         design["proof_first"] = os.environ.get("RAPFI_PROOF_FIRST") == "true"
+        if design["root_mode"] == "readout":
+            manifest = json.loads((Path(os.environ["RAPFI_ARENA_BIN"])/"readout.json").read_bytes())
+            design["readout_sha256"] = manifest["weights_sha256"]
         if design["root_mode"] == "kata":
             manifest = json.loads((Path(os.environ["RAPFI_ARENA_BIN"])/"oracle.json").read_bytes())
             design["oracle_sha256"] = manifest["model_sha256"]

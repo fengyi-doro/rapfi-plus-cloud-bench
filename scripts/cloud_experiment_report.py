@@ -120,7 +120,7 @@ def render():
                      f"[逐色 JSON]({historical_path.relative_to(ROOT).as_posix()}) · [逐局提取 Run]({historical['run']})")
     wins_by_name = {}
     top = {"纯 Mix9SVQ、1T":[("历史 V4", baseline["scores"]["All"])],
-           "外部权重、1T":[], "4T 对 1T":[]}
+           "外部根模型、1T":[], "原生研究权重、1T":[], "4T 对 1T":[]}
     for folder in sorted(ARCHIVE.iterdir()) if ARCHIVE.is_dir() else []:
         if not (folder / "run.json").is_file():
             continue
@@ -137,7 +137,8 @@ def render():
         layout = p.get("lane_layout") or "packed-1t"
         threads = p.get("threads_by_player") or {name:1, "orig":1}
         label = "4T / 1T 独占" if threads[name] == 4 else ("1T / 1T 独占" if layout == "isolated-1t" else "1T / 1T")
-        category = "4T 对 1T" if threads[name] == 4 else ("外部权重、1T" if p.get("oracle_sha256") else "纯 Mix9SVQ、1T")
+        category = ("4T 对 1T" if threads[name] == 4 else "原生研究权重、1T" if p.get("readout_sha256")
+                    else "外部根模型、1T" if p.get("oracle_sha256") else "纯 Mix9SVQ、1T")
         top[category].append((name, scores["All"]))
         link = f"[{folder.name}]({run['url']})"
         local = f"[JSON]({(folder/'summary.json').relative_to(ROOT).as_posix()})"
@@ -175,8 +176,15 @@ def render():
         if timing.get("utility_turns"):
             detail += f"按挑战方颜色核验 {timing['utility_turns']:,} 手，NNUE 的和棋效用为 0.255。"
         if mcts := timing.get("mcts"):
-            detail += (f"原生 MCTS 处理 {mcts['turns']:,} 手，共增加 {mcts['visits']:,} 次访问。"
+            detail += (f"原生 MCTS 处理 {mcts['turns']:,} 手，共计 {mcts['visits']:,} 次树访问，包含终局批量访问。"
                        f"图与战术置换表合计预算 8 MiB。")
+        if p.get("readout_sha256"):
+            fitted = load(folder/"readout.json")
+            if fitted["weights_sha256"] != p["readout_sha256"] or fitted["binary_sha256"] != s["binary_hashes"]["Linux"][name]:
+                raise ValueError(f"research readout differs from the playing model in {folder}")
+            detail += (f"整数 WDL 修正在两种规则的黑白双方共核验 {timing['readout_turns']:,} 手。"
+                       f"比赛二进制在 {fitted['probe_count']} 个独立对照局面上的最大 logit 误差 {fitted['max_logit_error']:.2g}。"
+                       f"[权重及训练与实战核验 JSON]({(folder/'readout.json').relative_to(ROOT).as_posix()})")
         if rotation := timing.get("rotations"):
             detail += (f"四个搜索线程在 {rotation['turns']:,} 手分别使用 0°、90°、180°、270° 视角。"
                        f"三名工作线程重建棋盘和累加器的最大单线程耗时平均 {rotation['max_worker_ms']:.3f} ms，"
@@ -226,6 +234,8 @@ def render():
         flags = s.get("flags_by_player", colour.get("flags_by_player"))
         if flags is not None:
             extra[-1] += f" 超时判负分别为挑战方 {flags.get(name,0)} 局、原版 {flags.get('orig',0)} 局。"
+        if cluster := s.get("mother_cluster_ci95_elo"):
+            extra[-1] += f" 按每条规则的 12 个母开局聚类，Elo 的 95% 区间为 [{cluster[0]:+.2f}, {cluster[1]:+.2f}]。"
         if colour:
             black, white = (colour["colour"]["All"][c] for c in ("black", "white"))
             extra[-1] += (f" 挑战方执黑 {black['W']} 胜 {black['D']} 和 {black['L']} 负，"
@@ -234,11 +244,11 @@ def render():
         if layout == "isolated-4t":
             for _, peer in reversed(previous):
                 if (peer["protocol"].get("lane_layout") == "isolated-1t"
-                        and all(peer["protocol"].get(k) == p.get(k) for k in ("root_mode","clock_policy","oracle_sha256","oracle_usage","proof_first"))
+                        and all(peer["protocol"].get(k) == p.get(k) for k in ("root_mode","clock_policy","oracle_sha256","oracle_usage","proof_first","readout_sha256"))
                         and peer["binary_hashes"]["Linux"][peer["players"][0]] == s["binary_hashes"]["Linux"][name]):
                     peer_all = peer["scores"]["All"]
                     d = delta(peer, s)
-                    scaling.append(f"同架构同为每台 runner 独占一局，4T 相对 1T 的实胜率变化 "
+                    scaling.append(f"**{peer['players'][0]} 与 {name}**　同一二进制，每台 runner 独占一局。4T 相对 1T 的实胜率变化 "
                                    f"{100*(a['W']/a['games']-peer_all['W']/peer_all['games']):+.2f} 个百分点，"
                                    f"得分率变化 {d[0]:+.2f} 个百分点，配对 95% 区间 [{d[1]:+.2f}, {d[2]:+.2f}]。"
                                    f"对同一原版的 Elo 点估计差为 {a['elo']-peer_all['elo']:+.2f}。{link}")
@@ -276,7 +286,7 @@ def render():
              "|---|---|---|---|---:|---:|---:|---:|---:|---|", *rows, "",
              "## 逐手开销与独立复盘", "", "\n\n".join(extra)]
     if scaling:
-        table += ["", "## Lazy SMP 增量", "", "\n\n".join(scaling)]
+        table += ["", "## 4T 相对 1T 与旋转搜索的配对结果", "", "\n\n".join(scaling)]
     tmp = REPORT.with_suffix(".tmp")
     content = header + "\n\n" + MARK + "\n\n" + "\n".join(table) + "\n"
     tmp.write_text(content, encoding="utf8")

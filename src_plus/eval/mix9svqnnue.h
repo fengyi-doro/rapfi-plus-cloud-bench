@@ -61,6 +61,7 @@ private:
     void addCache(Color side, int x, int y, bool isUndo);
 
     Weight /* non-owning ptr */ *weight[2];
+    int fittedHeads[2] {-1, -1};
     std::unique_ptr<Accumulator> accumulator[2];
     std::vector<mixnet::MoveCache> moveCache[2];
 };

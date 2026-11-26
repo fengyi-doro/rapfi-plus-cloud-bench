@@ -82,7 +82,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
             "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256","clock_policy",
-            "oracle_family","oracle_by_rule","oracle_usage","proof_first")}
+            "oracle_family","oracle_by_rule","oracle_usage","proof_first","readout_sha256")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -109,6 +109,12 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                                             opponent: compiled["binaries"]["orig"]}}):
             raise ValueError("shard engines or weights differ from the verified build")
         dump(out/"build-info.json", compiled)
+        if reference["root_mode"] == "readout":
+            readout = json.loads((build_info.parent/"readout.json").read_bytes())
+            if (readout["weights_sha256"] != reference["readout_sha256"] or
+                    readout["binary_sha256"] != identities["Linux"][challenger]):
+                raise ValueError("fitted head or checked playing binary differs across shards")
+            dump(out/"readout.json", readout)
         if reference["root_mode"] == "kata":
             manifest = json.loads((build_info.parent/"oracle.json").read_bytes())
             if reference["oracle_sha256"] != manifest["model_sha256"] or manifest["providers"] != ["CPUExecutionProvider"]:
@@ -188,6 +194,15 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if reference["root_mode"] == "vct" and name == challenger:
             result["move_timing"][name]["three"] = {
                 k:sum(t.get(k, 0) for t in all_turns) for k in ("three_attempts", "three_wins", "three_verified_replies", "three_nodes", "three_ns")}
+        readout_turns = [(g["rule"], t["color"], t["fitted_readout_sha256"]) for g in games for t in g["turns"]
+                        if t["engine"] == name and "fitted_readout_sha256" in t]
+        if reference["root_mode"] == "readout" and name == challenger:
+            if ({(rule, side) for rule,side,_ in readout_turns} != {(1,0),(1,1),(2,0),(2,1)}
+                    or any(digest != reference["readout_sha256"] for _,_,digest in readout_turns)):
+                raise ValueError("playing heads did not match the verified readout for both rules and colours")
+            result["move_timing"][name]["readout_turns"] = len(readout_turns)
+        elif readout_turns:
+            raise ValueError("fitted readout activated for the wrong engine or experiment")
         if name == challenger and reference["root_mode"] == "outcome":
             adjusted = [t for t in all_turns if "draw_utility_permille" in t]
             if not adjusted or any(t["utility_color"] != t["color"] or t["draw_utility_permille"] != 255 for t in adjusted):

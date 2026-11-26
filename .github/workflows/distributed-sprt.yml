@@ -28,7 +28,7 @@ on:
       search_mode:
         description: Challenger root search experiment
         type: choice
-        options: [control, threat, d4, kata, proof, vct, history, rotate-smp, outcome, puct]
+        options: [control, threat, d4, kata, proof, vct, history, rotate-smp, outcome, puct, readout]
         default: control
       lane_layout:
         description: CPU allocation per match on each four-vCPU runner
@@ -118,6 +118,13 @@ jobs:
             sudo apt-get install -y --no-install-recommends qemu-user
           fi
           python scripts/check_cloud_build.py dist "$RAPFI_BUILD_PROFILE"
+      - if: env.RAPFI_ROOT_MODE == 'readout'
+        name: Cross-check the fitted integer logits under all three playing heads
+        env:
+          RAPFI_ARENA_BIN: dist
+        run: |
+          python -m pip install psutil==7.0.0
+          python scripts/check_readout.py
       - uses: actions/upload-artifact@v4
         with:
           name: engines-linux

@@ -18,6 +18,7 @@
 
 #include "mix9svqnnue.h"
 
+#include "mix9_readout_weights.h"
 #include "mixcommon.h"
 
 #include "../core/compressor.h"
@@ -30,7 +31,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
+#include <string_view>
 
 
 #include "mix9_orbit.h"
@@ -189,7 +192,8 @@ public:
     using MixAccumulatorState::undo;
 
     /// Calculate value (win/loss/draw tuple) of current network state.
-    std::tuple<float, float, float> evaluateValue(const Weight &w, int8_t *readoutFeatures = nullptr);
+    std::tuple<float, float, float> evaluateValue(const Weight &w, int fittedHead,
+                                                  int8_t *readoutFeatures = nullptr);
     /// Calculate policy value of current network state.
     void evaluatePolicy(const Weight &w, PolicyBuffer &policyBuffer);
 
@@ -649,7 +653,8 @@ void Accumulator::move(const Weight &w, Color pieceColor, int x, int y)
     }
 }
 
-std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w, int8_t *readoutFeatures)
+std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w, int fittedHead,
+                                                          int8_t *readoutFeatures)
 {
     const auto &valueSum = valueSumTable[currentVersion];
     const auto &bucket   = w.buckets[getBucketIndex()];
@@ -726,6 +731,14 @@ std::tuple<float, float, float> Accumulator::evaluateValue(const Weight &w, int8
     // linear 3 final
     alignas(Alignment) int32_t layer3i32[4];
     simd::linear<4, ValueDim>(layer3i32, layer2, bucket.value_l3.weight, bucket.value_l3.bias);
+    if (fittedHead >= 0) {
+        for (int outcome = 0; outcome < 3; ++outcome) {
+            int32_t correction = readout::Bias[fittedHead][outcome];
+            for (int channel = 0; channel < ValueDim; ++channel)
+                correction += int(layer2[channel]) * int(readout::Delta[fittedHead][outcome][channel]);
+            layer3i32[outcome] += correction;
+        }
+    }
 
     const float scale = 1.0f / (128 * 128);
     return {layer3i32[0] * scale, layer3i32[1] * scale, layer3i32[2] * scale};
@@ -812,6 +825,15 @@ Evaluator::Evaluator(int                   boardSize,
     : Evaluation::Evaluator(boardSize, rule)
     , weight {nullptr, nullptr}
 {
+    const char *mode = std::getenv("RAPFI_ROOT_MODE");
+    if (boardSize == 15 && mode && std::string_view(mode) == "readout") {
+        if (rule == STANDARD)
+            fittedHeads[BLACK] = fittedHeads[WHITE] = 0;
+        else if (rule == RENJU) {
+            fittedHeads[BLACK] = 1;
+            fittedHeads[WHITE] = 2;
+        }
+    }
     constexpr uint32_t ArchHash = ArchHashBase
                                   ^ (((FeatDWConvDim / 8) << 20) | ((ValueDim / 8) << 14)
                                      | ((PolicyDim / 8) << 8) | (FeatureDim / 8));
@@ -865,7 +887,7 @@ ValueType Evaluator::evaluateValue(const Board &board, AccLevel level)
 
     // Apply all incremental update for both sides and calculate value
     flushMoveCache(self);
-    auto [win, loss, draw] = accumulator[self]->evaluateValue(*weight[self]);
+    auto [win, loss, draw] = accumulator[self]->evaluateValue(*weight[self], fittedHeads[self]);
 
     return ValueType(win, loss, draw, true);
 }
@@ -875,7 +897,7 @@ bool Evaluator::writeValueHead(const Board &board, std::ostream &out)
     const Color side = board.sideToMove();
     flushMoveCache(side);
     std::array<int8_t, ValueDim> features;
-    auto [win, loss, draw] = accumulator[side]->evaluateValue(*weight[side], features.data());
+    auto [win, loss, draw] = accumulator[side]->evaluateValue(*weight[side], fittedHeads[side], features.data());
     out << std::setprecision(9) << int(rule) << ' ' << int(side) << ' ' << win << ' ' << loss << ' ' << draw;
     for (int8_t channel : features)
         out << ' ' << int(channel);

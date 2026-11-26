@@ -40,6 +40,8 @@ def root_metrics(lines):
             metrics["root_threat_extensions"] = int(line.split()[-1])
         if line.startswith("MESSAGE THREAT_HISTORY "):
             metrics["threat_history_updates"] = int(line.split()[-1])
+        if line.startswith("MESSAGE FITTED_READOUT "):
+            metrics["fitted_readout_sha256"] = line.split()[-1]
         if line.startswith("MESSAGE DRAW_UTILITY "):
             _, _, color, utility = line.split()
             metrics.update(utility_color=int(color), draw_utility_permille=int(utility))

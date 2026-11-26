@@ -1,0 +1,157 @@
+{
+  "native_engine_sha256": "5e99dec7605b0d7eb479eee9a1e2c86fb093b0aab0b1cfdc7f35610d03aff320",
+  "input_sha256": "d67ecdf5a5d4099fd317401ea5723552d97ed67a7f0e02433552e37b3ef81003",
+  "b24_teacher_sha256": "0cf38a64b3cd3dd9dd39927e4acd29e07872f27af7bfaca6d48c3ecbf4d86fa9",
+  "positions_used": 15837,
+  "excluded_game_prefixes": 163,
+  "weights_sha256": "a4fb3546e542c927470f45e31a758e59984a85c0a730a63e9379156e917eae3e",
+  "max_nodes": 12000,
+  "search_score_coverage": 15837,
+  "heads": [
+    {
+      "head": 0,
+      "split_sizes": [
+        7000,
+        500,
+        500
+      ],
+      "search_coverage": 500,
+      "validation": {
+        "0.0": {
+          "deep_mse": 0.03271485727372755,
+          "b24_mse": 0.034608924518427106,
+          "combined": 0.03328307744713741
+        },
+        "0.25": {
+          "deep_mse": 0.0319610504259264,
+          "b24_mse": 0.033862185214619665,
+          "combined": 0.03253139086253438
+        },
+        "0.5": {
+          "deep_mse": 0.0313922231788546,
+          "b24_mse": 0.03335506925933399,
+          "combined": 0.03198107700299842
+        },
+        "0.75": {
+          "deep_mse": 0.031036098877134734,
+          "b24_mse": 0.033054374884220805,
+          "combined": 0.03164158167926055
+        },
+        "1.0": {
+          "deep_mse": 0.030846465825749514,
+          "b24_mse": 0.03293646517270543,
+          "combined": 0.031473465629836286
+        }
+      },
+      "selected": 1.0,
+      "test_base": {
+        "deep_mse": 0.038883816391538525,
+        "b24_mse": 0.04051863693059015,
+        "combined": 0.03937426255325401
+      },
+      "test_selected": {
+        "deep_mse": 0.0379257248150479,
+        "b24_mse": 0.03975065583243343,
+        "combined": 0.03847320412026355
+      },
+      "fit_status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+    },
+    {
+      "head": 1,
+      "split_sizes": [
+        3446,
+        243,
+        237
+      ],
+      "search_coverage": 237,
+      "validation": {
+        "0.0": {
+          "deep_mse": 0.02408709062896493,
+          "b24_mse": 0.033114380508172954,
+          "combined": 0.02679527759272734
+        },
+        "0.25": {
+          "deep_mse": 0.023298890243611946,
+          "b24_mse": 0.032318418334842225,
+          "combined": 0.02600474867098103
+        },
+        "0.5": {
+          "deep_mse": 0.022891115930445047,
+          "b24_mse": 0.0319704891047091,
+          "combined": 0.025614927882724264
+        },
+        "0.75": {
+          "deep_mse": 0.02287797316977243,
+          "b24_mse": 0.03193987873825037,
+          "combined": 0.025596544840315812
+        },
+        "1.0": {
+          "deep_mse": 0.022908208384435465,
+          "b24_mse": 0.03202728045768794,
+          "combined": 0.025643930006411207
+        }
+      },
+      "selected": 0.75,
+      "test_base": {
+        "deep_mse": 0.041691641208475065,
+        "b24_mse": 0.04177293032390143,
+        "combined": 0.04171602794310297
+      },
+      "test_selected": {
+        "deep_mse": 0.03873642953426984,
+        "b24_mse": 0.040531875509695864,
+        "combined": 0.03927506332689765
+      },
+      "fit_status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+    },
+    {
+      "head": 2,
+      "split_sizes": [
+        3419,
+        243,
+        249
+      ],
+      "search_coverage": 249,
+      "validation": {
+        "0.0": {
+          "deep_mse": 0.025108292412478427,
+          "b24_mse": 0.03471555496117197,
+          "combined": 0.02799047117708649
+        },
+        "0.25": {
+          "deep_mse": 0.02471618052016307,
+          "b24_mse": 0.03505736182798991,
+          "combined": 0.02781853491251112
+        },
+        "0.5": {
+          "deep_mse": 0.02457996452599562,
+          "b24_mse": 0.03563463228992927,
+          "combined": 0.027896364855175715
+        },
+        "0.75": {
+          "deep_mse": 0.02470084279353878,
+          "b24_mse": 0.036469195385763827,
+          "combined": 0.028231348571206294
+        },
+        "1.0": {
+          "deep_mse": 0.025058833157754253,
+          "b24_mse": 0.03762644485795043,
+          "combined": 0.028829116667813105
+        }
+      },
+      "selected": 0.25,
+      "test_base": {
+        "deep_mse": 0.04131156339241309,
+        "b24_mse": 0.04524761379703702,
+        "combined": 0.042492378513800264
+      },
+      "test_selected": {
+        "deep_mse": 0.03924363355141064,
+        "b24_mse": 0.04399776623858278,
+        "combined": 0.04066987335756228
+      },
+      "fit_status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+    }
+  ],
+  "training_run": "https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45839028617"
+}

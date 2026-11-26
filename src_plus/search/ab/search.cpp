@@ -23,6 +23,7 @@
 #include "../../eval/eval.h"
 #include "../../eval/evalconfig.h"
 #include "../../eval/evaluator.h"
+#include "../../eval/mix9_readout_weights.h"
 #include "../../game/board.h"
 #include "../../game/movegen.h"
 #include "../../game/wincheck.h"
@@ -327,6 +328,8 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
 {
     SearchContext &ctx  = th.engine.ctx;
     SearchOptions &opts = th.options();
+    if (rootExperiment == "readout" && th.board->size() == 15 && (opts.rule == STANDARD || opts.rule == RENJU))
+        MESSAGEL("FITTED_READOUT " << Evaluation::mix9svq::readout::Digest);
     if (rootExperiment == "outcome") {
         Evaluation::EvalCfg.drawRatio = .30f;
         Evaluation::EvalCfg.drawBlackWinRate = th.board->sideToMove() == BLACK ? .15f : .85f;
