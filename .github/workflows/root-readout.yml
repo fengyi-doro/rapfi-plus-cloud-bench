@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: feature-engine
-          path: dist/pbrain-rapfi-v4
+          path: dist/pbrain-rapfi-plus-v4
           if-no-files-found: error
           retention-days: 7
   extract:
@@ -75,7 +75,7 @@ jobs:
           name: labels-${{ matrix.shard }}
           path: teacher-labels
       - run: |
-          chmod +x dist/pbrain-rapfi-v4
+          chmod +x dist/pbrain-rapfi-plus-v4
           python scripts/cloud_readout.py extract --shard "$SHARD" --out features
       - uses: actions/upload-artifact@v4
         with:

@@ -89,14 +89,35 @@ def win_interval(scores, rule):
     return max(0., center-margin), min(1., center+margin)
 
 
+def score_rows(name, category, threads, scores, link):
+    rows = []
+    for rule in ("All", "Standard", "Renju"):
+        r = scores[rule]
+        lo, hi = r["ci95_elo"]
+        win_lo, win_hi = win_interval(scores, rule)
+        los = ("<0.0001%" if r["los"] < .000001 else
+               ">99.9999%" if r["los"] > .999999 else f"{r['los']:.4%}")
+        rows.append(f"| {name} | {category} | {threads} | {rule} | {r['W']} / {r['D']} / {r['L']} | "
+                    f"{r['W']/r['games']:.2%} [{win_lo:.2%}, {win_hi:.2%}] | {r['score']:.2%} | {r['elo']:+.2f} "
+                    f"[{lo:+.2f}, {hi:+.2f}] | {los} | {link if rule=='All' else ''} |")
+    return rows
+
+
 def render():
     baseline = load(ROOT / "cloud_report/summary.json")
     reference_hash = baseline["binary_hashes"]["Linux"]["orig"]
-    rows = []
+    rows = score_rows("历史 V4＋F10", "纯 Mix9SVQ、1T", "1T / 1T", baseline["scores"],
+                      "[45827645286](https://github.com/fengyi-doro/rapfi-plus-cloud-bench/actions/runs/45827645286)"
+                      " · [JSON](cloud_report/summary.json)")
     extra = []
     scaling = []
     previous = []
-    _, base_wins, _ = colour_data(45827645286, baseline)
+    historical, base_wins, historical_path = colour_data(45827645286, baseline)
+    if historical:
+        black, white = (historical["colour"]["All"][c] for c in ("black", "white"))
+        extra.append(f"**历史 V4＋F10**　挑战方执黑 {black['W']} 胜 {black['D']} 和 {black['L']} 负，"
+                     f"执白 {white['W']} 胜 {white['D']} 和 {white['L']} 负。"
+                     f"[逐色 JSON]({historical_path.relative_to(ROOT).as_posix()}) · [逐局提取 Run]({historical['run']})")
     wins_by_name = {}
     top = {"纯 Mix9SVQ、1T":[("历史 V4", baseline["scores"]["All"])],
            "外部权重、1T":[], "4T 对 1T":[]}
@@ -120,13 +141,7 @@ def render():
         top[category].append((name, scores["All"]))
         link = f"[{folder.name}]({run['url']})"
         local = f"[JSON]({(folder/'summary.json').relative_to(ROOT).as_posix()})"
-        for rule in ("All", "Standard", "Renju"):
-            r = scores[rule]
-            lo, hi = r["ci95_elo"]
-            win_lo, win_hi = win_interval(scores, rule)
-            rows.append(f"| {name} | {category} | {label} | {rule} | {r['W']} / {r['D']} / {r['L']} | "
-                        f"{r['W']/r['games']:.2%} [{win_lo:.2%}, {win_hi:.2%}] | {r['score']:.2%} | {r['elo']:+.2f} "
-                        f"[{lo:+.2f}, {hi:+.2f}] | {r['los']:.4%} | {link+' · '+local if rule=='All' else ''} |")
+        rows.extend(score_rows(name, category, label, scores, link+" · "+local))
         audit = Counter()
         for shard in s["shards"]:
             for k in ("games", "board_moves_replayed", "hard_flags", "illegal_moves", "referee_mismatches", "json_psq_mismatches"):
