@@ -133,7 +133,8 @@ def play_lane(lane, cores, helper, openings, directory, design, work_queue=None)
                     engines[v] = stack.enter_context(Engine(v, c, pool, threads))
                 if fast:
                     for e in engines.values():
-                        e.sync(f"INFO max_depth 99\nINFO show_detail 0\nINFO timeout_match {initial//1_000_000}\nINFO timeout_turn 0")
+                        e.sync(f"INFO max_depth 99\nINFO show_detail 0\nINFO timeout_match {initial//1_000_000}\nINFO timeout_turn 0"
+                               f"\nINFO time_increment {increment//1_000_000}")
                 active_rule = o["rule"]
             index=(schedule_order if work_queue is not None else start_order)[o["id"]]
             slots = cores if (index+lane) % 2 == 0 else cores[::-1]
@@ -234,6 +235,7 @@ def run_locked(args):
         design["per_rule_engines"] = True
         design["build_profile"] = os.environ.get("RAPFI_BUILD_PROFILE")
         design["root_mode"] = os.environ.get("RAPFI_ROOT_MODE", "control")
+        design["clock_policy"] = os.environ.get("RAPFI_CLOCK_POLICY", "standard")
         if design["root_mode"] == "kata":
             design["oracle_sha256"] = json.loads((Path(os.environ["RAPFI_ARENA_BIN"])/"oracle.json").read_bytes())["model_sha256"]
     if any(sha(ROOT/p) != h for p,h in design["runtime"].items()):

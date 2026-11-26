@@ -36,12 +36,14 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <optional>
 #include <sstream>
+#include <string_view>
 
 #ifdef MULTI_THREADING
     #include <mutex>
@@ -319,7 +321,13 @@ void getOption()
     }
     // Protocol-required no-ops: these Gomocup/Yixin-Board options are accepted
     // (their value must be consumed from the stream) but deliberately ignored.
-    else if (token == "GAME_TYPE" || token == "TIME_INCREMENT" || token == "THREAD_SPLIT_DEPTH"
+    else if (token == "TIME_INCREMENT") {
+        std::cin >> val;
+        const char *policy = std::getenv("RAPFI_CLOCK_POLICY");
+        options.incrementTime = policy && std::string_view(policy) == "fischer"
+                                    ? std::clamp<int64_t>(val, 0, INT32_MAX) : 0;
+    }
+    else if (token == "GAME_TYPE" || token == "THREAD_SPLIT_DEPTH"
              || token == "CHECKMATE" || token == "NBESTSYM" || token == "VCTHREAD") {
         std::cin >> val;
     }

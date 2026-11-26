@@ -81,7 +81,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if d["opening_ids"]!=planned: raise ValueError(("shard schedule mismatch",ix))
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
-            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256")}
+            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256","clock_policy")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -150,7 +150,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             p95_ms=wall[math.ceil(.95*len(wall))-1]/1e6 if wall else None,
             threat_extensions=sum(t.get("root_threat_extensions", 0) for t in all_turns))
         prior = sorted(t["root_prior_ns"] for t in all_turns if "root_prior_ns" in t)
-        if name == challenger and reference["root_mode"] in ("d4", "kata") and not prior:
+        if name == challenger and reference["root_mode"] in ("d4", "kata", "proof") and not prior:
             raise ValueError("no timed root-oracle calls in the match")
         if prior:
             if name != challenger or any(t["root_prior"] != reference["root_mode"] for t in all_turns if "root_prior_ns" in t):
@@ -159,6 +159,10 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                 calls=len(prior), total_ns=sum(prior), per_turn_ms=sum(prior)/len(wall)/1e6,
                 per_call_ms=sum(prior)/len(prior)/1e6, p50_call_ms=prior[(len(prior)-1)//2]/1e6,
                 p95_call_ms=prior[math.ceil(.95*len(prior))-1]/1e6)
+        if reference["root_mode"] == "proof" and name == challenger:
+            result["move_timing"][name]["proof"] = {
+                k:sum(t.get(k, 0) for t in all_turns)
+                for k in ("root_proven_win", "root_proven_losses", "root_proof_nodes")}
         turns=[t for g in games for t in g["turns"] if t["engine"]==name and t["nodes"] is not None]
         counts=sum(t["nodes"] for t in turns)
         ns=sum(t["wall_ns"] for t in turns)

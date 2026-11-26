@@ -60,6 +60,19 @@ namespace Search {
 void TimeControl::init(Time turnTime, Time matchTime, Time matchTimeLeft, MoveParams params)
 {
     startTime = now();
+    if (matchTime > 0 && params.increment > 0 && matchTimeLeft < std::numeric_limits<Time>::max() / 8) {
+        // Future increments can influence the soft budget, but the current
+        // move may spend only the time already credited to the player.
+        const Time bank = std::max(matchTimeLeft, Time(0));
+        const Time reserve = std::min<Time>(TimeCfg.turnTimeReserved, std::max<Time>(3, bank / 12));
+        const Time spendable = std::max<Time>(0, std::min(turnTime, bank) - reserve);
+        const int horizon = std::clamp((params.movesLeft + 1) / 2, 1, 24);
+        const Time target = Time(.85 * params.increment) + std::max<Time>(0, bank - reserve) / horizon;
+        maximumTime = std::min(spendable, 4 * target);
+        optimumTime = std::min(maximumTime, target);
+        ampleMatchTime = false;
+        return;
+    }
     if (matchTime == 0)  // unlimited match time
         matchTimeLeft = std::numeric_limits<Time>::max();
 

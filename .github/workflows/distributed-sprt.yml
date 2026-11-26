@@ -28,13 +28,18 @@ on:
       search_mode:
         description: Challenger root search experiment
         type: choice
-        options: [control, threat, d4, kata]
+        options: [control, threat, d4, kata, proof]
         default: control
       lane_layout:
         description: CPU allocation per match on each four-vCPU runner
         type: choice
         options: [packed-1t, isolated-1t, isolated-4t]
         default: packed-1t
+      clock_policy:
+        description: Challenger time allocation with the same external Fischer clock
+        type: choice
+        options: [standard, fischer]
+        default: standard
 
 permissions:
   contents: read
@@ -46,6 +51,7 @@ env:
   RAPFI_BUILD_PROFILE: ${{ inputs.candidate_profile }}
   RAPFI_ROOT_MODE: ${{ inputs.search_mode || 'control' }}
   RAPFI_LANE_LAYOUT: ${{ inputs.lane_layout || 'packed-1t' }}
+  RAPFI_CLOCK_POLICY: ${{ inputs.clock_policy || 'standard' }}
   OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
 

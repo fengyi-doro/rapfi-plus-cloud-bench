@@ -132,6 +132,7 @@ struct SearchOptions
     Time     turnTime   = 0;
     Time     matchTime  = 0;
     Time     timeLeft   = 0;
+    Time     incrementTime = 0;
     uint64_t maxNodes   = 0;  // (0 means no limits)
     int      maxDepth   = 99;
     int      startDepth = 2;

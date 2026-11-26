@@ -323,6 +323,15 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
         }
     }
 
+    if (rootExperiment == "proof") {
+        Value mate = VALUE_NONE;
+        if (Pos move = prepareRootProof(th, mate)) {
+            ctx.bestMove = move;
+            ctx.printer.printBestmoveWithoutSearch(th, move, mate, 0, nullptr);
+            return nullptr;
+        }
+    }
+
 #if defined(RAPFI_F10) && !defined(RAPFI_DISABLE_PAIRING)
     // Timed play can immediately use the witnessed drawing move. In fixed-depth
     // analysis, complete the requested root search and keep the normal PV tie order.

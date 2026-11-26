@@ -446,7 +446,7 @@ void SearchEngine::runSearch(SearchThread &main)
     ctx.timectl.init(ctx.options.turnTime,
                      ctx.options.matchTime,
                      ctx.options.timeLeft,
-                     {main.board->ply(), main.board->movesLeft()});
+                     {main.board->ply(), main.board->movesLeft(), ctx.options.incrementTime});
 
     // Run the algorithm's main search routine and finalize its result
     if (const RootMove *finalMove = searcher()->searchMain(main))

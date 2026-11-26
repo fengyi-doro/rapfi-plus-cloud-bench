@@ -5,6 +5,7 @@
 #include "../../eval/scoretables.h"
 #include "../../game/board.h"
 #include "../searchthread.h"
+#include "rzone.h"
 
 #include <algorithm>
 #include <chrono>
@@ -163,6 +164,67 @@ void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view e
     const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start).count();
     MESSAGEL("ROOT_PRIOR " << experiment << ' ' << elapsed);
+}
+
+Pos prepareRootProof(SearchThread &thread, Value &mate)
+{
+    using namespace RZone;
+    const Board &root = *thread.board;
+    const auto &opts = thread.options();
+    if (!opts.timeLimit || opts.balanceMode || opts.multiPV != 1 || root.size() != Width
+        || root.ply() < 8 || opts.timeLeft < 100)
+        return Pos::NONE;
+    // A continuous-four attack must start from a four-producing move. The native
+    // board can cheaply reject roots without one, before building the proof position.
+    bool forcing = false;
+    for (Color side : {BLACK, WHITE})
+        for (int p = E_BLOCK4; p <= A_FIVE; ++p)
+            forcing |= root.p4Count(side, Pattern4(p)) != 0;
+    if (!forcing)
+        return Pos::NONE;
+    auto start = std::chrono::steady_clock::now();
+    Position position(root, opts.rule);
+    const Color us = root.sideToMove();
+    Work attack {0, 240}, defence {0, 160};
+    Proof ourLine = findWin(position, us, 15, attack);
+    Pos winning = Pos::NONE;
+    size_t removed = 0;
+    if (!ourLine.empty() && verify(position, us, ourLine)) {
+        const int cell = ourLine.front().attack;
+        const Pos p(cell % Width, cell / Width);
+        if (std::find(thread.rootMoves.begin(), thread.rootMoves.end(), p) != thread.rootMoves.end()) {
+            winning = p;
+            int plies = int(2 * ourLine.size()) + (ourLine.back().kind == End::Five ? -1 : 1);
+            mate = mate_in(plies);
+        }
+    }
+    if (!winning) {
+        // Pass is only a hypothesis. Exclude a real reply solely after replaying
+        // the opponent's entire certificate on the actual child position.
+        const Proof opponent = findWin(position, ~us, 13, defence);
+        if (!opponent.empty()) {
+            Mask losing;
+            for (const auto &move : thread.rootMoves) {
+                const int cell = cellId(move.pv[0]);
+                position.put(cell, us);
+                if (!position.winsOn(cell, us) && verify(position, ~us, opponent))
+                    losing.add(cell);
+                position.take(cell);
+            }
+            if (losing.any() && size_t(losing.size()) < thread.rootMoves.size()) {
+                removed = losing.size();
+                for (auto &worker : thread.engine)
+                    std::erase_if(worker->rootMoves, [&](const RootMove &move) {
+                        return losing.has(cellId(move.pv[0]));
+                    });
+            }
+        }
+    }
+    const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - start).count();
+    MESSAGEL("ROOT_PRIOR proof " << elapsed);
+    MESSAGEL("ROOT_PROOF " << int(bool(winning)) << ' ' << removed << ' ' << attack.nodes + defence.nodes);
+    return winning;
 }
 
 }  // namespace Search::AB
