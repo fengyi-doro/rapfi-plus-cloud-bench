@@ -188,12 +188,13 @@ def verify(directory, book=None):
         assert design["pondering"] is False
         a, b = design["players"]
         threads = design.get("threads_by_player", {a:1, b:1})
-        assert threads == {a:4 if layout == "isolated-4t" else 1, b:1}
+        both_four = layout == "omega-4t"
+        assert threads == {a:4 if both_four or layout == "isolated-4t" else 1, b:4 if both_four else 1}
         assert design["thread_num"] == (None if threads[a] == 4 else 1)
         slots = [lane["cpus"] for lane in design["lanes"]]
         assert all(len(cpus) == 2 and cpus[0] == cpus[1] for cpus in slots)
         assert len({cpus[0] for cpus in slots}) == len(slots)
-        if layout in ("isolated-1t", "isolated-4t"):
+        if layout in ("isolated-1t", "isolated-4t", "omega-4t"):
             assert len(slots) == 1
             reserved = design["lanes"][0]["reserved_vcpus"]
             assert len(set(reserved)) == len(reserved) == 4 and slots[0][0] in reserved
@@ -226,6 +227,11 @@ def verify(directory, book=None):
         assert (game["initial_ns"],game["increment_ns"])==(initial,increment)
         bank = [initial,initial]
         names = game["black"],game["white"]
+        if layout == "omega-4t":
+            assert game["oracle_models"] == {name:design["models"][str(rule)] for name in design["omega_players"]}
+            if "orig" in names:
+                suffixes = ("standard_bs15",) if rule == 1 else ("renju_bs15_black","renju_bs15_white")
+                assert all(any("mix9svq"+suffix in log for log in game["weights"]["orig"]) for suffix in suffixes)
         if "oracle_by_rule" in design:
             assert game["oracle_models"] == {design["players"][0]:design["oracle_by_rule"][str(rule)]}
         if design.get("per_rule_engines"):
@@ -246,6 +252,12 @@ def verify(directory, book=None):
                 if threads[name] == 4:
                     mask = sorted(design["lanes"][game["lane"]]["reserved_vcpus"])
             for key in ("affinity_before","affinity_after"):
+                if layout == "omega-4t" and name in design["omega_players"]:
+                    allocations = {"mcts":mask[:1], "ort":mask[1:3], "shield":mask[3:]}
+                    observed = game[key][name]
+                    assert {tid.split("/")[0] for tid in observed} == allocations.keys()
+                    assert all(cpus == allocations[tid.split("/")[0]] for tid,cpus in observed.items())
+                    continue
                 if len(mask) == 4:
                     # The protocol thread and four native search workers must all exist.
                     assert len(game[key][name]) >= 5
@@ -334,7 +346,7 @@ def verify(directory, book=None):
         physical={(topology[c]["group"],topology[c]["physical"]) for c in logical}
         assert len(physical) == (1 if vcpu_lanes else 2)
         resources = set(logical) if vcpu_lanes else physical
-        if layout in ("isolated-1t", "isolated-4t"):
+        if layout in ("isolated-1t", "isolated-4t", "omega-4t"):
             resources = set(design["lanes"][game["lane"]]["reserved_vcpus"])
             assert resources <= topology.keys() and not resources.intersection(design["exclude"])
         events.extend([(game["boot_time"],game["started_qpc_ns"],1,key,resources),

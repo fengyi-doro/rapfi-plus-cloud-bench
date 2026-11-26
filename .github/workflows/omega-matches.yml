@@ -1,0 +1,132 @@
+name: Omega CPU paired games and independent replay
+run-name: Omega CPU · ${{ inputs.stage || github.event.head_commit.message }} · 3000+100 ms
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        type: choice
+        required: true
+        options: [screen, extension, f15, f17]
+      package_run:
+        description: Build run supplying the tested Omega, v4 shield, original and models
+        type: string
+        default: '45841558272'
+      screen_run:
+        description: Audited screen run for the disjoint 800-game extension
+        type: string
+        default: ''
+  push:
+    branches: [experiments/omega-cloud-cpu]
+    paths: ['.github/workflows/omega-matches.yml', 'omega_cloud/run.json']
+permissions:
+  contents: read
+  actions: read
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  RAPFI_ARENA_BIN: ${{ github.workspace }}/dist
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      stage: ${{ steps.plan.outputs.stage }}
+      package_run: ${{ steps.plan.outputs.package_run }}
+      screen_run: ${{ steps.plan.outputs.screen_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: omega_cloud
+      - id: plan
+        env:
+          DISPATCH_STAGE: ${{ inputs.stage }}
+          PACKAGE: ${{ inputs.package_run }}
+          SCREEN: ${{ inputs.screen_run }}
+        run: |
+          python - <<'PY'
+          import json, os
+          p=json.load(open("omega_cloud/run.json"))
+          if os.environ["DISPATCH_STAGE"]:
+              p=dict(stage=os.environ["DISPATCH_STAGE"],package_run=os.environ["PACKAGE"],screen_run=os.environ["SCREEN"])
+          assert p["stage"] in {"screen","extension","f15","f17"} and str(p["package_run"]).isdecimal()
+          assert p["stage"]!="extension" or str(p["screen_run"]).isdecimal()
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+              for k,v in p.items(): print(f"{k}={v}", file=f)
+          PY
+  play:
+    name: Play paired games on runner ${{ matrix.shard }}
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    strategy:
+      fail-fast: true
+      max-parallel: 20
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    env:
+      STAGE: ${{ needs.plan.outputs.stage }}
+      SHARD: ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+            omega_cloud
+            data
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.plan.outputs.package_run }}
+          name: omega-linux
+          path: package
+      - run: |
+          mkdir -p dist
+          tar -xf package/omega-linux.tar.gz -C dist
+          (cd dist && sha256sum -c SHA256SUMS)
+          python -m pip install psutil==7.0.0
+          python omega_cloud/matches.py "$STAGE" "$SHARD" "shard-$SHARD"
+          tar -czf "shard-$SHARD.tgz" "shard-$SHARD"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: games-${{ matrix.shard }}
+          path: shard-*.tgz
+          if-no-files-found: error
+          retention-days: 30
+  replay:
+    name: Reconstruct every board, terminal verdict and Fischer bank
+    needs: [plan, play]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      STAGE: ${{ needs.plan.outputs.stage }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+            omega_cloud
+            data
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: games-*
+          merge-multiple: true
+          path: records
+      - if: needs.plan.outputs.stage == 'extension'
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.plan.outputs.screen_run }}
+          name: omega-result
+          path: previous
+      - run: |
+          python -m pip install psutil==7.0.0 numpy==2.2.6
+          mkdir replay
+          for a in records/shard-*.tgz; do tar -xf "$a" -C replay; done
+          extra=()
+          if [[ "$STAGE" == extension ]]; then extra=(--previous previous); fi
+          python omega_cloud/audit.py "$STAGE" replay result "${extra[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omega-result
+          path: result/
+          if-no-files-found: error
+          retention-days: 30
