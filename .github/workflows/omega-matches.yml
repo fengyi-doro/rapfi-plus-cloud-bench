@@ -1,5 +1,5 @@
 name: Omega CPU paired games and independent replay
-run-name: Omega CPU · ${{ inputs.stage || github.event.head_commit.message }} · 3000+100 ms
+run-name: Omega CPU · ${{ inputs.stage || github.event.head_commit.message }} · ${{ inputs.intra_op || 'run.json' }} · 3000+100 ms
 on:
   workflow_dispatch:
     inputs:
@@ -10,7 +10,12 @@ on:
       package_run:
         description: Build run supplying the tested Omega, v4 shield, original and models
         type: string
-        default: '45841558272'
+        default: '45842860561'
+      intra_op:
+        description: Native ORT threads within the four-vCPU match lane
+        type: choice
+        options: ['4','2']
+        default: '4'
       screen_run:
         description: Audited screen run for the disjoint 800-game extension
         type: string
@@ -32,6 +37,7 @@ jobs:
       stage: ${{ steps.plan.outputs.stage }}
       package_run: ${{ steps.plan.outputs.package_run }}
       screen_run: ${{ steps.plan.outputs.screen_run }}
+      intra_op: ${{ steps.plan.outputs.intra_op }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,12 +47,14 @@ jobs:
           DISPATCH_STAGE: ${{ inputs.stage }}
           PACKAGE: ${{ inputs.package_run }}
           SCREEN: ${{ inputs.screen_run }}
+          INTRA: ${{ inputs.intra_op }}
         run: |
           python - <<'PY'
           import json, os
           p=json.load(open("omega_cloud/run.json"))
           if os.environ["DISPATCH_STAGE"]:
-              p=dict(stage=os.environ["DISPATCH_STAGE"],package_run=os.environ["PACKAGE"],screen_run=os.environ["SCREEN"])
+              p=dict(stage=os.environ["DISPATCH_STAGE"],package_run=os.environ["PACKAGE"],screen_run=os.environ["SCREEN"],intra_op=os.environ["INTRA"])
+          assert str(p["intra_op"]) in {"2","4"}
           assert p["stage"] in {"screen","extension","f15","f17"} and str(p["package_run"]).isdecimal()
           assert p["stage"]!="extension" or str(p["screen_run"]).isdecimal()
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:
@@ -65,6 +73,7 @@ jobs:
     env:
       STAGE: ${{ needs.plan.outputs.stage }}
       SHARD: ${{ matrix.shard }}
+      OMEGA_INTRA_THREADS: ${{ needs.plan.outputs.intra_op }}
     steps:
       - uses: actions/checkout@v4
         with:

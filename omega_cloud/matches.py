@@ -72,6 +72,8 @@ class Omega(FischerInfo, Engine):
         self.search_threads, self.handles, self.oracle_reader = 4, {}, None
         self.weights, self.rule = [], None
         self.cpus = cpus
+        self.intra = int(os.environ.get("OMEGA_INTRA_THREADS","2"))
+        assert self.intra in (2,4)
         dist = Path(os.environ["RAPFI_ARENA_BIN"])
         self.oracle_models = {r:sha(dist/model) for r,model in MODELS.items()}
         env = dict(os.environ, OMEGA_BATCH="4", OMEGA_SHIELD="1", OMEGA_F15=str(int(name != "Omega-F15-off")),
@@ -89,6 +91,8 @@ class Omega(FischerInfo, Engine):
             self.reader.start()
             lines, _ = self.exchange("START 15",lambda s:s == "OK")
             assert any("ONNX Runtime 1.22.1 CPUExecutionProvider" in s for s in lines), lines
+            if self.intra==4 or any("intra_op=" in s for s in lines):
+                assert any(f"CPUExecutionProvider intra_op={self.intra}" in s for s in lines), lines
         except BaseException:
             self.close()
             raise
@@ -109,13 +113,15 @@ class Omega(FischerInfo, Engine):
         for thread in self.ps.threads():
             aff = sorted(os.sched_getaffinity(thread.id))
             role = "mcts" if aff == self.cpus[:1] else "ort"
-            assert aff == (self.cpus[:1] if role=="mcts" else self.cpus[1:3]), (thread.id,aff)
+            ort_cpus = self.cpus if self.intra==4 else self.cpus[1:3]
+            assert aff == (self.cpus[:1] if role=="mcts" else ort_cpus), (thread.id,aff)
             masks[f"{role}/{thread.id}"] = aff
         for thread in children[0].threads():
             aff = sorted(os.sched_getaffinity(thread.id))
             assert aff == self.cpus[3:]
             masks[f"shield/{thread.id}"] = aff
         assert {k.split("/")[0] for k in masks} == {"mcts","ort","shield"}
+        assert sum(k.startswith("ort/") for k in masks)>=self.intra
         return masks
 
     def think(self,command="YXNBEST 1",measure_cycles=False,timeout=90):
@@ -144,7 +150,8 @@ def run(stage, shard, out):
                   models={str(r):sha(dist/model) for r,model in MODELS.items()},
                   build_commit=(dist/"build-commit").read_text().strip(),
                   binaries={p.name:sha(p) for p in sorted(dist.glob("pbrain-*"))},
-                  runner=os.environ["RUNNER_NAME"], shard=shard, clock="3000+100", batch=4, intra_op=2)
+                  runner=os.environ["RUNNER_NAME"], shard=shard, clock="3000+100", batch=4,
+                  intra_op=int(os.environ.get("OMEGA_INTRA_THREADS","2")))
     dump(out/"design.json",design)
     dump(out/"hardware.json",topology())
     for rule in sorted({r["rule"] for r in rows}):

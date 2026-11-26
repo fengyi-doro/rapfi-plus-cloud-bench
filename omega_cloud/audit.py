@@ -37,6 +37,14 @@ def make_scores(games):
         result[str(rule)] = summary_stats([g for g in games if g["rule"]==rule])
     return result
 
+def move_penalties(games):
+    offenders=Counter()
+    for game in games:
+        if game["reason"].startswith("forbidden") or game["reason"]=="illegal_coordinate":
+            loser=game["black"] if game["winner"]==game["white"] else game["white"]
+            offenders[loser]+=1
+    return dict(offenders)
+
 def diagram_key(row):
     images = []
     for d in range(8):
@@ -103,7 +111,7 @@ def run(stage, root, out, previous):
     span=(datetime.fromisoformat(max(t for t,_ in overlap))-datetime.fromisoformat(min(t for t,_ in overlap))).total_seconds()
     summary=dict(stage=stage,opponent=OPPONENT[stage],scores=make_scores(accepted),audit=dict(counters),
                  fixtures=sorted(fixtures),identity=identity,telemetry=telemetry,peak_games=peak,peak_vcpus=4*peak,
-                 play_span_s=span,reasons=dict(Counter(g["reason"] for g in accepted)),
+                 play_span_s=span,reasons=dict(Counter(g["reason"] for g in accepted)),move_penalties=move_penalties(accepted),
                  losses_on_time=dict(Counter(g["black"] if g["winner"]==g["white"] else g["white"]
                                              for g in accepted if g["reason"]=="time")))
     out.mkdir(exist_ok=True)
@@ -125,6 +133,7 @@ def run(stage, root, out, previous):
         summary["combined_scores"]=make_scores(merged)
         summary["combined_audit"]={k:v+prev["audit"][k] for k,v in counters.items()}
         summary["combined_reasons"]=dict(Counter(g["reason"] for g in merged))
+        summary["combined_move_penalties"]=move_penalties(merged)
         summary["combined_losses_on_time"]=dict(Counter(g["black"] if g["winner"]==g["white"] else g["white"]
                                                     for g in merged if g["reason"]=="time"))
     dump(out/"summary.json",summary)

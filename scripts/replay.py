@@ -253,9 +253,12 @@ def verify(directory, book=None):
                     mask = sorted(design["lanes"][game["lane"]]["reserved_vcpus"])
             for key in ("affinity_before","affinity_after"):
                 if layout == "omega-4t" and name in design["omega_players"]:
-                    allocations = {"mcts":mask[:1], "ort":mask[1:3], "shield":mask[3:]}
+                    intra = design["intra_op"]
+                    assert intra in (2,4)
+                    allocations = {"mcts":mask[:1], "ort":mask if intra==4 else mask[1:3], "shield":mask[3:]}
                     observed = game[key][name]
                     assert {tid.split("/")[0] for tid in observed} == allocations.keys()
+                    assert sum(k.startswith("ort/") for k in observed)>=intra
                     assert all(cpus == allocations[tid.split("/")[0]] for tid,cpus in observed.items())
                     continue
                 if len(mask) == 4:
