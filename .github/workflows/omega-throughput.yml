@@ -1,0 +1,33 @@
+name: Omega CPU native model throughput
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiments/omega-cloud-cpu]
+    paths: ['.github/workflows/omega-throughput.yml', 'omega_cloud/bench.cpp', 'omega_cloud/prepare.sh', 'omega_cloud/network.h']
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: omega_cloud
+      - run: bash omega_cloud/prepare.sh
+      - run: |
+          nproc
+          lscpu | tee runner.txt
+          test "$(nproc)" = 4
+          g++ -std=c++20 -O3 -mavx2 -I dist/include omega_cloud/bench.cpp -Ldist -Wl,-rpath,'$ORIGIN' -lonnxruntime -o dist/omega-bench
+          dist/omega-bench dist | tee throughput.json
+          (cd dist && sha256sum libonnxruntime.so *.onnx omega-bench) > identity.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: throughput
+          path: |
+            throughput.json
+            identity.txt
+            runner.txt
+          if-no-files-found: error
+          retention-days: 30
