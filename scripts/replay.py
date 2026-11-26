@@ -323,7 +323,7 @@ def verify(directory, book=None):
     else:
         assert not live and maximum<=design["lanes"]<=len(hardware["performance"])//2
     result = dict(games=len(games),pairs=len(openings),timed_turns=len(elapsed),board_moves_replayed=diagram_moves,
-                  hard_flags=sum(g["reason"]=="time" for g in games),min_unused_bank_ns=min(headroom),
+                  hard_flags=sum(g["reason"]=="time" for g in games),min_unused_bank_ns=min(headroom, default=None),
                   longest_move_ns=max(elapsed),json_psq_mismatches=0,referee_mismatches=0,rule_fixtures=fixtures,
                   max_simultaneous_pairs=maximum)
     result["overlapping_vcpu_assignments" if vcpu_lanes else "overlapping_physical_core_assignments"] = 0
