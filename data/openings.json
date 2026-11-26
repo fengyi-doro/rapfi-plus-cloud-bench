@@ -1,0 +1,1769 @@
+[
+  {
+    "id": "S01",
+    "rule": 1,
+    "moves": [
+      125,
+      110,
+      111,
+      80,
+      95,
+      140,
+      83,
+      97,
+      143,
+      127
+    ],
+    "year": 2019,
+    "line": 11,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.5573841035366058
+  },
+  {
+    "id": "S02",
+    "rule": 1,
+    "moves": [
+      82,
+      68,
+      99,
+      53,
+      23
+    ],
+    "year": 2025,
+    "line": 9,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.5845207124948502
+  },
+  {
+    "id": "S03",
+    "rule": 1,
+    "moves": [
+      172,
+      158,
+      175,
+      189,
+      204
+    ],
+    "year": 2021,
+    "line": 8,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.5373371094465256
+  },
+  {
+    "id": "S04",
+    "rule": 1,
+    "moves": [
+      141,
+      126,
+      143,
+      157,
+      94
+    ],
+    "year": 2023,
+    "line": 9,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt",
+    "baseline_black_score": 0.610215350985527
+  },
+  {
+    "id": "S05",
+    "rule": 1,
+    "moves": [
+      112,
+      82,
+      114,
+      81,
+      110
+    ],
+    "year": 2021,
+    "line": 12,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.3763177692890167
+  },
+  {
+    "id": "S06",
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      67,
+      127,
+      70
+    ],
+    "year": 2021,
+    "line": 10,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.4461822882294655
+  },
+  {
+    "id": "S07",
+    "rule": 1,
+    "moves": [
+      119,
+      115,
+      134,
+      179
+    ],
+    "year": 2017,
+    "line": 8,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.3684835284948349
+  },
+  {
+    "id": "S08",
+    "rule": 1,
+    "moves": [
+      182,
+      167,
+      155,
+      123,
+      107
+    ],
+    "year": 2019,
+    "line": 2,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.44707418978214264
+  },
+  {
+    "id": "S09",
+    "rule": 1,
+    "moves": [
+      19,
+      52,
+      67
+    ],
+    "year": 2019,
+    "line": 9,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.445063978433609
+  },
+  {
+    "id": "S10",
+    "rule": 1,
+    "moves": [
+      52,
+      37,
+      7,
+      35,
+      81
+    ],
+    "year": 2025,
+    "line": 11,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.45729249715805054
+  },
+  {
+    "id": "S11",
+    "rule": 1,
+    "moves": [
+      32,
+      33,
+      47,
+      62,
+      78
+    ],
+    "year": 2022,
+    "line": 6,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5192382335662842
+  },
+  {
+    "id": "S12",
+    "rule": 1,
+    "moves": [
+      213,
+      210,
+      197,
+      196,
+      181,
+      182,
+      165,
+      168,
+      154
+    ],
+    "year": 2018,
+    "line": 11,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.5213560461997986
+  },
+  {
+    "id": "S13",
+    "rule": 1,
+    "moves": [
+      168,
+      185,
+      188,
+      136,
+      121
+    ],
+    "year": 2019,
+    "line": 5,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.4309459626674652
+  },
+  {
+    "id": "S14",
+    "rule": 1,
+    "moves": [
+      61,
+      33,
+      36,
+      80,
+      64
+    ],
+    "year": 2021,
+    "line": 6,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.615018367767334
+  },
+  {
+    "id": "S15",
+    "rule": 1,
+    "moves": [
+      196,
+      166,
+      169,
+      154,
+      127
+    ],
+    "year": 2023,
+    "line": 8,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt",
+    "baseline_black_score": 0.5393351018428802
+  },
+  {
+    "id": "S16",
+    "rule": 1,
+    "moves": [
+      192,
+      173,
+      130,
+      99,
+      158,
+      144,
+      160,
+      157,
+      190,
+      189
+    ],
+    "year": 2024,
+    "line": 10,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.37169547379016876
+  },
+  {
+    "id": "S17",
+    "rule": 1,
+    "moves": [
+      212,
+      183,
+      155
+    ],
+    "year": 2020,
+    "line": 8,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt",
+    "baseline_black_score": 0.579378142952919
+  },
+  {
+    "id": "S18",
+    "rule": 1,
+    "moves": [
+      202,
+      173,
+      160
+    ],
+    "year": 2023,
+    "line": 10,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt",
+    "baseline_black_score": 0.529317706823349
+  },
+  {
+    "id": "S19",
+    "rule": 1,
+    "moves": [
+      191,
+      177,
+      148
+    ],
+    "year": 2022,
+    "line": 4,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.4641338735818863
+  },
+  {
+    "id": "S20",
+    "rule": 1,
+    "moves": [
+      183,
+      153,
+      155,
+      141,
+      142,
+      158,
+      111
+    ],
+    "year": 2021,
+    "line": 5,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.6254090070724487
+  },
+  {
+    "id": "S21",
+    "rule": 1,
+    "moves": [
+      201,
+      171,
+      170
+    ],
+    "year": 2020,
+    "line": 3,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt",
+    "baseline_black_score": 0.5175720304250717
+  },
+  {
+    "id": "S22",
+    "rule": 1,
+    "moves": [
+      38,
+      70,
+      101,
+      160,
+      88
+    ],
+    "year": 2025,
+    "line": 5,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.5037254020571709
+  },
+  {
+    "id": "S23",
+    "rule": 1,
+    "moves": [
+      10,
+      14,
+      74,
+      56,
+      70
+    ],
+    "year": 2017,
+    "line": 7,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.5711791813373566
+  },
+  {
+    "id": "S24",
+    "rule": 1,
+    "moves": [
+      106,
+      109,
+      108,
+      125,
+      93,
+      95,
+      123
+    ],
+    "year": 2017,
+    "line": 1,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.548992395401001
+  },
+  {
+    "id": "S25",
+    "rule": 1,
+    "moves": [
+      210,
+      224,
+      196,
+      208,
+      211,
+      223,
+      195,
+      209,
+      154,
+      160,
+      205,
+      199,
+      163,
+      151,
+      112,
+      168,
+      157
+    ],
+    "year": 2024,
+    "line": 7,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.578206792473793
+  },
+  {
+    "id": "S26",
+    "rule": 1,
+    "moves": [
+      63,
+      48,
+      35,
+      49,
+      47
+    ],
+    "year": 2022,
+    "line": 9,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5209400802850723
+  },
+  {
+    "id": "S27",
+    "rule": 1,
+    "moves": [
+      169,
+      188,
+      196,
+      154,
+      125,
+      140,
+      156
+    ],
+    "year": 2025,
+    "line": 1,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.45835399627685547
+  },
+  {
+    "id": "S28",
+    "rule": 1,
+    "moves": [
+      169,
+      154,
+      140,
+      125,
+      111,
+      127,
+      142,
+      158,
+      173,
+      141
+    ],
+    "year": 2019,
+    "line": 10,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.6061184257268906
+  },
+  {
+    "id": "S29",
+    "rule": 1,
+    "moves": [
+      201,
+      196,
+      121
+    ],
+    "year": 2017,
+    "line": 12,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.6092164665460587
+  },
+  {
+    "id": "S30",
+    "rule": 1,
+    "moves": [
+      72,
+      55,
+      38,
+      80,
+      96
+    ],
+    "year": 2023,
+    "line": 3,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt",
+    "baseline_black_score": 0.47626112401485443
+  },
+  {
+    "id": "S31",
+    "rule": 1,
+    "moves": [
+      184,
+      154,
+      189,
+      159
+    ],
+    "year": 2018,
+    "line": 9,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.6299635618925095
+  },
+  {
+    "id": "S32",
+    "rule": 1,
+    "moves": [
+      203,
+      172,
+      174
+    ],
+    "year": 2020,
+    "line": 7,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt",
+    "baseline_black_score": 0.5663097351789474
+  },
+  {
+    "id": "S33",
+    "rule": 1,
+    "moves": [
+      89,
+      25,
+      81
+    ],
+    "year": 2024,
+    "line": 11,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.46331116557121277
+  },
+  {
+    "id": "S34",
+    "rule": 1,
+    "moves": [
+      167,
+      140,
+      183
+    ],
+    "year": 2022,
+    "line": 1,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.6069084852933884
+  },
+  {
+    "id": "S35",
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      140,
+      139,
+      53
+    ],
+    "year": 2020,
+    "line": 2,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt",
+    "baseline_black_score": 0.4672180563211441
+  },
+  {
+    "id": "S36",
+    "rule": 1,
+    "moves": [
+      162,
+      177,
+      145,
+      146,
+      174,
+      159,
+      191,
+      190,
+      187
+    ],
+    "year": 2017,
+    "line": 10,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.4520406424999237
+  },
+  {
+    "id": "S37",
+    "rule": 1,
+    "moves": [
+      112,
+      142,
+      138,
+      152,
+      100
+    ],
+    "year": 2018,
+    "line": 7,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.40691929310560226
+  },
+  {
+    "id": "S38",
+    "rule": 1,
+    "moves": [
+      112,
+      53,
+      173,
+      127,
+      54,
+      96,
+      111,
+      110,
+      125,
+      98,
+      99,
+      124,
+      82
+    ],
+    "year": 2022,
+    "line": 5,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.49942490458488464
+  },
+  {
+    "id": "S39",
+    "rule": 1,
+    "moves": [
+      112,
+      187,
+      202
+    ],
+    "year": 2023,
+    "line": 7,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt",
+    "baseline_black_score": 0.47450609505176544
+  },
+  {
+    "id": "S40",
+    "rule": 1,
+    "moves": [
+      112,
+      127,
+      138,
+      108,
+      92
+    ],
+    "year": 2019,
+    "line": 8,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.5261999517679214
+  },
+  {
+    "id": "S41",
+    "rule": 1,
+    "moves": [
+      48,
+      52,
+      83
+    ],
+    "year": 2022,
+    "line": 11,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5212748348712921
+  },
+  {
+    "id": "S42",
+    "rule": 1,
+    "moves": [
+      112,
+      118,
+      202,
+      154,
+      106,
+      196,
+      151
+    ],
+    "year": 2025,
+    "line": 6,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.49791691452264786
+  },
+  {
+    "id": "S43",
+    "rule": 1,
+    "moves": [
+      72,
+      41,
+      23,
+      22,
+      21
+    ],
+    "year": 2018,
+    "line": 5,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.41665424406528473
+  },
+  {
+    "id": "S44",
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      110,
+      113,
+      142
+    ],
+    "year": 2024,
+    "line": 3,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.5360524654388428
+  },
+  {
+    "id": "S45",
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      55
+    ],
+    "year": 2022,
+    "line": 2,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5882677435874939
+  },
+  {
+    "id": "S46",
+    "rule": 1,
+    "moves": [
+      47,
+      51,
+      80
+    ],
+    "year": 2017,
+    "line": 4,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.6209737956523895
+  },
+  {
+    "id": "S47",
+    "rule": 1,
+    "moves": [
+      172,
+      126,
+      112,
+      85,
+      69
+    ],
+    "year": 2019,
+    "line": 1,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt",
+    "baseline_black_score": 0.5583040565252304
+  },
+  {
+    "id": "S48",
+    "rule": 1,
+    "moves": [
+      19,
+      65,
+      50,
+      79,
+      51
+    ],
+    "year": 2018,
+    "line": 4,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.597992554306984
+  },
+  {
+    "id": "S49",
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      127,
+      128,
+      116
+    ],
+    "year": 2024,
+    "line": 4,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.4827345907688141
+  },
+  {
+    "id": "S50",
+    "rule": 1,
+    "moves": [
+      181,
+      198,
+      167,
+      139,
+      152
+    ],
+    "year": 2025,
+    "line": 2,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.5071157515048981
+  },
+  {
+    "id": "S51",
+    "rule": 1,
+    "moves": [
+      180,
+      212,
+      165,
+      213,
+      150,
+      214,
+      215,
+      135,
+      216,
+      120,
+      217,
+      105,
+      200
+    ],
+    "year": 2024,
+    "line": 1,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.42971280217170715
+  },
+  {
+    "id": "S52",
+    "rule": 1,
+    "moves": [
+      175,
+      188,
+      185,
+      169,
+      138,
+      157,
+      156,
+      140,
+      141,
+      126,
+      112
+    ],
+    "year": 2025,
+    "line": 3,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.6002022624015808
+  },
+  {
+    "id": "S53",
+    "rule": 1,
+    "moves": [
+      28,
+      26,
+      39,
+      55,
+      70,
+      84,
+      82,
+      97,
+      111
+    ],
+    "year": 2021,
+    "line": 3,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt",
+    "baseline_black_score": 0.6183418929576874
+  },
+  {
+    "id": "S54",
+    "rule": 1,
+    "moves": [
+      216,
+      217,
+      201,
+      202,
+      186,
+      187,
+      171,
+      172,
+      157,
+      156,
+      159
+    ],
+    "year": 2018,
+    "line": 1,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.5699372291564941
+  },
+  {
+    "id": "S55",
+    "rule": 1,
+    "moves": [
+      48,
+      52,
+      68
+    ],
+    "year": 2022,
+    "line": 10,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5899418890476227
+  },
+  {
+    "id": "S56",
+    "rule": 1,
+    "moves": [
+      216,
+      217,
+      215,
+      218,
+      214,
+      219,
+      190
+    ],
+    "year": 2018,
+    "line": 12,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt",
+    "baseline_black_score": 0.5473468154668808
+  },
+  {
+    "id": "S57",
+    "rule": 1,
+    "moves": [
+      126,
+      127,
+      128,
+      140,
+      155,
+      169,
+      168,
+      144,
+      159,
+      175,
+      176,
+      172
+    ],
+    "year": 2022,
+    "line": 7,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.48598164319992065
+  },
+  {
+    "id": "S58",
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      172
+    ],
+    "year": 2022,
+    "line": 3,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt",
+    "baseline_black_score": 0.5845575407147408
+  },
+  {
+    "id": "S59",
+    "rule": 1,
+    "moves": [
+      172,
+      187,
+      202,
+      156,
+      186,
+      170
+    ],
+    "year": 2024,
+    "line": 9,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.40451157093048096
+  },
+  {
+    "id": "S60",
+    "rule": 1,
+    "moves": [
+      1,
+      15,
+      3,
+      45,
+      2,
+      30,
+      4,
+      75,
+      6,
+      90,
+      5,
+      60,
+      61
+    ],
+    "year": 2017,
+    "line": 11,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt",
+    "baseline_black_score": 0.3800394535064697
+  },
+  {
+    "id": "R01",
+    "rule": 2,
+    "moves": [
+      37,
+      25,
+      58,
+      97,
+      67,
+      82
+    ],
+    "year": 2025,
+    "line": 7,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.5649076253175735
+  },
+  {
+    "id": "R02",
+    "rule": 2,
+    "moves": [
+      122,
+      107,
+      153,
+      125,
+      56,
+      129
+    ],
+    "year": 2025,
+    "line": 9,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.564733968116343
+  },
+  {
+    "id": "R03",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      142,
+      97,
+      144,
+      111
+    ],
+    "year": 2021,
+    "line": 12,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.5388849750161171
+  },
+  {
+    "id": "R04",
+    "rule": 2,
+    "moves": [
+      112,
+      111,
+      113,
+      98,
+      81
+    ],
+    "year": 2021,
+    "line": 10,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.4805743843317032
+  },
+  {
+    "id": "R05",
+    "rule": 2,
+    "moves": [
+      167,
+      154,
+      156,
+      184,
+      139
+    ],
+    "year": 2019,
+    "line": 9,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt",
+    "baseline_black_score": 0.4478289633989334
+  },
+  {
+    "id": "R06",
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      127,
+      157,
+      115
+    ],
+    "year": 2018,
+    "line": 3,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt",
+    "baseline_black_score": 0.5585795789957047
+  },
+  {
+    "id": "R07",
+    "rule": 2,
+    "moves": [
+      187,
+      202,
+      200,
+      171,
+      156
+    ],
+    "year": 2023,
+    "line": 11,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt",
+    "baseline_black_score": 0.46502073109149933
+  },
+  {
+    "id": "R08",
+    "rule": 2,
+    "moves": [
+      68,
+      52,
+      85,
+      67,
+      53
+    ],
+    "year": 2024,
+    "line": 5,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.4763626307249069
+  },
+  {
+    "id": "R09",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      84,
+      69,
+      68
+    ],
+    "year": 2021,
+    "line": 9,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.45780013501644135
+  },
+  {
+    "id": "R10",
+    "rule": 2,
+    "moves": [
+      54,
+      114,
+      88,
+      57,
+      100
+    ],
+    "year": 2025,
+    "line": 12,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.48302440345287323
+  },
+  {
+    "id": "R11",
+    "rule": 2,
+    "moves": [
+      182,
+      154,
+      155,
+      167,
+      124
+    ],
+    "year": 2023,
+    "line": 12,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt",
+    "baseline_black_score": 0.4581018090248108
+  },
+  {
+    "id": "R12",
+    "rule": 2,
+    "moves": [
+      56,
+      87,
+      125,
+      38
+    ],
+    "year": 2022,
+    "line": 8,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt",
+    "baseline_black_score": 0.5023596212267876
+  },
+  {
+    "id": "R13",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      140,
+      81,
+      83,
+      129
+    ],
+    "year": 2018,
+    "line": 6,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt",
+    "baseline_black_score": 0.5224372446537018
+  },
+  {
+    "id": "R14",
+    "rule": 2,
+    "moves": [
+      87,
+      57,
+      69,
+      25,
+      23
+    ],
+    "year": 2021,
+    "line": 7,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.49706605076789856
+  },
+  {
+    "id": "R15",
+    "rule": 2,
+    "moves": [
+      78,
+      92,
+      32,
+      49,
+      140,
+      126,
+      190,
+      204
+    ],
+    "year": 2019,
+    "line": 10,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt",
+    "baseline_black_score": 0.49949322640895844
+  },
+  {
+    "id": "R16",
+    "rule": 2,
+    "moves": [
+      80,
+      66,
+      125,
+      79,
+      65
+    ],
+    "year": 2025,
+    "line": 4,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.4728587567806244
+  },
+  {
+    "id": "R17",
+    "rule": 2,
+    "moves": [
+      90,
+      6,
+      105,
+      104,
+      150,
+      218,
+      45
+    ],
+    "year": 2023,
+    "line": 3,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt",
+    "baseline_black_score": 0.49851327389478683
+  },
+  {
+    "id": "R18",
+    "rule": 2,
+    "moves": [
+      36,
+      51,
+      86,
+      85
+    ],
+    "year": 2018,
+    "line": 9,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt",
+    "baseline_black_score": 0.4495515897870064
+  },
+  {
+    "id": "R19",
+    "rule": 2,
+    "moves": [
+      126,
+      111,
+      113,
+      128,
+      155
+    ],
+    "year": 2023,
+    "line": 5,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt",
+    "baseline_black_score": 0.5360588431358337
+  },
+  {
+    "id": "R20",
+    "rule": 2,
+    "moves": [
+      116,
+      100,
+      130,
+      144,
+      85
+    ],
+    "year": 2024,
+    "line": 11,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.4679529219865799
+  },
+  {
+    "id": "R21",
+    "rule": 2,
+    "moves": [
+      85,
+      71,
+      115,
+      70,
+      87
+    ],
+    "year": 2024,
+    "line": 8,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.4427699148654938
+  },
+  {
+    "id": "R22",
+    "rule": 2,
+    "moves": [
+      112,
+      82,
+      159,
+      97,
+      111
+    ],
+    "year": 2022,
+    "line": 1,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt",
+    "baseline_black_score": 0.5448130145668983
+  },
+  {
+    "id": "R23",
+    "rule": 2,
+    "moves": [
+      52,
+      48,
+      108,
+      80
+    ],
+    "year": 2022,
+    "line": 12,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt",
+    "baseline_black_score": 0.45683227479457855
+  },
+  {
+    "id": "R24",
+    "rule": 2,
+    "moves": [
+      42,
+      41
+    ],
+    "year": 2021,
+    "line": 4,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.4945954531431198
+  },
+  {
+    "id": "R25",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      115,
+      110
+    ],
+    "year": 2022,
+    "line": 5,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt",
+    "baseline_black_score": 0.5369288995862007
+  },
+  {
+    "id": "R26",
+    "rule": 2,
+    "moves": [
+      167,
+      154,
+      170,
+      183,
+      139
+    ],
+    "year": 2019,
+    "line": 8,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt",
+    "baseline_black_score": 0.4992055594921112
+  },
+  {
+    "id": "R27",
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      84,
+      69,
+      66
+    ],
+    "year": 2020,
+    "line": 1,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt",
+    "baseline_black_score": 0.4785749688744545
+  },
+  {
+    "id": "R28",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      126,
+      82,
+      66
+    ],
+    "year": 2017,
+    "line": 9,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt",
+    "baseline_black_score": 0.48548294603824615
+  },
+  {
+    "id": "R29",
+    "rule": 2,
+    "moves": [
+      55,
+      70,
+      86,
+      85,
+      84
+    ],
+    "year": 2024,
+    "line": 12,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.5285702645778656
+  },
+  {
+    "id": "R30",
+    "rule": 2,
+    "moves": [
+      97,
+      82,
+      84,
+      99,
+      54
+    ],
+    "year": 2021,
+    "line": 2,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt",
+    "baseline_black_score": 0.44549836218357086
+  },
+  {
+    "id": "R31",
+    "rule": 2,
+    "moves": [
+      112,
+      83,
+      156,
+      68,
+      114
+    ],
+    "year": 2022,
+    "line": 2,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt",
+    "baseline_black_score": 0.4890953376889229
+  },
+  {
+    "id": "R32",
+    "rule": 2,
+    "moves": [
+      185,
+      201,
+      202,
+      188,
+      159
+    ],
+    "year": 2017,
+    "line": 4,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt",
+    "baseline_black_score": 0.4753642752766609
+  },
+  {
+    "id": "R33",
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      144,
+      96,
+      99,
+      114,
+      82,
+      127
+    ],
+    "year": 2019,
+    "line": 1,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt",
+    "baseline_black_score": 0.46714116632938385
+  },
+  {
+    "id": "R34",
+    "rule": 2,
+    "moves": [
+      69,
+      85,
+      71,
+      68,
+      83
+    ],
+    "year": 2024,
+    "line": 4,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.5039363354444504
+  },
+  {
+    "id": "R35",
+    "rule": 2,
+    "moves": [
+      114,
+      98,
+      116,
+      113,
+      83
+    ],
+    "year": 2024,
+    "line": 1,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip",
+    "baseline_black_score": 0.527221143245697
+  },
+  {
+    "id": "R36",
+    "rule": 2,
+    "moves": [
+      80,
+      65,
+      52,
+      66,
+      67
+    ],
+    "year": 2025,
+    "line": 3,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+    "baseline_black_score": 0.4428611695766449
+  },
+  {
+    "id": "R37",
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      82,
+      84,
+      129
+    ],
+    "year": 2020,
+    "line": 4,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt",
+    "baseline_black_score": 0.518856979906559
+  },
+  {
+    "id": "R38",
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      82,
+      114,
+      66
+    ],
+    "year": 2018,
+    "line": 1,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt",
+    "baseline_black_score": 0.4671303741633892
+  },
+  {
+    "id": "R39",
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      99,
+      126,
+      141
+    ],
+    "year": 2019,
+    "line": 6,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt",
+    "baseline_black_score": 0.4315793514251709
+  },
+  {
+    "id": "R40",
+    "rule": 2,
+    "moves": [
+      33,
+      48,
+      64,
+      36,
+      51
+    ],
+    "year": 2018,
+    "line": 12,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt",
+    "baseline_black_score": 0.5519775897264481
+  }
+]

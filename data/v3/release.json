@@ -1,0 +1,15 @@
+{
+  "exe": {
+    "orig": "4a7df75375d2a5993ea8f55457c16c237f0627c2c4326eed3837461f5de22462",
+    "v2": "cd54778c9d0296ea3b4e5cc5cfb5d024802b6a780b8bbb0858d41cb64b824710",
+    "v3": "714d0bbff8d92e72a0bbd88ffe993f16a006b17b0f409910348cf92358cb4735"
+  },
+  "f9_admitted": true,
+  "f9_gate": "bench/v3/f9/summary.json",
+  "k_min_ply": 120,
+  "pair_window_cap": 64,
+  "rank_window_cap": 24,
+  "formal_match": "match_v3_fast",
+  "direct_match": "match_v3_long",
+  "thousand_game_cloud_timing_measured": false
+}

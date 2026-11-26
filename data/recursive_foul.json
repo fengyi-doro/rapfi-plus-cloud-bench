@@ -1,0 +1,42 @@
+{
+  "native": "reverse_foul 0000000022202c88aba0fa83fe029f8ede086832e80dc8bfe29e022a00920222 extra=66\ncounter_four priority empty_intersection overlines simultaneous_five PASS\n",
+  "rule": "renju",
+  "moves": [
+    112,
+    98,
+    96,
+    141,
+    125,
+    0,
+    128,
+    3,
+    142,
+    8,
+    81,
+    12,
+    111,
+    165,
+    113,
+    198,
+    99,
+    224,
+    85
+  ],
+  "extra_white": 66,
+  "black_attack": 127,
+  "black_extension": 126,
+  "steps": [
+    [
+      127,
+      71,
+      -1,
+      1
+    ],
+    [
+      157,
+      97,
+      172,
+      2
+    ]
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "official_url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip",
+  "archive_sha256": "91fc8cbefee5918994e028dd3f17143c5a46b948ed09b21c10ac0c1f1d4a8f09",
+  "original_exe": "4a7df75375d2a5993ea8f55457c16c237f0627c2c4326eed3837461f5de22462",
+  "rows_per_rule": 12,
+  "shortlisted": 2328,
+  "selected": 300,
+  "seed": 35820261126,
+  "mother_quotas": [
+    12,
+    13
+  ],
+  "match_book_sha256": "81112b50a3c0a1cdb548daf45b16d4b78ad1bbdbfc213a571a94293200466bef",
+  "score": "original TRACESEARCH black W+D/2 (4 decimal output)",
+  "matching": "complete mother position under D4, within-color order ignored for identity; tournament coordinate order retained"
+}

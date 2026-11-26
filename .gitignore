@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.exe
+*.pdb
+*.obj
+*.o
+*.dll
+*.log
+/build/
+/dist/
+/match*/
+/results/
+/shards/
+/report/
+/cloud_report/
+/data/v2/gomocup2025results.zip

@@ -1,0 +1,182 @@
+name: Distributed Rapfi SPRT
+run-name: ${{ inputs.candidate_label }} vs orig · ${{ inputs.pairs }} pairs · ${{ inputs.time_control }} ms
+
+on:
+  workflow_dispatch:
+    inputs:
+      pairs:
+        description: "Opening pairs (1–500). Each opening is played twice with colours reversed."
+        type: number
+        default: 500
+        required: true
+      candidate_label:
+        description: "Candidate name in game records and reports"
+        type: string
+        default: v4
+        required: true
+      candidate_profile:
+        description: "Build profile for the checked-out src_plus revision"
+        type: choice
+        options: [v4, v3]
+        default: v4
+        required: true
+      time_control:
+        description: "Fischer clock in milliseconds, initial+increment"
+        type: string
+        default: "1500+40"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  PAIRS: ${{ inputs.pairs }}
+  TIME_CONTROL: ${{ inputs.time_control }}
+  RAPFI_CANDIDATE_LABEL: ${{ inputs.candidate_label }}
+  RAPFI_BUILD_PROFILE: ${{ inputs.candidate_profile }}
+  OPENBLAS_NUM_THREADS: 1
+  OMP_NUM_THREADS: 1
+
+jobs:
+  build:
+    name: Build and verify both Linux AVX2 engines
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      shards: ${{ steps.plan.outputs.shards }}
+      initial_ms: ${{ steps.plan.outputs.initial_ms }}
+      increment_ms: ${{ steps.plan.outputs.increment_ms }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - id: plan
+        name: Validate the clock, candidate label and pair budget
+        run: python scripts/cloud_schedule.py
+      - id: engines
+        uses: actions/cache@v4
+        with:
+          path: dist
+          key: rapfi-linux-musl-zig-0.14.1-${{ inputs.candidate_profile }}-${{ hashFiles('src_orig/**', 'src_plus/**', 'build.py', 'scripts/build_v3.py') }}
+      - if: steps.engines.outputs.cache-hit != 'true'
+        run: python -m pip install ziglang==0.14.1
+      - name: Compile both trees with identical release flags
+        if: steps.engines.outputs.cache-hit != 'true'
+        run: |
+          for variant in orig "$RAPFI_BUILD_PROFILE"; do
+            python scripts/build_v3.py "$variant" --target linux --profile "$RAPFI_BUILD_PROFILE" --out dist -j 4
+            cp "build/linux-$variant/manifest.json" "dist/$variant.json"
+          done
+          (cd dist && sha256sum pbrain-rapfi-* > SHA256SUMS)
+      - name: Verify the binaries, shared weights and AVX2-only execution
+        run: |
+          (cd dist && sha256sum -c SHA256SUMS)
+          if ! command -v qemu-x86_64 >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends qemu-user
+          fi
+          python scripts/check_cloud_build.py dist "$RAPFI_BUILD_PROFILE"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: engines-linux
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  play:
+    name: Shard ${{ matrix.shard }} of ${{ needs.build.outputs.shards }}
+    needs: build
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: ${{ fromJSON(needs.build.outputs.matrix) }}
+    env:
+      SHARD: ${{ matrix.shard }}
+      SHARDS: ${{ needs.build.outputs.shards }}
+      INITIAL_MS: ${{ needs.build.outputs.initial_ms }}
+      INCREMENT_MS: ${{ needs.build.outputs.increment_ms }}
+      RAPFI_ARENA_BIN: dist
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.gitattributes
+            /scripts/
+            /data/v3/cloud_openings.json
+            /data/runtime_files.json
+            /data/recursive_foul.json
+            /config.toml
+            /*.bin
+            /*.lz4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: engines-linux
+          path: dist
+      - name: Play colour pairs on four dedicated vCPU lanes
+        run: |
+          (cd dist && sha256sum -c SHA256SUMS && chmod +x pbrain-rapfi-*)
+          python scripts/arena_fast.py --book data/v3/cloud_openings.json --pairs "$PAIRS" \
+            --shards "$SHARDS" --shard "$SHARD" --lanes 4 --vcpu-lanes --out results \
+            --challenger "$RAPFI_CANDIDATE_LABEL" --opponent orig --initial-ms "$INITIAL_MS" --increment-ms "$INCREMENT_MS"
+      - name: Independently replay moves, clocks, colour swaps and CPU assignments
+        run: python scripts/replay.py --match-dir results --book data/v3/cloud_openings.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shard-${{ matrix.shard }}
+          path: results/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    name: Verify all pairs and publish Elo, LOS and SPRT
+    needs: [build, play]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    env:
+      SHARDS: ${{ needs.build.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.gitattributes
+            /scripts/
+            /data/v3/cloud_openings.json
+            /data/recursive_foul.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.2.6 psutil==7.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: shard-*
+          path: shards
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: engines-linux
+          path: dist
+      - name: Replay every game and compute paired statistics
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          workflow_start=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq '.created_at')
+          python scripts/distributed_sprt.py shards --pairs "$PAIRS" --shards "$SHARDS" --out report \
+            --workflow-start "$workflow_start" --build-info dist/build-info.json
+          cat report/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pentanomial-elo-los-sprt
+          path: report/
+          if-no-files-found: error
+          retention-days: 14

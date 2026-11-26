@@ -1,0 +1,8 @@
+# Release checksums and paired schedules must survive checkout on either runner OS.
+/config.toml -text
+/*.bin -text
+/*.lz4 -text
+/data/v2/openings.json -text
+/data/v3/cloud_openings.json -text
+/data/v3/long_openings.json -text
+

@@ -1,0 +1,9 @@
+{
+  "model210901.bin": "b3425ab5dbb73b25aad6f1c816e4700438c1fca265bf7a9c42aa3c2c006444af",
+  "model260809.bin": "8d4f518c58f9c7abe017de383a87d2d7506c62936ea5188004b7eb1780b99393",
+  "config.toml": "32b9180c91247541d399ceef62906d5ffeb48e34eb5f261612987633820d5d3c",
+  "mix9svqfreestyle_bsmix.bin.lz4": "6bc0d1b0ff8e1d857f7f412923cd458f38f1a435087c91ae71fec3676c23ef62",
+  "mix9svqrenju_bs15_black.bin.lz4": "7ab8c974c30da07717ce6a504616a62ac8c981500503f0ced0fadefd3f46c5ec",
+  "mix9svqrenju_bs15_white.bin.lz4": "a31f318518d3b5630489054d9eb013fd5353c553999640c2bcfd8d95e6fe4e4e",
+  "mix9svqstandard_bs15.bin.lz4": "84334f5db96f45b3e36ebdde06d2259d878ae1eb347b7cf74574ac908b8d9e7d"
+}

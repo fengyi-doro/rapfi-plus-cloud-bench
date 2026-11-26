@@ -1,0 +1,16 @@
+{
+  "compiler": "0.14.1",
+  "identical_flags": true,
+  "common_translation_units": 44,
+  "changed_or_added": [
+    "CMakeLists.txt",
+    "command/gomocup.cpp",
+    "eval/mix10nnue.cpp",
+    "eval/mix9_orbit.h",
+    "eval/mix9svqnnue.cpp",
+    "eval/simd/linear.h",
+    "search/ab/rzone.cpp",
+    "search/ab/rzone.h"
+  ],
+  "source_patch_sha256": "78ce59432e5e7c46255357e5fa4a173db2c00b2bb7a7f16a5a6cc8df7ee5c345"
+}

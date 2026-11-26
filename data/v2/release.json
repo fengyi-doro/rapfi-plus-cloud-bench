@@ -1,0 +1,30 @@
+{
+  "rollback": "P2 restoration of upstream evaluatePolicy and removal of four-point helper",
+  "individual": [
+    "orbit",
+    "geometry"
+  ],
+  "selected": [
+    "orbit",
+    "geometry"
+  ],
+  "incremental": [
+    {
+      "control": "orbit",
+      "candidate": "stack1",
+      "added": "geometry",
+      "gate": "gate_stack1",
+      "admitted": true
+    }
+  ],
+  "best_trial": "stack1",
+  "source": {
+    "eval/mix9svqnnue.cpp": "5681d7083eb687b00d4d03bccb1e3568ab37bef061b87d480e61ce545f57968c",
+    "game/board.cpp": "ea141458cfef0ee9e006cb6edbee50ad65dc7df1a8d3304b4344379bcca1d713"
+  },
+  "exe": {
+    "orig": "4a7df75375d2a5993ea8f55457c16c237f0627c2c4326eed3837461f5de22462",
+    "plus": "cd54778c9d0296ea3b4e5cc5cfb5d024802b6a780b8bbb0858d41cb64b824710",
+    "v1": "aae44324d7b12ba371f1b164dd73f0e3862cb94563f697b0b3651173ace43567"
+  }
+}

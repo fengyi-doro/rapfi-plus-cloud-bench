@@ -1,0 +1,3425 @@
+[
+  {
+    "rule": 1,
+    "moves": [
+      106,
+      109,
+      108,
+      125,
+      93,
+      95,
+      123
+    ],
+    "year": 2017,
+    "line": 1,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      62,
+      33,
+      21,
+      77,
+      92
+    ],
+    "year": 2017,
+    "line": 2,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      46,
+      32,
+      18
+    ],
+    "year": 2017,
+    "line": 3,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      47,
+      51,
+      80
+    ],
+    "year": 2017,
+    "line": 4,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      167,
+      125,
+      154,
+      169,
+      155
+    ],
+    "year": 2017,
+    "line": 5,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      106,
+      110,
+      108
+    ],
+    "year": 2017,
+    "line": 6,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      10,
+      14,
+      74,
+      56,
+      70
+    ],
+    "year": 2017,
+    "line": 7,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      119,
+      115,
+      134,
+      179
+    ],
+    "year": 2017,
+    "line": 8,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      113,
+      83,
+      160,
+      128,
+      97,
+      129
+    ],
+    "year": 2017,
+    "line": 9,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      162,
+      177,
+      145,
+      146,
+      174,
+      159,
+      191,
+      190,
+      187
+    ],
+    "year": 2017,
+    "line": 10,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      1,
+      15,
+      3,
+      45,
+      2,
+      30,
+      4,
+      75,
+      6,
+      90,
+      5,
+      60,
+      61
+    ],
+    "year": 2017,
+    "line": 11,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      201,
+      196,
+      121
+    ],
+    "year": 2017,
+    "line": 12,
+    "file": "2017.txt",
+    "sha256": "f5ba6e6b6c1058685d83d40e6e823f74270830d2a65d637a6ad553850ab1e16c",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      144,
+      82,
+      95
+    ],
+    "year": 2017,
+    "line": 1,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      35,
+      77,
+      137,
+      185,
+      189,
+      147,
+      87,
+      39
+    ],
+    "year": 2017,
+    "line": 2,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      83,
+      126
+    ],
+    "year": 2017,
+    "line": 3,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      185,
+      201,
+      202,
+      188,
+      159
+    ],
+    "year": 2017,
+    "line": 4,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      142,
+      99,
+      144
+    ],
+    "year": 2017,
+    "line": 5,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      108,
+      152,
+      62,
+      31,
+      181
+    ],
+    "year": 2017,
+    "line": 6,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      128,
+      129,
+      130
+    ],
+    "year": 2017,
+    "line": 7,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      160,
+      133,
+      176,
+      192,
+      198,
+      144
+    ],
+    "year": 2017,
+    "line": 8,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      126,
+      82,
+      66
+    ],
+    "year": 2017,
+    "line": 9,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      170,
+      186,
+      187,
+      188,
+      174,
+      142
+    ],
+    "year": 2017,
+    "line": 10,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      83,
+      156
+    ],
+    "year": 2017,
+    "line": 11,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      68,
+      112,
+      28,
+      40
+    ],
+    "year": 2017,
+    "line": 12,
+    "file": "2017_renju_source.txt",
+    "sha256": "ac5e9444bb1b76ab8a4909566bddba7812bd874c9d338c399080a2205844bcaa",
+    "url": "https://gomocup.org/static/tournaments/2017/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      216,
+      217,
+      201,
+      202,
+      186,
+      187,
+      171,
+      172,
+      157,
+      156,
+      159
+    ],
+    "year": 2018,
+    "line": 1,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      121,
+      124,
+      123,
+      140,
+      108,
+      93,
+      94,
+      110,
+      80,
+      66,
+      136,
+      122,
+      151,
+      166,
+      137,
+      95
+    ],
+    "year": 2018,
+    "line": 2,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      121,
+      123,
+      125,
+      140,
+      154,
+      109,
+      138,
+      170,
+      152,
+      153,
+      136,
+      124,
+      106,
+      151,
+      122,
+      90,
+      137,
+      107,
+      139,
+      135,
+      94,
+      80,
+      108,
+      150,
+      95,
+      96
+    ],
+    "year": 2018,
+    "line": 3,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      19,
+      65,
+      50,
+      79,
+      51
+    ],
+    "year": 2018,
+    "line": 4,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      72,
+      41,
+      23,
+      22,
+      21
+    ],
+    "year": 2018,
+    "line": 5,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      72,
+      41,
+      23,
+      69,
+      83
+    ],
+    "year": 2018,
+    "line": 6,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      142,
+      138,
+      152,
+      100
+    ],
+    "year": 2018,
+    "line": 7,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      152,
+      136,
+      107,
+      140,
+      142
+    ],
+    "year": 2018,
+    "line": 8,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      184,
+      154,
+      189,
+      159
+    ],
+    "year": 2018,
+    "line": 9,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      210,
+      195,
+      196,
+      211,
+      180,
+      181,
+      212,
+      197,
+      182,
+      165,
+      166,
+      213,
+      198
+    ],
+    "year": 2018,
+    "line": 10,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      213,
+      210,
+      197,
+      196,
+      181,
+      182,
+      165,
+      168,
+      154
+    ],
+    "year": 2018,
+    "line": 11,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      216,
+      217,
+      215,
+      218,
+      214,
+      219,
+      190
+    ],
+    "year": 2018,
+    "line": 12,
+    "file": "2018.txt",
+    "sha256": "a33363b22b6e9c80e33c8949e11039c3310c9cae02a15bc1aea08a0590780ac3",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      82,
+      114,
+      66
+    ],
+    "year": 2018,
+    "line": 1,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      140,
+      127,
+      141
+    ],
+    "year": 2018,
+    "line": 2,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      127,
+      157,
+      115
+    ],
+    "year": 2018,
+    "line": 3,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      84,
+      127,
+      69
+    ],
+    "year": 2018,
+    "line": 4,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      141,
+      111,
+      110,
+      95
+    ],
+    "year": 2018,
+    "line": 5,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      140,
+      81,
+      83,
+      129
+    ],
+    "year": 2018,
+    "line": 6,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      68,
+      84,
+      69
+    ],
+    "year": 2018,
+    "line": 7,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      129,
+      128,
+      68,
+      114
+    ],
+    "year": 2018,
+    "line": 8,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      36,
+      51,
+      86,
+      85
+    ],
+    "year": 2018,
+    "line": 9,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      210,
+      183,
+      170,
+      157,
+      160,
+      177,
+      209,
+      224
+    ],
+    "year": 2018,
+    "line": 10,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      31,
+      34,
+      62,
+      176,
+      140,
+      168,
+      56
+    ],
+    "year": 2018,
+    "line": 11,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      33,
+      48,
+      64,
+      36,
+      51
+    ],
+    "year": 2018,
+    "line": 12,
+    "file": "2018_renju_source.txt",
+    "sha256": "5137518580bae6fb4fff19b50a4445cfff74b7bad835a8ac8c4e87ae55cbd9aa",
+    "url": "https://gomocup.org/static/tournaments/2018/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      172,
+      126,
+      112,
+      85,
+      69
+    ],
+    "year": 2019,
+    "line": 1,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      182,
+      167,
+      155,
+      123,
+      107
+    ],
+    "year": 2019,
+    "line": 2,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      42,
+      26,
+      38,
+      84,
+      82
+    ],
+    "year": 2019,
+    "line": 3,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      156,
+      123,
+      107,
+      65,
+      66
+    ],
+    "year": 2019,
+    "line": 4,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      168,
+      185,
+      188,
+      136,
+      121
+    ],
+    "year": 2019,
+    "line": 5,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      33,
+      64,
+      80,
+      112,
+      126
+    ],
+    "year": 2019,
+    "line": 6,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      72,
+      41,
+      23,
+      24,
+      40
+    ],
+    "year": 2019,
+    "line": 7,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      127,
+      138,
+      108,
+      92
+    ],
+    "year": 2019,
+    "line": 8,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      19,
+      52,
+      67
+    ],
+    "year": 2019,
+    "line": 9,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      169,
+      154,
+      140,
+      125,
+      111,
+      127,
+      142,
+      158,
+      173,
+      141
+    ],
+    "year": 2019,
+    "line": 10,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      125,
+      110,
+      111,
+      80,
+      95,
+      140,
+      83,
+      97,
+      143,
+      127
+    ],
+    "year": 2019,
+    "line": 11,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      168,
+      170,
+      185,
+      186,
+      184
+    ],
+    "year": 2019,
+    "line": 12,
+    "file": "2019.txt",
+    "sha256": "5cfba71a75b6432d732a75fb7d1818f845171b49dab338577e69cde69f7d60b7",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      144,
+      96,
+      99,
+      114,
+      82,
+      127
+    ],
+    "year": 2019,
+    "line": 1,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      142,
+      99,
+      100
+    ],
+    "year": 2019,
+    "line": 2,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      113,
+      111,
+      95,
+      82,
+      66,
+      96
+    ],
+    "year": 2019,
+    "line": 3,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      83,
+      69
+    ],
+    "year": 2019,
+    "line": 4,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      129,
+      130,
+      146
+    ],
+    "year": 2019,
+    "line": 5,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      99,
+      126,
+      141
+    ],
+    "year": 2019,
+    "line": 6,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      183,
+      167,
+      139,
+      155,
+      152,
+      138
+    ],
+    "year": 2019,
+    "line": 7,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      167,
+      154,
+      170,
+      183,
+      139
+    ],
+    "year": 2019,
+    "line": 8,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      167,
+      154,
+      156,
+      184,
+      139
+    ],
+    "year": 2019,
+    "line": 9,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      78,
+      92,
+      32,
+      49,
+      140,
+      126,
+      190,
+      204
+    ],
+    "year": 2019,
+    "line": 10,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      82,
+      112,
+      115,
+      116,
+      172,
+      187,
+      107,
+      106,
+      37
+    ],
+    "year": 2019,
+    "line": 11,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      87,
+      71,
+      65,
+      51,
+      140,
+      154,
+      98
+    ],
+    "year": 2019,
+    "line": 12,
+    "file": "2019_renju_source.txt",
+    "sha256": "6d3720c59631fe1afd98f89b81a97e24c21c80f0ded6407b34400a52c25c725a",
+    "url": "https://gomocup.org/static/tournaments/2019/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      176,
+      174,
+      146,
+      144,
+      116,
+      114
+    ],
+    "year": 2020,
+    "line": 1,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      140,
+      139,
+      53
+    ],
+    "year": 2020,
+    "line": 2,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      201,
+      171,
+      170
+    ],
+    "year": 2020,
+    "line": 3,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      143,
+      128,
+      141,
+      65
+    ],
+    "year": 2020,
+    "line": 4,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      118,
+      101,
+      100,
+      114,
+      37,
+      79
+    ],
+    "year": 2020,
+    "line": 5,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      185,
+      169,
+      122,
+      113,
+      127
+    ],
+    "year": 2020,
+    "line": 6,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      203,
+      172,
+      174
+    ],
+    "year": 2020,
+    "line": 7,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      212,
+      183,
+      155
+    ],
+    "year": 2020,
+    "line": 8,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      182,
+      184,
+      155,
+      123,
+      108
+    ],
+    "year": 2020,
+    "line": 9,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      192,
+      143,
+      157,
+      138,
+      96
+    ],
+    "year": 2020,
+    "line": 10,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      81,
+      82,
+      98,
+      113,
+      127,
+      126,
+      110,
+      95,
+      201
+    ],
+    "year": 2020,
+    "line": 11,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      213,
+      215,
+      187,
+      219,
+      221,
+      157
+    ],
+    "year": 2020,
+    "line": 12,
+    "file": "2020.txt",
+    "sha256": "4ac4423636ace41b0fa272c0dc5394a3a1c2f6b46651c5cb3fc6f3653e8330a0",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      84,
+      69,
+      66
+    ],
+    "year": 2020,
+    "line": 1,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      127,
+      128,
+      83
+    ],
+    "year": 2020,
+    "line": 2,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      198,
+      213,
+      215,
+      200,
+      184,
+      170,
+      171,
+      187,
+      188,
+      189,
+      175,
+      191,
+      207,
+      205
+    ],
+    "year": 2020,
+    "line": 3,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      82,
+      84,
+      129
+    ],
+    "year": 2020,
+    "line": 4,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      200,
+      176,
+      88,
+      64,
+      128
+    ],
+    "year": 2020,
+    "line": 5,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      142,
+      127,
+      129,
+      158
+    ],
+    "year": 2020,
+    "line": 6,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      127,
+      97,
+      67,
+      98,
+      81
+    ],
+    "year": 2020,
+    "line": 7,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      37,
+      83,
+      202,
+      185
+    ],
+    "year": 2020,
+    "line": 8,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      111,
+      81
+    ],
+    "year": 2020,
+    "line": 9,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      67,
+      37,
+      92,
+      102,
+      157
+    ],
+    "year": 2020,
+    "line": 10,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      195,
+      196,
+      211,
+      212
+    ],
+    "year": 2020,
+    "line": 11,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      127,
+      142,
+      128
+    ],
+    "year": 2020,
+    "line": 12,
+    "file": "2020_renju_source.txt",
+    "sha256": "326b48dfdd7973541f38cb97081292803003f398a2e869d4b5b78f7038696804",
+    "url": "https://gomocup.org/static/tournaments/2020/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      113,
+      98,
+      67,
+      97,
+      81,
+      95,
+      96,
+      111,
+      127,
+      99
+    ],
+    "year": 2021,
+    "line": 1,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      182,
+      185,
+      183,
+      52,
+      143
+    ],
+    "year": 2021,
+    "line": 2,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      28,
+      26,
+      39,
+      55,
+      70,
+      84,
+      82,
+      97,
+      111
+    ],
+    "year": 2021,
+    "line": 3,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      176,
+      175,
+      174,
+      128,
+      173,
+      142
+    ],
+    "year": 2021,
+    "line": 4,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      183,
+      153,
+      155,
+      141,
+      142,
+      158,
+      111
+    ],
+    "year": 2021,
+    "line": 5,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      61,
+      33,
+      36,
+      80,
+      64
+    ],
+    "year": 2021,
+    "line": 6,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      219,
+      202,
+      176,
+      161
+    ],
+    "year": 2021,
+    "line": 7,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      172,
+      158,
+      175,
+      189,
+      204
+    ],
+    "year": 2021,
+    "line": 8,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      67,
+      81,
+      79
+    ],
+    "year": 2021,
+    "line": 9,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      67,
+      127,
+      70
+    ],
+    "year": 2021,
+    "line": 10,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      183,
+      199,
+      201,
+      187,
+      174
+    ],
+    "year": 2021,
+    "line": 11,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      82,
+      114,
+      81,
+      110
+    ],
+    "year": 2021,
+    "line": 12,
+    "file": "2021.txt",
+    "sha256": "75bb32728f0545dc7ea22c65f85466b6531d69345eea04c94c35426437918363",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      127,
+      113,
+      157,
+      112,
+      114
+    ],
+    "year": 2021,
+    "line": 1,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      97,
+      82,
+      84,
+      99,
+      54
+    ],
+    "year": 2021,
+    "line": 2,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      215,
+      216,
+      204,
+      203,
+      173
+    ],
+    "year": 2021,
+    "line": 3,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      42,
+      41
+    ],
+    "year": 2021,
+    "line": 4,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      154,
+      169,
+      126
+    ],
+    "year": 2021,
+    "line": 5,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      82,
+      125,
+      173,
+      114
+    ],
+    "year": 2021,
+    "line": 6,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      87,
+      57,
+      69,
+      25,
+      23
+    ],
+    "year": 2021,
+    "line": 7,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      97,
+      84,
+      99,
+      95
+    ],
+    "year": 2021,
+    "line": 8,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      84,
+      69,
+      68
+    ],
+    "year": 2021,
+    "line": 9,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      111,
+      113,
+      98,
+      81
+    ],
+    "year": 2021,
+    "line": 10,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      127,
+      114,
+      110,
+      97,
+      96,
+      82,
+      66,
+      80,
+      83,
+      81,
+      113
+    ],
+    "year": 2021,
+    "line": 11,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      142,
+      97,
+      144,
+      111
+    ],
+    "year": 2021,
+    "line": 12,
+    "file": "2021_renju_source.txt",
+    "sha256": "3fcabf965e57a66ded566f62df6879d57fc5b6a43ef6ad856df80da2de70619f",
+    "url": "https://gomocup.org/static/tournaments/2021/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      167,
+      140,
+      183
+    ],
+    "year": 2022,
+    "line": 1,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      55
+    ],
+    "year": 2022,
+    "line": 2,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      172
+    ],
+    "year": 2022,
+    "line": 3,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      191,
+      177,
+      148
+    ],
+    "year": 2022,
+    "line": 4,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      53,
+      173,
+      127,
+      54,
+      96,
+      111,
+      110,
+      125,
+      98,
+      99,
+      124,
+      82
+    ],
+    "year": 2022,
+    "line": 5,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      32,
+      33,
+      47,
+      62,
+      78
+    ],
+    "year": 2022,
+    "line": 6,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      126,
+      127,
+      128,
+      140,
+      155,
+      169,
+      168,
+      144,
+      159,
+      175,
+      176,
+      172
+    ],
+    "year": 2022,
+    "line": 7,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      98,
+      160,
+      96,
+      99,
+      82,
+      114,
+      81,
+      84,
+      129,
+      68
+    ],
+    "year": 2022,
+    "line": 8,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      63,
+      48,
+      35,
+      49,
+      47
+    ],
+    "year": 2022,
+    "line": 9,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      48,
+      52,
+      68
+    ],
+    "year": 2022,
+    "line": 10,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      48,
+      52,
+      83
+    ],
+    "year": 2022,
+    "line": 11,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      48,
+      52,
+      82
+    ],
+    "year": 2022,
+    "line": 12,
+    "file": "2022.txt",
+    "sha256": "5e812827d49b4b941a28e2cce01537c62256b172fadcc9d9486e44eba8256aff",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      82,
+      159,
+      97,
+      111
+    ],
+    "year": 2022,
+    "line": 1,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      83,
+      156,
+      68,
+      114
+    ],
+    "year": 2022,
+    "line": 2,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      160,
+      100,
+      99
+    ],
+    "year": 2022,
+    "line": 3,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      84,
+      96,
+      66
+    ],
+    "year": 2022,
+    "line": 4,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      114,
+      115,
+      110
+    ],
+    "year": 2022,
+    "line": 5,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      112,
+      98,
+      144,
+      114,
+      100
+    ],
+    "year": 2022,
+    "line": 6,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      207,
+      202
+    ],
+    "year": 2022,
+    "line": 7,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      56,
+      87,
+      125,
+      38
+    ],
+    "year": 2022,
+    "line": 8,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      80,
+      16,
+      22,
+      18,
+      121,
+      61
+    ],
+    "year": 2022,
+    "line": 9,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      52,
+      48,
+      108,
+      65
+    ],
+    "year": 2022,
+    "line": 10,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      52,
+      48,
+      108,
+      96
+    ],
+    "year": 2022,
+    "line": 11,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      52,
+      48,
+      108,
+      80
+    ],
+    "year": 2022,
+    "line": 12,
+    "file": "2022_renju_source.txt",
+    "sha256": "998846d1ff9047f5cf41b1717d7c80515ab4b337c2e61d439c61b5a4af3d345b",
+    "url": "https://gomocup.org/static/tournaments/2022/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      41,
+      42,
+      40,
+      55,
+      39,
+      54,
+      68,
+      98,
+      84,
+      86,
+      72
+    ],
+    "year": 2023,
+    "line": 1,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      196,
+      198,
+      185,
+      140,
+      124,
+      157,
+      141,
+      127,
+      112,
+      159
+    ],
+    "year": 2023,
+    "line": 2,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      72,
+      55,
+      38,
+      80,
+      96
+    ],
+    "year": 2023,
+    "line": 3,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      19,
+      47,
+      61,
+      64,
+      78,
+      37,
+      94
+    ],
+    "year": 2023,
+    "line": 4,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      65,
+      144,
+      137,
+      110,
+      122
+    ],
+    "year": 2023,
+    "line": 5,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      153,
+      98,
+      188,
+      158,
+      126,
+      79,
+      92,
+      50,
+      124
+    ],
+    "year": 2023,
+    "line": 6,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      187,
+      202
+    ],
+    "year": 2023,
+    "line": 7,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      196,
+      166,
+      169,
+      154,
+      127
+    ],
+    "year": 2023,
+    "line": 8,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      141,
+      126,
+      143,
+      157,
+      94
+    ],
+    "year": 2023,
+    "line": 9,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      202,
+      173,
+      160
+    ],
+    "year": 2023,
+    "line": 10,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      202,
+      201,
+      184,
+      154,
+      158
+    ],
+    "year": 2023,
+    "line": 11,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      141,
+      126,
+      96,
+      143,
+      113
+    ],
+    "year": 2023,
+    "line": 12,
+    "file": "2023.txt",
+    "sha256": "4febf677c9342c2fb1f502300478518d3de446c2d290410d8c80b53db46dcddd",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_standard.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      22,
+      23,
+      21,
+      20,
+      83
+    ],
+    "year": 2023,
+    "line": 1,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      221,
+      7,
+      219,
+      6,
+      217,
+      173
+    ],
+    "year": 2023,
+    "line": 2,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      90,
+      6,
+      105,
+      104,
+      150,
+      218,
+      45
+    ],
+    "year": 2023,
+    "line": 3,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      111,
+      97,
+      143,
+      98,
+      114
+    ],
+    "year": 2023,
+    "line": 4,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      126,
+      111,
+      113,
+      128,
+      155
+    ],
+    "year": 2023,
+    "line": 5,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      187,
+      188,
+      189,
+      175,
+      157
+    ],
+    "year": 2023,
+    "line": 6,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      187,
+      202,
+      200,
+      184,
+      125
+    ],
+    "year": 2023,
+    "line": 7,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      126,
+      111,
+      156,
+      97,
+      157
+    ],
+    "year": 2023,
+    "line": 8,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      111,
+      97,
+      83,
+      127,
+      129
+    ],
+    "year": 2023,
+    "line": 9,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      126,
+      111,
+      143,
+      110,
+      109
+    ],
+    "year": 2023,
+    "line": 10,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      187,
+      202,
+      200,
+      171,
+      156
+    ],
+    "year": 2023,
+    "line": 11,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      182,
+      154,
+      155,
+      167,
+      124
+    ],
+    "year": 2023,
+    "line": 12,
+    "file": "2023_renju_source.txt",
+    "sha256": "cd7d6c36853f438c79f95df64c9ec91b584c618b978f2ab18a8ffadc97eb3503",
+    "url": "https://gomocup.org/static/tournaments/2023/openings/openings_renju.txt"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      180,
+      212,
+      165,
+      213,
+      150,
+      214,
+      215,
+      135,
+      216,
+      120,
+      217,
+      105,
+      200
+    ],
+    "year": 2024,
+    "line": 1,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      165,
+      210,
+      213,
+      168
+    ],
+    "year": 2024,
+    "line": 2,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      110,
+      113,
+      142
+    ],
+    "year": 2024,
+    "line": 3,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      127,
+      128,
+      116
+    ],
+    "year": 2024,
+    "line": 4,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      97,
+      143,
+      126,
+      140
+    ],
+    "year": 2024,
+    "line": 5,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      0,
+      57,
+      71,
+      70,
+      55,
+      39
+    ],
+    "year": 2024,
+    "line": 6,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      210,
+      224,
+      196,
+      208,
+      211,
+      223,
+      195,
+      209,
+      154,
+      160,
+      205,
+      199,
+      163,
+      151,
+      112,
+      168,
+      157
+    ],
+    "year": 2024,
+    "line": 7,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      166,
+      121,
+      137,
+      197,
+      181,
+      153,
+      124,
+      109,
+      93,
+      140,
+      155
+    ],
+    "year": 2024,
+    "line": 8,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      172,
+      187,
+      202,
+      156,
+      186,
+      170
+    ],
+    "year": 2024,
+    "line": 9,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      192,
+      173,
+      130,
+      99,
+      158,
+      144,
+      160,
+      157,
+      190,
+      189
+    ],
+    "year": 2024,
+    "line": 10,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      89,
+      25,
+      81
+    ],
+    "year": 2024,
+    "line": 11,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      202,
+      112,
+      118,
+      157,
+      154,
+      160,
+      115,
+      208
+    ],
+    "year": 2024,
+    "line": 12,
+    "file": "2024.txt",
+    "sha256": "52392757571974f9f8b76a3df081bf46e0e6db927e0605520c879943c29945e0",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      114,
+      98,
+      116,
+      113,
+      83
+    ],
+    "year": 2024,
+    "line": 1,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      85,
+      71,
+      86,
+      84,
+      98
+    ],
+    "year": 2024,
+    "line": 2,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      86,
+      100,
+      84,
+      83,
+      101
+    ],
+    "year": 2024,
+    "line": 3,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      69,
+      85,
+      71,
+      68,
+      83
+    ],
+    "year": 2024,
+    "line": 4,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      68,
+      52,
+      85,
+      67,
+      53
+    ],
+    "year": 2024,
+    "line": 5,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      86,
+      87,
+      117,
+      70,
+      69
+    ],
+    "year": 2024,
+    "line": 6,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      85,
+      69,
+      55,
+      70,
+      54
+    ],
+    "year": 2024,
+    "line": 7,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      85,
+      71,
+      115,
+      70,
+      87
+    ],
+    "year": 2024,
+    "line": 8,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      85,
+      69,
+      55,
+      100
+    ],
+    "year": 2024,
+    "line": 9,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      67,
+      51,
+      95,
+      68,
+      97
+    ],
+    "year": 2024,
+    "line": 10,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      116,
+      100,
+      130,
+      144,
+      85
+    ],
+    "year": 2024,
+    "line": 11,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      55,
+      70,
+      86,
+      85,
+      84
+    ],
+    "year": 2024,
+    "line": 12,
+    "file": "2024_renju_source.txt",
+    "sha256": "5df977745285b5342be1631a50832b8cf6d0ae9b871adb25fe9da2d7f7e6049b",
+    "url": "https://gomocup.org/static/tournaments/2024/results/gomocup2024results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      95,
+      80,
+      82,
+      97,
+      52
+    ],
+    "year": 2025,
+    "line": 1,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      80,
+      65,
+      110,
+      51,
+      111
+    ],
+    "year": 2025,
+    "line": 2,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      80,
+      65,
+      52,
+      66,
+      67
+    ],
+    "year": 2025,
+    "line": 3,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      80,
+      66,
+      125,
+      79,
+      65
+    ],
+    "year": 2025,
+    "line": 4,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      80,
+      66,
+      34,
+      65,
+      67
+    ],
+    "year": 2025,
+    "line": 5,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      77,
+      92,
+      122,
+      106,
+      64
+    ],
+    "year": 2025,
+    "line": 6,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      37,
+      25,
+      58,
+      97,
+      67,
+      82
+    ],
+    "year": 2025,
+    "line": 7,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      14,
+      15,
+      219,
+      0,
+      224,
+      207,
+      175,
+      158
+    ],
+    "year": 2025,
+    "line": 8,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      122,
+      107,
+      153,
+      125,
+      56,
+      129
+    ],
+    "year": 2025,
+    "line": 9,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      17,
+      21,
+      22,
+      5,
+      81
+    ],
+    "year": 2025,
+    "line": 10,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      14,
+      74,
+      94,
+      44,
+      90,
+      112,
+      120
+    ],
+    "year": 2025,
+    "line": 11,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 2,
+    "moves": [
+      54,
+      114,
+      88,
+      57,
+      100
+    ],
+    "year": 2025,
+    "line": 12,
+    "file": "2025_renju_source.txt",
+    "sha256": "d174c391ae1d7533c15029c59cba68d02f15bc81166ef23f96a933252439189f",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      169,
+      188,
+      196,
+      154,
+      125,
+      140,
+      156
+    ],
+    "year": 2025,
+    "line": 1,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      181,
+      198,
+      167,
+      139,
+      152
+    ],
+    "year": 2025,
+    "line": 2,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      175,
+      188,
+      185,
+      169,
+      138,
+      157,
+      156,
+      140,
+      141,
+      126,
+      112
+    ],
+    "year": 2025,
+    "line": 3,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      82,
+      143,
+      81,
+      80
+    ],
+    "year": 2025,
+    "line": 4,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      38,
+      70,
+      101,
+      160,
+      88
+    ],
+    "year": 2025,
+    "line": 5,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      112,
+      118,
+      202,
+      154,
+      106,
+      196,
+      151
+    ],
+    "year": 2025,
+    "line": 6,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      153,
+      118,
+      54,
+      35,
+      78,
+      207,
+      147
+    ],
+    "year": 2025,
+    "line": 7,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      82,
+      67,
+      54,
+      68,
+      65
+    ],
+    "year": 2025,
+    "line": 8,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      82,
+      68,
+      99,
+      53,
+      23
+    ],
+    "year": 2025,
+    "line": 9,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      52,
+      67,
+      65,
+      51,
+      54
+    ],
+    "year": 2025,
+    "line": 10,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      52,
+      37,
+      7,
+      35,
+      81
+    ],
+    "year": 2025,
+    "line": 11,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  },
+  {
+    "rule": 1,
+    "moves": [
+      48,
+      64,
+      96,
+      79,
+      94
+    ],
+    "year": 2025,
+    "line": 12,
+    "file": "2025_standard_source.txt",
+    "sha256": "e0165c5e4ca566fc98c0a2fd0206a58e6870f145924e09f0fbe8f6991a82e3a1",
+    "url": "https://gomocup.org/static/tournaments/2025/results/gomocup2025results.zip"
+  }
+]
