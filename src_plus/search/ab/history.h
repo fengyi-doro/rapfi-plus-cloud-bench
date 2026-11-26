@@ -49,7 +49,7 @@ struct HistoryTracker
     void addSearchedMove(Pos move, Pos currentBestMove);
 
     /// Update move sorting heuristics when a best move is found.
-    void updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue);
+    void updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue, bool cutoff);
 
     /// Update move sorting heuristics when return with a ttMove.
     void updateTTMoveStats(Depth depth, Pos ttMove, Value ttValue, Value beta);

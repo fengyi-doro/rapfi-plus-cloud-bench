@@ -1,242 +1,61 @@
 name: Distributed Rapfi SPRT
-run-name: ${{ inputs.candidate_label }} vs orig · ${{ inputs.pairs }} pairs · ${{ inputs.time_control }} ms
-
+run-name: F23 frozen AVX2 build · mask ${{ inputs.mask }}
 on:
   workflow_dispatch:
     inputs:
-      pairs:
-        description: "Opening pairs (1–500). Each opening is played twice with colours reversed."
-        type: number
-        default: 500
-        required: true
-      candidate_label:
-        description: "Candidate name in game records and reports"
+      mask:
         type: string
-        default: v4
+        description: "screen builds the five single-module arms, or supply a selected decimal mask"
+        default: screen
         required: true
-      candidate_profile:
-        description: "Build profile for the checked-out src_plus revision"
-        type: choice
-        options: [v4, v3]
-        default: v4
-        required: true
-      time_control:
-        description: "Fischer clock in milliseconds, initial+increment"
-        type: string
-        default: "1500+40"
-        required: true
-      search_mode:
-        description: Challenger root search experiment
-        type: choice
-        options: [control, threat, d4, kata, proof]
-        default: control
-      lane_layout:
-        description: CPU allocation per match on each four-vCPU runner
-        type: choice
-        options: [packed-1t, isolated-1t, isolated-4t]
-        default: packed-1t
-      clock_policy:
-        description: Challenger time allocation with the same external Fischer clock
-        type: choice
-        options: [standard, fischer, guarded]
-        default: standard
-      oracle_family:
-        description: Public KataGomo model used by kata search mode
-        type: choice
-        options: [b24, nano, nano-native, nano-u8]
-        default: b24
-
 permissions:
   contents: read
-
+  actions: read
 env:
-  PAIRS: ${{ inputs.pairs }}
-  TIME_CONTROL: ${{ inputs.time_control }}
-  RAPFI_CANDIDATE_LABEL: ${{ inputs.candidate_label }}
-  RAPFI_BUILD_PROFILE: ${{ inputs.candidate_profile }}
-  RAPFI_ROOT_MODE: ${{ inputs.search_mode || 'control' }}
-  RAPFI_LANE_LAYOUT: ${{ inputs.lane_layout || 'packed-1t' }}
-  RAPFI_CLOCK_POLICY: ${{ inputs.clock_policy || 'standard' }}
-  RAPFI_ORACLE_FAMILY: ${{ inputs.oracle_family || 'b24' }}
-  OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
-
+  OPENBLAS_NUM_THREADS: 1
+  CUDA_VISIBLE_DEVICES: "-1"
 jobs:
   build:
-    name: Build and verify both Linux AVX2 engines
     runs-on: ubuntu-24.04
-    outputs:
-      matrix: ${{ steps.plan.outputs.matrix }}
-      shards: ${{ steps.plan.outputs.shards }}
-      initial_ms: ${{ steps.plan.outputs.initial_ms }}
-      increment_ms: ${{ steps.plan.outputs.increment_ms }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - id: plan
-        name: Validate the clock, candidate label and pair budget
-        run: python scripts/cloud_schedule.py
-      - name: Check the original source, runtime manifest and opening book against the inaugural match
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        id: frozen
+        continue-on-error: true
+        with:
+          name: engines-linux
+          path: historical
+          github-token: ${{ github.token }}
+          run-id: 45832263308
+      - if: steps.frozen.outcome != 'success'
+        uses: actions/checkout@v4
+        with:
+          ref: 9f4858626bffebc1d9e47de243c304bb69180108
+          path: frozen
+      - uses: actions/cache@v4
+        with:
+          path: build/linux-v4
+          key: f23-shared-zig0141-v1-${{ hashFiles('src_plus/**', 'build.py', 'scripts/build_v3.py') }}
+      - run: python -m pip install ziglang==0.14.1
+      - name: Build and fingerprint candidates against the two historical engines
+        env:
+          MASK: ${{ inputs.mask }}
         run: |
           test "$(git rev-parse HEAD:src_orig)" = 5a506c21eda356315d2cfb650db0332dcc760b2f
           test "$(git rev-parse HEAD:data/runtime_files.json)" = 1a980665618ad0ff03a912bede98a56ae7efdc67
           test "$(git rev-parse HEAD:data/v3/cloud_openings.json)" = 10d9933c22ed7bbb81d7593b3eec7d52a03e0740
-      - id: engines
-        uses: actions/cache@v4
-        with:
-          path: dist
-          key: rapfi-linux-musl-zig-0.14.1-${{ inputs.candidate_profile }}-${{ hashFiles('src_orig/**', 'src_plus/**', 'build.py', 'scripts/build_v3.py') }}
-      - if: steps.engines.outputs.cache-hit != 'true'
-        run: python -m pip install ziglang==0.14.1
-      - name: Compile both trees with identical release flags
-        if: steps.engines.outputs.cache-hit != 'true'
-        run: |
-          for variant in orig "$RAPFI_BUILD_PROFILE"; do
-            python scripts/build_v3.py "$variant" --target linux --profile "$RAPFI_BUILD_PROFILE" --out dist -j 4
-            cp "build/linux-$variant/manifest.json" "dist/$variant.json"
-          done
-          (cd dist && sha256sum pbrain-rapfi-* > SHA256SUMS)
-      - name: Verify the binaries, shared weights and AVX2-only execution
-        run: |
-          (cd dist && sha256sum -c SHA256SUMS)
-          if ! command -v qemu-x86_64 >/dev/null; then
-            sudo apt-get update -qq
-            sudo apt-get install -y --no-install-recommends qemu-user
+          if [[ "$MASK" == screen ]]; then
+            python scripts/f23_build.py 1 2 4 8 16
+          else
+            python scripts/f23_build.py "$MASK"
           fi
-          python scripts/check_cloud_build.py dist "$RAPFI_BUILD_PROFILE"
       - uses: actions/upload-artifact@v4
         with:
-          name: engines-linux
+          name: f23-engines
           path: dist/
           if-no-files-found: error
-          retention-days: 7
-
-      - if: env.RAPFI_ROOT_MODE == 'kata'
-        id: oracle
-        uses: actions/cache@v4
-        with:
-          path: oracle-dist
-          key: katagomo-${{ env.RAPFI_ORACLE_FAMILY }}-cpu-ort-1.22.1-${{ hashFiles('scripts/kata_oracle.py', 'data/positions.json') }}
-      - if: env.RAPFI_ROOT_MODE == 'kata' && steps.oracle.outputs.cache-hit != 'true'
-        name: Verify the public model and compare the CPU playing heads with the published weights
-        run: |
-          python -m pip install numpy==2.2.6 onnx==1.18.0 onnxruntime==1.22.1
-          python scripts/kata_oracle.py oracle-dist --positions data/positions.json --family "$RAPFI_ORACLE_FAMILY"
-      - if: env.RAPFI_ROOT_MODE == 'kata'
-        uses: actions/upload-artifact@v4
-        with:
-          name: katagomo-cpu
-          path: oracle-dist/
-          if-no-files-found: error
-          retention-days: 7
-
-  play:
-    name: Shard ${{ matrix.shard }} of ${{ needs.build.outputs.shards }}
-    needs: build
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      max-parallel: 20
-      matrix:
-        shard: ${{ fromJSON(needs.build.outputs.matrix) }}
-    env:
-      SHARD: ${{ matrix.shard }}
-      SHARDS: ${{ needs.build.outputs.shards }}
-      INITIAL_MS: ${{ needs.build.outputs.initial_ms }}
-      INCREMENT_MS: ${{ needs.build.outputs.increment_ms }}
-      RAPFI_ARENA_BIN: dist
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /.gitattributes
-            /scripts/
-            /data/v3/cloud_openings.json
-            /data/runtime_files.json
-            /data/recursive_foul.json
-            /config.toml
-            /*.bin
-            /*.lz4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install psutil==7.0.0
-      - if: env.RAPFI_ROOT_MODE == 'kata'
-        run: python -m pip install numpy==2.2.6 onnxruntime==1.22.1
-      - uses: actions/download-artifact@v4
-        with:
-          name: engines-linux
-          path: dist
-      - if: env.RAPFI_ROOT_MODE == 'kata'
-        uses: actions/download-artifact@v4
-        with:
-          name: katagomo-cpu
-          path: dist
-      - name: Play colour pairs using the dispatched CPU allocation
-        run: |
-          (cd dist && sha256sum -c SHA256SUMS && chmod +x pbrain-rapfi-*)
-          python scripts/arena_fast.py --book data/v3/cloud_openings.json --pairs "$PAIRS" \
-            --shards "$SHARDS" --shard "$SHARD" --lanes 4 --vcpu-lanes --out results \
-            --challenger "$RAPFI_CANDIDATE_LABEL" --opponent orig --initial-ms "$INITIAL_MS" --increment-ms "$INCREMENT_MS"
-      - name: Independently replay moves, clocks, colour swaps and CPU assignments
-        run: python scripts/replay.py --match-dir results --book data/v3/cloud_openings.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: shard-${{ matrix.shard }}
-          path: results/
-          if-no-files-found: error
-          retention-days: 7
-
-  aggregate:
-    name: Verify all pairs and publish Elo, LOS and SPRT
-    needs: [build, play]
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      actions: read
-    env:
-      SHARDS: ${{ needs.build.outputs.shards }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /.gitattributes
-            /scripts/
-            /data/v3/cloud_openings.json
-            /data/recursive_foul.json
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install numpy==2.2.6 psutil==7.0.0
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: shard-*
-          path: shards
-          merge-multiple: false
-      - uses: actions/download-artifact@v4
-        with:
-          name: engines-linux
-          path: dist
-      - if: env.RAPFI_ROOT_MODE == 'kata'
-        uses: actions/download-artifact@v4
-        with:
-          name: katagomo-cpu
-          path: dist
-      - name: Replay every game and compute paired statistics
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          workflow_start=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq '.created_at')
-          python scripts/distributed_sprt.py shards --pairs "$PAIRS" --shards "$SHARDS" --out report \
-            --workflow-start "$workflow_start" --build-info dist/build-info.json
-          cat report/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pentanomial-elo-los-sprt
-          path: report/
-          if-no-files-found: error
-          retention-days: 14
+          retention-days: 90

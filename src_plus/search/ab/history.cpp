@@ -17,6 +17,7 @@
  */
 
 #include "history.h"
+#include "f23_config.h"
 
 #include "../../game/board.h"
 #include "../searchthread.h"
@@ -76,7 +77,7 @@ void HistoryTracker::addSearchedMove(Pos move, Pos currentBestMove)
         quietsSearched[quietCount++] = move;
 }
 
-void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue)
+void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue, bool cutoff)
 {
     Color    self = board.sideToMove(), oppo = ~self;
     bool     oppo5  = board.p4Count(oppo, A_FIVE);
@@ -94,6 +95,17 @@ void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestVa
         for (int i = 0; i < quietCount; i++)
             searchData->mainHistory[self][quietsSearched[i]][HIST_QUIET] << -bonus;
     }
+
+#if F23_MALUS
+    // A tactical cutoff also refutes the quiets actually searched before it.
+    // Quiet-best cutoffs already applied the full native malus above.
+    if (cutoff && selfP4 >= H_FLEX3 && !oppo4 && !searchStack->skipMove
+        && !board.passMoveCount() && depth >= 2) {
+        for (int i = 0; i < quietCount; ++i)
+            searchData->mainHistory[self][quietsSearched[i]][HIST_QUIET] << -(bonus / 2);
+        searchData->f23Counts[8] += quietCount;
+    }
+#endif
 
     // Decrease stats for all the other played non-best attack moves
     for (int i = 0; i < attackCount; i++)

@@ -47,6 +47,18 @@ struct ABSearchData : SearchData
     MainHistory        mainHistory;         /// Heuristic history table
     CounterMoveHistory counterMoveHistory;  /// Counter move history table
 
+    // Root snapshot is published before the worker tasks start. All other
+    // experiment counters and learned values belong to this search thread.
+    std::array<std::array<uint64_t, 4>, 2> f15Baseline {};
+    bool f15Ready = false;
+    // F15 calls and wins by site, exhaustion, B1 wins, B2 penalties,
+    // B3 samples and nonzero uses, B4 adjusted late moves.
+    std::array<uint64_t, 12> f23Counts {};
+    using CorrectionTable = std::array<std::array<int16_t, 2048>, SIDE_NB>;
+    std::unique_ptr<CorrectionTable> correction;
+    unsigned stableIterations = 0, observedIterations = 0;
+    float stabilityAdjustment = 0;
+
     ~ABSearchData() = default;
 
     /// Clear all search states between two search.

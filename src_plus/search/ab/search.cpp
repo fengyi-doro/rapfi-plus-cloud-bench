@@ -35,6 +35,10 @@
 #include "pairing/search_hook.h"
 #include "searcher.h"
 #include "searchstack.h"
+#include "f23_config.h"
+#if F23_F15
+#include "f15_hook.h"
+#endif
 
 #include <algorithm>
 #include <array>
@@ -45,6 +49,7 @@
 #include <limits>
 #include <optional>
 #include <random>
+#include <sstream>
 #include <string_view>
 #include <tuple>
 
@@ -54,6 +59,65 @@ using namespace Search::AB;
 namespace {
 
 enum NodeType { Root, PV, NonPV };
+
+#if RAPFI_F23_MASK
+void printF23Counts(SearchThread &thread)
+{
+    std::array<uint64_t, 12> totals {};
+    for (size_t t = 0; t < thread.engine.size(); ++t) {
+        const auto &counts = thread.engine[t]->searchDataAs<ABSearchData>()->f23Counts;
+        for (size_t i = 0; i < counts.size(); ++i) totals[i] += counts[i];
+    }
+    std::ostringstream fields;
+    for (auto count : totals) fields << ' ' << count;
+    MESSAGEL("F23 " << RAPFI_F23_MASK << fields.str());
+}
+#endif
+
+#if F23_CORRECTION
+// Hash the distributions of recurring quiet shapes for both players. Mixing
+// only these features lets different full-board TT keys share a residual.
+size_t correctionBucket(const Board &board)
+{
+    uint32_t h = uint32_t(board.nonPassMoveCount() / 16 + 1);
+    for (Color side : {BLACK, WHITE})
+        for (Pattern4 p : {I_BLOCK3_PLUS, J_FLEX2_2X, H_FLEX3, K_BLOCK3})
+            h = (h ^ board.p4Count(side, p)) * 16777619u;
+    return (h ^ (h >> 16)) & 2047;
+}
+
+bool canCorrect(const Board &board, const SearchStack *ss)
+{
+    const auto &th = *board.thisThread();
+    const auto &opt = th.options();
+    return !ss->skipMove && !board.passMoveCount() && !th.dbClient &&
+           !opt.balanceMode && !opt.swapable && opt.blockMoves.empty() && opt.multiPV == 1
+           && !board.p4Count(board.sideToMove(), A_FIVE)
+           && !board.p4Count(board.sideToMove(), B_FLEX4);
+}
+
+Value applyCorrection(Board &board, SearchStack *ss, Value raw)
+{
+    if (!canCorrect(board, ss) || std::abs(raw) > VALUE_EVAL_MAX) return raw;
+    auto &sd = *board.thisThread()->searchDataAs<ABSearchData>();
+    const int adjustment = std::clamp(int((*sd.correction)[board.sideToMove()][correctionBucket(board)]) / 32, -24, 24);
+    sd.f23Counts[10] += adjustment != 0;
+    return Value(std::clamp(int(raw) + adjustment, int(VALUE_EVAL_MIN), int(VALUE_EVAL_MAX)));
+}
+
+void learnCorrection(Board &board, SearchStack *ss, Depth depth, Value best, Bound bound)
+{
+    const int raw = int(ss->staticEval);
+    if (depth < 2 || std::abs(raw) > VALUE_EVAL_MAX || std::abs(best) > VALUE_EVAL_MAX
+        || !canCorrect(board, ss) || (bound == BOUND_LOWER && best <= raw)
+        || (bound == BOUND_UPPER && best >= raw)) return;
+    auto &sd = *board.thisThread()->searchDataAs<ABSearchData>();
+    auto &entry = (*sd.correction)[board.sideToMove()][correctionBucket(board)];
+    const int target = 16 * std::clamp(int(best) - raw, -96, 96);
+    entry += (target - entry) * std::clamp(int(depth), 2, 8) / 32;
+    ++sd.f23Counts[9];
+}
+#endif
 
 const std::string_view rootExperiment = [] {
     const char *mode = std::getenv("RAPFI_ROOT_MODE");
@@ -259,6 +323,16 @@ void ABSearchData::clearData(SearchThread &th)
     bestMoveChanges = 0;
     singularRoot    = false;
     rootThreatExtensions = 0;
+#if RAPFI_F23_MASK
+    f23Counts.fill(0);
+#endif
+#if F23_CORRECTION
+    if (!correction) correction = std::make_unique<CorrectionTable>();
+#endif
+#if F23_STABILITY
+    stableIterations = observedIterations = 0;
+    stabilityAdjustment = 0;
+#endif
     mainHistory.init(0);
     counterMoveHistory.init(std::make_pair(Pos::NONE, NONE));
 }
@@ -283,6 +357,11 @@ void ABSearcher::clear(SearchEngine &pool, bool clearAllMemory)
     previousTimeReduction = 1.0f;
     previousBestValue     = VALUE_NONE;
 
+#if F23_CORRECTION
+    if (clearAllMemory)
+        for (size_t i = 0; i < pool.size(); ++i)
+            pool[i]->searchDataAs<ABSearchData>()->correction.reset();
+#endif
     initReductionLUT(reductions, pool.size());
 
     if (clearAllMemory)
@@ -352,6 +431,17 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
         }
     }
 #endif
+#if F23_F15
+    FoulTrap::prepare(th);
+    if (auto proof = FoulTrap::probe(*th.board, nullptr, FoulTrap::RootProbe)) {
+        if (std::find(th.rootMoves.begin(), th.rootMoves.end(), proof->gain) != th.rootMoves.end()) {
+            ctx.bestMove = proof->gain;
+            printF23Counts(th);
+            ctx.printer.printBestmoveWithoutSearch(th, proof->gain, proof->lowerBound, 0, nullptr);
+            return nullptr;
+        }
+    }
+#endif
     // Init transposition table generation
     prepareRootPrior(th, th.searchDataAs<ABSearchData>()->rootPrior, rootExperiment);
     TT.incGeneration();
@@ -366,6 +456,10 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
             extensions += th.engine[i]->searchDataAs<ABSearchData>()->rootThreatExtensions;
         MESSAGEL("ROOT_THREATS " << extensions);
     }
+
+#if RAPFI_F23_MASK
+    printF23Counts(th);
+#endif
 
     // Select best thread according to eval and completed depth when needed
     SearchThread *bestThread = &th;
@@ -478,6 +572,16 @@ void ABSearcher::search(SearchThread &th)
 
         // If search is complete, update completed depth.
         if (!th.engine.isTerminating()) {
+#if F23_STABILITY
+            const auto &leader = th.rootMoves[0];
+            if (sd.completedDepth.load() > 0 && std::abs(bestValue) <= VALUE_EVAL_MAX
+                && std::abs(leader.value) <= VALUE_EVAL_MAX) {
+                ++sd.observedIterations;
+                sd.stableIterations += leader.pv[0] == lastBestMove && std::abs(leader.value - bestValue) <= 24;
+                // Beta(3,3) prior shrinks early observations toward neutral.
+                sd.stabilityAdjustment = 0.4f * ((3.0f + sd.stableIterations) / (6.0f + sd.observedIterations) - 0.5f);
+            }
+#endif
             sd.completedDepth = sd.rootDepth;
         }
 
@@ -1028,6 +1132,9 @@ std::pair<Value, int> computeStaticEval(Board       &board,
         if (eval == VALUE_NONE)
             ss->staticEval = eval = Evaluation::evaluate<Rule>(board, alpha, beta);
 
+#if F23_CORRECTION
+        eval = applyCorrection(board, ss, ss->staticEval);
+#endif
         // Try to use ttValue as a better eval estimation
         if (ttValue != VALUE_NONE && (ttBound & (ttValue > eval ? BOUND_LOWER : BOUND_UPPER)))
             eval = ttValue;
@@ -1035,7 +1142,10 @@ std::pair<Value, int> computeStaticEval(Board       &board,
     else {
         ss->staticEval = eval = Evaluation::evaluate<Rule>(board, alpha, beta);
 
-        // Save static evaluation into transposition table
+#if F23_CORRECTION
+        eval = applyCorrection(board, ss, ss->staticEval);
+#endif
+        // The TT always stores the raw evaluation, including after a correction.
         if (!skipMove)
             TT.store(posKey,
                      VALUE_NONE,
@@ -1165,6 +1275,14 @@ Depth computeLmrReduction(Board            &board,
     // Decrease/increase reduction for moves with a good/bad history (~9 elo)
     r -= extensionFromStatScore<Rule>(ss->statScore, depth);
 
+#if F23_STABILITY
+    if (!PvNode && !oppo4 && depth >= 3 && moveCount >= 4 && !ss->skipMove && !board.passMoveCount()
+        && ss->moveP4[self] < H_FLEX3 && ss->moveP4[~self] < H_FLEX3
+        && searchData->stabilityAdjustment != 0) {
+        r += searchData->stabilityAdjustment;
+        ++searchData->f23Counts[11];
+    }
+#endif
     return r;
 }
 
@@ -1358,6 +1476,15 @@ Value search(Board &board, SearchStack *ss, Value alpha, Value beta, Depth depth
         }
     }
 
+#if F23_F15
+    if constexpr (Rule == RENJU && !RootNode) {
+        if (depth >= 3 && self == WHITE)
+            if (auto proof = FoulTrap::probe(board, ss, FoulTrap::MainProbe); proof && proof->lowerBound >= beta) {
+                if constexpr (PvNode) { ss->pv[0] = proof->gain; ss->pv[1] = Pos::NONE; }
+                return proof->lowerBound;
+            }
+    }
+#endif
     // Step 6. Static evaluation
     Value eval        = VALUE_NONE;
     int   improvement = 0;  // Static eval change in the last two ply
@@ -1680,6 +1807,20 @@ moves_loop:
 
         // Step 13. Extensions
         Depth extension = 0;
+        auto regularTtExtension = [&] {
+            Depth e = PvNode ? TTM_EXT_PV[Rule] : TTM_EXT_NONPV[Rule];
+            if (ss->moveP4[self] >= E_BLOCK4 && mt.distSelf <= 6)
+                e += (mt.distSelf <= 4 ? NEARB4_EXT_DIST4 : NEARB4_EXT_DIST6);
+            return e;
+        };
+#if F23_SINGULAR
+        const bool earlierTest = depth < SE_DEPTH && depth >= SE_DEPTH - 1 && ttHit
+            && ttDepth >= int(std::floor(depth)) - 1 && !board.passMoveCount()
+            && (ss->moveP4[self] >= H_FLEX3 || ss->moveP4[oppo] >= H_FLEX3)
+            && !thisThread->dbClient && !options.balanceMode;
+#else
+        constexpr bool earlierTest = false;
+#endif
 
         // Singular response extension for opponent B4 attack (~77 elo)
         if (oppo5)
@@ -1687,7 +1828,7 @@ moves_loop:
 
         // Singular extension: only one move fails high while other moves fails low on a search of
         // (alpha-s, beta-s), then this move is singular and should be extended. (~52 elo)
-        else if (!RootNode && depth >= SE_DEPTH && move == ttMove
+        else if (!RootNode && (depth >= SE_DEPTH || earlierTest) && move == ttMove
                  && !skipMove                                  // No recursive singular search
                  && std::abs(ttValue) < VALUE_MATE_IN_MAX_PLY  // ttmove value is not a mate
                  && (ttBound & BOUND_LOWER)                    // ttMove failed high last time
@@ -1695,7 +1836,7 @@ moves_loop:
         ) {
             bool  formerPv = !PvNode && ss->ttPv;
             Value singularBeta =
-                std::max(ttValue - singularMargin<Rule>(depth, formerPv), -VALUE_MATE);
+                std::max(ttValue - singularMargin<Rule>(depth, formerPv) - (earlierTest ? 20 : 0), -VALUE_MATE);
 
             // Exclude ttMove from the reduced depth search to see the value of second best move
             ss->skipMove = move;
@@ -1706,7 +1847,21 @@ moves_loop:
                                         depth - singularReduction(depth, formerPv),
                                         cutNode);
             ss->skipMove = Pos::NONE;
-
+#if F23_SINGULAR
+            if (earlierTest) {
+                if (thisThread->engine.isTerminating()) return VALUE_NONE;
+                ss->moveP4[BLACK] = board.pattern4(move, BLACK);
+                ss->moveP4[WHITE] = board.pattern4(move, WHITE);
+                ss->moveCount = moveCount;
+                if (value != -VALUE_BLOCKED && value != VALUE_NONE && value < singularBeta) {
+                    extension = 1.0f;
+                    ++searchData->f23Counts[7];
+                }
+                else extension = regularTtExtension();
+            }
+            else
+#endif
+            {
             // Every non-ttMove alternative was blocked by database records: the
             // exclusion search produced no real score, so treat the ttMove as
             // singular (nothing else is playable) rather than as a multi-cut.
@@ -1728,17 +1883,12 @@ moves_loop:
             // Reduce if we are likely to fail high.
             else if (ttValue >= beta)
                 extension = -SE_REDUCTION_FH;
+            }
         }
 
         // Extension for ttmove without singular extension (~12 elo)
-        else if (move == ttMove) {
-            // Extension for ttmove
-            extension = PvNode ? TTM_EXT_PV[Rule] : TTM_EXT_NONPV[Rule];
-
-            // Additional extension for near B4 ttmove
-            if (ss->moveP4[self] >= E_BLOCK4 && mt.distSelf <= 6)
-                extension += (mt.distSelf <= 4 ? NEARB4_EXT_DIST4 : NEARB4_EXT_DIST6);
-        }
+        else if (move == ttMove)
+            extension = regularTtExtension();
 
         if constexpr (RootNode) {
             // Add a reply for a forcing threat or a move that both builds and parries a live three.
@@ -2027,10 +2177,14 @@ moves_loop:
     }
     // If we have found a best move, update move heuristics
     else if (bestMove)
-        histTracker.updateBestmoveStats(depth, bestMove, bestValue);
+        histTracker.updateBestmoveStats(depth, bestMove, bestValue, bestValue >= beta);
 
     // Step 20. Update database record
     Bound bound = bestValue >= beta ? BOUND_LOWER : PvNode && bestMove ? BOUND_EXACT : BOUND_UPPER;
+#if F23_CORRECTION
+    if (!RootNode && !oppo4 && moveCount && (!bestMove || board.pattern4(bestMove, self) < H_FLEX3))
+        learnCorrection(board, ss, depth, bestValue, bound);
+#endif
     writeDatabaseRecord<Rule, NT>(board, ss, depth, bestValue, bound, db);
 
     // Adjust best value with Win/Loss record from database in PV node
@@ -2166,6 +2320,15 @@ Value vcfsearch(Board &board, SearchStack *ss, Value alpha, Value beta, Depth de
             return ttValue;
     }
 
+#if F23_F15
+    if constexpr (Rule == RENJU) {
+        if (depth == 0 && self == WHITE)
+            if (auto proof = FoulTrap::probe(board, ss, FoulTrap::VcfProbe); proof && proof->lowerBound >= beta) {
+                if constexpr (PvNode) { ss->pv[0] = proof->gain; ss->pv[1] = Pos::NONE; }
+                return proof->lowerBound;
+            }
+    }
+#endif
     // Step 5. Static position evaluation
     if (ttHit) {
         // Never assume anything about values stored in TT
