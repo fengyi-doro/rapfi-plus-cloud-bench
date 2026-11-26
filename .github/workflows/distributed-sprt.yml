@@ -6,12 +6,20 @@ on:
       phase:
         type: choice
         description: Frozen builds, direct ablations, selected combination or isolated certification
-        options: [screen, bundles, build, combine, cert1, cert4]
+        options: [screen, bundles, build, combine, cert1, cert4, package]
         default: screen
         required: true
       build_run:
         type: string
         description: Successful F23 build run containing the exact playing binaries
+        required: false
+      cert1_run:
+        type: string
+        description: Completed one-thread certification for the final package
+        required: false
+      cert4_run:
+        type: string
+        description: Completed four-thread certification for the final package
         required: false
       mask:
         type: string
@@ -77,7 +85,7 @@ jobs:
           retention-days: 90
 
   verify:
-    if: inputs.phase != 'build'
+    if: inputs.phase != 'build' && inputs.phase != 'package'
     runs-on: ubuntu-24.04
     outputs:
       build_sha: ${{ steps.provenance.outputs.sha }}
@@ -210,6 +218,62 @@ jobs:
         with:
           name: rapfi-plus-v5-linux-avx2
           path: rapfi-plus-v5-linux-avx2.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 90
+
+  package:
+    if: inputs.phase == 'package'
+    runs-on: ubuntu-24.04
+    env:
+      PHASE: cert1
+      OTHER_CERT_SUITE: four/suite.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check completed build and both audited certifications
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ONE: ${{ inputs.cert1_run }}
+          FOUR: ${{ inputs.cert4_run }}
+        run: |
+          for id in "$BUILD_RUN" "$ONE" "$FOUR"; do
+            [[ "$id" =~ ^[0-9]+$ ]]
+            test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id" --jq '.conclusion')" = success
+          done
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-engines
+          path: dist
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-report
+          path: report
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.cert1_run }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-report
+          path: four
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.cert4_run }}
+      - name: Package the shared executable and verify all members after extraction
+        run: |
+          python -m pip install numpy==2.2.6 psutil==7.0.0
+          python scripts/f23_match.py package
+          mkdir verify-archive
+          tar -C verify-archive -xzf rapfi-plus-v5-linux-avx2.tar.gz
+          (cd verify-archive/rapfi-plus-v5 && sha256sum --check SHA256SUMS)
+          sha256sum rapfi-plus-v5-linux-avx2.tar.gz > rapfi-plus-v5-linux-avx2.tar.gz.sha256
+          cat rapfi-plus-v5-linux-avx2.tar.gz.sha256 >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rapfi-plus-v5-linux-avx2
+          path: rapfi-plus-v5-linux-avx2.tar.gz*
           compression-level: 0
           if-no-files-found: error
           retention-days: 90

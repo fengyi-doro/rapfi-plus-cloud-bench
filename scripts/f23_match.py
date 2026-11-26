@@ -170,11 +170,30 @@ def package(duel, build):
         files[name] = sha(release / name)
     if any(files[k] != v for k, v in build["runtime"].items()):
         raise ValueError("release runtime differs from certified weights")
-    dump(release / "certification.json", dict(run=os.environ["GITHUB_RUN_ID"], mask=duel.mask,
-         source=build["baseline_commit"] if not duel.mask else os.environ["BUILD_SHA"],
-         build_run=os.environ["BUILD_RUN"], executable=digest, scores=result["scores"], audit=result["audit"]))
+    suite = load(REPORT / "suite.json")
+    certified = {suite["phase"]: dict(run=suite["run"], scores=result["scores"], audit=result["audit"])}
+    other_path = os.environ.get("OTHER_CERT_SUITE")
+    if other_path:
+        other = load(Path(other_path))
+        opposite = "cert4" if suite["phase"] == "cert1" else "cert1"
+        if other["phase"] != opposite or len(other["results"]) != 1:
+            raise ValueError("the release requires the other thread allocation")
+        additional, = other["results"].values()
+        label, opp = additional["players"]
+        if (opp != "orig" or additional["mask"] != duel.mask or additional["binaries"][label] != digest
+                or additional["binaries"][opp] != result["binaries"][duel.opponent]
+                or additional["audit"]["games"] != 1000
+                or additional["audit"]["referee_mismatches"] or additional["audit"]["json_psq_mismatches"]):
+            raise ValueError("the second certification does not match the release")
+        certified[opposite] = dict(run=other["run"], scores=additional["scores"], audit=additional["audit"])
+    dump(release / "certification.json", dict(run=suite["run"], mask=duel.mask,
+         source=build["baseline_commit"] if not duel.mask else load(REPORT / duel.slug / "build.json")["build_sha"],
+         build_run=os.environ["BUILD_RUN"], package_run=os.environ["GITHUB_RUN_ID"],
+         executable=digest, scores=result["scores"], audit=result["audit"], certifications=certified))
     files["certification.json"] = sha(release / "certification.json")
-    (release / "SHA256SUMS").write_text("".join(f"{d}  {n}\\n" for n, d in sorted(files.items())))
+    with (release / "SHA256SUMS").open("w", encoding="ascii") as checksums:
+        for name, file_hash in sorted(files.items()):
+            print(f"{file_hash}  {name}", file=checksums)
     with tarfile.open("rapfi-plus-v5-linux-avx2.tar.gz", "w:gz", compresslevel=3) as archive:
         archive.add(release, arcname=release.name)
 
