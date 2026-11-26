@@ -4,7 +4,6 @@
 #include "f15/certificate.hpp"
 #include "searcher.h"
 #include "searchstack.h"
-#include "../skill.h"
 
 namespace Search::AB::FoulTrap {
 
@@ -17,7 +16,7 @@ inline bool hasGain(const Board &board)
 
 // Certify the played prefix once. A Renju foul or a five terminates a real
 // game, even if a diagram submitted through the analysis protocol continues.
-inline void prepare(SearchThread &th)
+inline void prepare(SearchThread &th, bool handicap)
 {
     const Board &board = *th.board;
     const auto &options = th.options();
@@ -27,7 +26,7 @@ inline void prepare(SearchThread &th)
         || board.sideToMove() != Color(board.ply() % 2) || options.balanceMode
         || options.swapable || options.multiPV != 1 || !options.blockMoves.empty()
         || options.drawResult != SearchOptions::RES_DRAW || th.dbClient
-        || th.engine.ctx.inPonder || SkillMovePicker(options.strengthLevel).enabled())
+        || th.engine.ctx.inPonder || handicap)
         return;
 
     f15::Board position;

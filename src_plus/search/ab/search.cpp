@@ -432,7 +432,7 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
     }
 #endif
 #if F23_F15
-    FoulTrap::prepare(th);
+    FoulTrap::prepare(th, SkillMovePicker(opts.strengthLevel).enabled());
     if (auto proof = FoulTrap::probe(*th.board, nullptr, FoulTrap::RootProbe)) {
         if (std::find(th.rootMoves.begin(), th.rootMoves.end(), proof->gain) != th.rootMoves.end()) {
             ctx.bestMove = proof->gain;
