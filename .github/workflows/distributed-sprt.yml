@@ -200,3 +200,14 @@ jobs:
           path: report/
           if-no-files-found: error
           retention-days: 90
+
+      - if: startsWith(inputs.phase, 'cert')
+        run: python scripts/f23_match.py package
+      - if: startsWith(inputs.phase, 'cert')
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapfi-plus-v5-linux-avx2
+          path: rapfi-plus-v5-linux-avx2.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 90

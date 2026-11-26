@@ -2,6 +2,8 @@
 from dataclasses import dataclass
 import json
 import os
+import shutil
+import tarfile
 from pathlib import Path
 import subprocess
 import sys
@@ -145,6 +147,31 @@ def publish(duels, build, phase):
                                      sha=os.environ["GITHUB_SHA"], build=os.environ["BUILD_RUN"],
                                      results=results, decision=decision))
 
+def package(duel, build):
+    # Package only the fingerprint that passed this exact certification round.
+    result = load(REPORT / "suite.json")["results"][duel.slug]
+    digest = result["binaries"][duel.label]
+    release = Path("release") / "rapfi-plus-v5"
+    release.mkdir(parents=True, exist_ok=True)
+    binary = release / "pbrain-rapfi-plus-v5"
+    shutil.copy(DIST / filename(duel.binary), binary)
+    binary.chmod(0o755)
+    if sha(binary) != digest:
+        raise ValueError("release executable differs from the certified engine")
+    files = {binary.name: digest}
+    for name in [*build["runtime"], "Copying.txt", "Networks-LICENSE.txt"]:
+        shutil.copy(name, release / name)
+        files[name] = sha(release / name)
+    if any(files[k] != v for k, v in build["runtime"].items()):
+        raise ValueError("release runtime differs from certified weights")
+    dump(release / "certification.json", dict(run=os.environ["GITHUB_RUN_ID"], mask=duel.mask,
+         source=build["baseline_commit"] if not duel.mask else os.environ["BUILD_SHA"],
+         build_run=os.environ["BUILD_RUN"], executable=digest, scores=result["scores"], audit=result["audit"]))
+    files["certification.json"] = sha(release / "certification.json")
+    (release / "SHA256SUMS").write_text("".join(f"{d}  {n}\\n" for n, d in sorted(files.items())))
+    with tarfile.open("rapfi-plus-v5-linux-avx2.tar.gz", "w:gz", compresslevel=3) as archive:
+        archive.add(release, arcname=release.name)
+
 
 if __name__ == "__main__":
     task = sys.argv[1]
@@ -155,6 +182,10 @@ if __name__ == "__main__":
         play(duels, build)
     elif task == "publish":
         publish(duels, build, phase)
+    elif task == "package":
+        if not phase.startswith("cert") or len(duels) != 1:
+            raise ValueError("a completed final is required")
+        package(duels[0], build)
     elif task == "check":
         for duel in duels:
             manifest(duel, build)
