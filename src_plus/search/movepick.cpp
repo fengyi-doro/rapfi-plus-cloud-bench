@@ -380,6 +380,11 @@ void MovePicker::scoreAllMoves()
         }
 
         int counterMoveBonus = 0;
+        if (bool(Type & MAIN_HISTORY) && historyScoring.threatReplies) {
+            const auto &row = *historyScoring.threatReplies;
+            historyBonus += row[board.pattern4(m.pos, self)][board.pattern4(m.pos, oppo)]
+                               [threatReplyDistance(historyScoring.lastThreatMove, m.pos)].get() / 128;
+        }
         if (bool(Type & COUNTER_MOVE) && historyScoring.counterMoveHistory) {
             if (Pos lastMove = board.getLastMove(); board.isInBoard(lastMove)) {
                 auto [counterMove, counterMoveP4] =

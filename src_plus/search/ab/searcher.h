@@ -46,6 +46,9 @@ struct ABSearchData : SearchData
 
     MainHistory        mainHistory;         /// Heuristic history table
     CounterMoveHistory counterMoveHistory;  /// Counter move history table
+    using ThreatHistory = std::array<std::array<ThreatReplyRow, 4>, SIDE_NB>;
+    std::unique_ptr<ThreatHistory> threatHistory;
+    unsigned threatHistoryUpdates = 0;
 
     ~ABSearchData() = default;
 

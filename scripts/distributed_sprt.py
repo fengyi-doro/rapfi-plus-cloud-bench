@@ -173,6 +173,11 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                 result["move_timing"][name]["root_prior"][group] = dict(
                     recorded_depths=len(depths), median_depth=depths[(len(depths)-1)//2] if depths else None,
                     zero_depth=sum(v == 0 for v in depths))
+        if reference["root_mode"] == "history" and name == challenger:
+            total = sum(t.get("threat_history_updates", 0) for t in all_turns)
+            if not total:
+                raise ValueError("no threat-conditioned history updates in the match")
+            result["move_timing"][name]["threat_history_updates"] = total
         if reference["root_mode"] == "vct" and name == challenger:
             result["move_timing"][name]["three"] = {
                 k:sum(t.get(k, 0) for t in all_turns) for k in ("three_attempts", "three_wins", "three_verified_replies", "three_nodes", "three_ns")}

@@ -259,6 +259,9 @@ void ABSearchData::clearData(SearchThread &th)
     bestMoveChanges = 0;
     singularRoot    = false;
     rootThreatExtensions = 0;
+    threatHistoryUpdates = 0;
+    if (rootExperiment == "history" && !threatHistory)
+        threatHistory = std::make_unique<ThreatHistory>();
     mainHistory.init(0);
     counterMoveHistory.init(std::make_pair(Pos::NONE, NONE));
 }
@@ -282,6 +285,10 @@ void ABSearcher::clear(SearchEngine &pool, bool clearAllMemory)
     // Clear time control variables for one game
     previousTimeReduction = 1.0f;
     previousBestValue     = VALUE_NONE;
+    if (rootExperiment == "history")
+        for (auto &worker : pool)
+            if (auto data = worker->searchDataAs<ABSearchData>())
+                data->threatHistory.reset();
 
     initReductionLUT(reductions, pool.size());
 
@@ -369,6 +376,12 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
         for (size_t i = 0; i < th.engine.size(); ++i)
             extensions += th.engine[i]->searchDataAs<ABSearchData>()->rootThreatExtensions;
         MESSAGEL("ROOT_THREATS " << extensions);
+    }
+    if (rootExperiment == "history") {
+        unsigned updates = 0;
+        for (auto &worker : th.engine)
+            updates += worker->searchDataAs<ABSearchData>()->threatHistoryUpdates;
+        MESSAGEL("THREAT_HISTORY " << updates);
     }
 
     // Select best thread according to eval and completed depth when needed
@@ -761,11 +774,7 @@ Value search(Rule         rule,
                       board,
                       MovePicker::ExtraArgs<MovePicker::MAIN> {
                           thisThread->rootMoves[0].pv[0],
-                          makeMoveHistoryScoring(
-                              rule,
-                              board.sideToMove(),
-                              thisThread->searchDataAs<ABSearchData>()->mainHistory,
-                              thisThread->searchDataAs<ABSearchData>()->counterMoveHistory),
+                          makeMoveHistoryScoring(rule, board, *thisThread->searchDataAs<ABSearchData>()),
                       });
 
         // Refresh root move index in balance2Moves
@@ -1482,10 +1491,7 @@ moves_loop:
                   board,
                   MovePicker::ExtraArgs<MovePicker::MAIN> {
                       ttMove,
-                      makeMoveHistoryScoring(Rule,
-                                             board.sideToMove(),
-                                             searchData->mainHistory,
-                                             searchData->counterMoveHistory),
+                      makeMoveHistoryScoring(Rule, board, *searchData),
                   });
 
     // Step 11. Loop through all legal moves until no moves remain
@@ -2031,7 +2037,7 @@ moves_loop:
     }
     // If we have found a best move, update move heuristics
     else if (bestMove)
-        histTracker.updateBestmoveStats(depth, bestMove, bestValue);
+        histTracker.updateBestmoveStats(depth, bestMove, bestValue, bestValue >= beta);
 
     // Step 20. Update database record
     Bound bound = bestValue >= beta ? BOUND_LOWER : PvNode && bestMove ? BOUND_EXACT : BOUND_UPPER;

@@ -49,17 +49,34 @@ static_assert(std::numeric_limits<int>::max() >= 1LL * 10692 * 2048);
 
 namespace Search::AB {
 
-MoveHistoryScoring makeMoveHistoryScoring(Rule                      rule,
-                                          Color                     sideToMove,
-                                          const MainHistory        &mainHistory,
-                                          const CounterMoveHistory &counterMoveHistory)
+namespace {
+
+int threatContext(const Board &board, Pos last, Color opponent)
 {
-    int table = historyTableIndex(rule, sideToMove);
-    return {&mainHistory,
-            &counterMoveHistory,
+    // Occupied cells retain the patterns they had when the stone was placed.
+    const Pattern4 p = board.pattern4(last, opponent);
+    return int(p >= K_BLOCK3) + int(p >= H_FLEX3) + int(p >= E_BLOCK4);
+}
+
+}  // namespace
+
+MoveHistoryScoring makeMoveHistoryScoring(Rule rule, const Board &board, const ABSearchData &data)
+{
+    const Color side = board.sideToMove();
+    const int table = historyTableIndex(rule, side);
+    MoveHistoryScoring scoring {&data.mainHistory,
+            &data.counterMoveHistory,
             MainHistoryAttackWeight[table],
             MainHistoryQuietWeight[table],
             CounterMoveBonus[table]};
+    if (data.threatHistory) {
+        const Pos last = board.getLastMove();
+        if (board.isInBoard(last)) {
+            scoring.lastThreatMove = last;
+            scoring.threatReplies = &(*data.threatHistory)[side][threatContext(board, last, ~side)];
+        }
+    }
+    return scoring;
 }
 
 void HistoryTracker::addSearchedMove(Pos move, Pos currentBestMove)
@@ -76,7 +93,7 @@ void HistoryTracker::addSearchedMove(Pos move, Pos currentBestMove)
         quietsSearched[quietCount++] = move;
 }
 
-void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue)
+void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestValue, bool cutoff)
 {
     Color    self = board.sideToMove(), oppo = ~self;
     bool     oppo5  = board.p4Count(oppo, A_FIVE);
@@ -104,6 +121,27 @@ void HistoryTracker::updateBestmoveStats(Depth depth, Pos bestMove, Value bestVa
     if (Pos lastMove = board.getLastMove(); !oppo5 && board.isInBoard(lastMove)) {
         searchData->counterMoveHistory[oppo][lastMove.moveIndex()] =
             std::make_pair(bestMove, selfP4);
+        if (searchData->threatHistory && cutoff && depth >= 2) {
+            auto &row = (*searchData->threatHistory)[self][threatContext(board, lastMove, oppo)];
+            auto slot = [&](Pos p) -> ThreatReplyRow::Entry & {
+                return row[board.pattern4(p, self)][board.pattern4(p, oppo)][threatReplyDistance(lastMove, p)];
+            };
+            const int reward = std::clamp(bonus / 4, 1, 1024);
+            auto &winner = slot(bestMove);
+            winner << reward;
+            ThreatReplyRow::Entry *previous = nullptr;
+            // Limit penalties when many coordinates represent the same kind of reply.
+            for (Pos alternative : {quietCount ? quietsSearched[0] : Pos::NONE,
+                                    attackCount ? attacksSearched[0] : Pos::NONE}) {
+                if (!alternative)
+                    continue;
+                auto &entry = slot(alternative);
+                if (&entry != &winner && &entry != previous)
+                    entry << -(reward / 2);
+                previous = &entry;
+            }
+            ++searchData->threatHistoryUpdates;
+        }
     }
 }
 

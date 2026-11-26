@@ -38,6 +38,8 @@ def root_metrics(lines):
     for line in lines:
         if line.startswith("MESSAGE ROOT_THREATS "):
             metrics["root_threat_extensions"] = int(line.split()[-1])
+        if line.startswith("MESSAGE THREAT_HISTORY "):
+            metrics["threat_history_updates"] = int(line.split()[-1])
         if line.startswith("MESSAGE ROOT_PROOF "):
             _, _, win, excluded, nodes, *duration = line.split()
             metrics.update(root_proven_win=int(win), root_proven_losses=int(excluded), root_proof_nodes=int(nodes))
