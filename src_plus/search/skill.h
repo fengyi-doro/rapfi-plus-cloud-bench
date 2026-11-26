@@ -16,6 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include "../core/pos.h"
 #include "../core/types.h"
 #include "../core/utils.h"
