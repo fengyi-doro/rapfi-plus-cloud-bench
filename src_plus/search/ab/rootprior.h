@@ -21,5 +21,6 @@ struct RootPrior
 
 void prepareRootPrior(SearchThread &thread, RootPrior &prior, std::string_view experiment);
 Pos prepareRootProof(SearchThread &thread, Value &mate);
+Pos prepareRootThreeProof(SearchThread &thread, Value &mate);
 
 }  // namespace Search::AB

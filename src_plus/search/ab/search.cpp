@@ -324,9 +324,12 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
     }
 
     const char *proofFirst = std::getenv("RAPFI_PROOF_FIRST");
-    if (rootExperiment == "proof" || (proofFirst && std::string_view(proofFirst) == "true")) {
+    if (rootExperiment == "proof" || rootExperiment == "vct" || (proofFirst && std::string_view(proofFirst) == "true")) {
         Value mate = VALUE_NONE;
-        if (Pos move = prepareRootProof(th, mate)) {
+        Pos move = prepareRootProof(th, mate);
+        if (!move && rootExperiment == "vct")
+            move = prepareRootThreeProof(th, mate);
+        if (move) {
             ctx.bestMove = move;
             ctx.printer.printBestmoveWithoutSearch(th, move, mate, 0, nullptr);
             return nullptr;

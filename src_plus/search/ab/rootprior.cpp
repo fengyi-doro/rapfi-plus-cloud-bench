@@ -11,6 +11,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
+#include <iterator>
 #include <limits>
 #include <stdexcept>
 
@@ -247,6 +248,121 @@ Pos prepareRootProof(SearchThread &thread, Value &mate)
     const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start).count();
     MESSAGEL("ROOT_PROOF " << int(bool(winning)) << ' ' << removed << ' ' << attack.nodes + defence.nodes << ' ' << elapsed);
+    return winning;
+}
+
+namespace {
+
+using ProofClock = std::chrono::steady_clock;
+
+// The first threat need not give check. A VCF continuation must work after
+// every legal defender reply, including remote counterattacks and wins.
+int proveAllReplies(RZone::Position &pos, Color us, RZone::Work &work,
+                    ProofClock::time_point deadline, unsigned &covered)
+{
+    using namespace RZone;
+    if (pos.targets(~us, 4).any())
+        return 0;
+    Proof primary = findWin(pos, us, 13, work);
+    Mask critical;
+    if (primary.empty() || !verify(pos, us, primary, &critical))
+        return 0;
+
+    Mask ordinary = pos.empties();
+    for (size_t w = 0; w < ordinary.words.size(); ++w)
+        ordinary.words[w] &= ~critical.words[w];
+    std::vector<Proof> lines {std::move(primary)};
+    int worst = 0;
+    unsigned examined = 0;
+    // Check the witness's area of influence first. Even outside that area,
+    // replay the line on the actual child before accepting the root move.
+    for (Mask replies : {critical, ordinary}) {
+        for (int r; (r = replies.pop()) != NoCell;) {
+            if (ProofClock::now() >= deadline)
+                return 0;
+            if (pos.forbidden(r, ~us))
+                continue;
+            pos.put(r, ~us);
+            int length = 0;
+            if (!pos.winsOn(r, ~us)) {
+                auto line = std::find_if(lines.begin(), lines.end(), [&](const Proof &p) {
+                    return verify(pos, us, p);
+                });
+                if (line == lines.end()) {
+                    Proof alternative = findWin(pos, us, 13, work);
+                    if (!alternative.empty() && verify(pos, us, alternative)) {
+                        lines.push_back(std::move(alternative));
+                        line = std::prev(lines.end());
+                    }
+                }
+                if (line != lines.end())
+                    length = int(2 * line->size()) + (line->back().kind == End::Five ? -1 : 1);
+            }
+            pos.take(r);
+            if (!length)
+                return 0;
+            worst = std::max(worst, length);
+            ++examined;
+        }
+    }
+    covered = examined;
+    return examined ? 2 + worst : 0;
+}
+
+}  // namespace
+
+Pos prepareRootThreeProof(SearchThread &thread, Value &mate)
+{
+    using namespace RZone;
+    const Board &root = *thread.board;
+    const auto &opts = thread.options();
+    const Color us = root.sideToMove();
+    if (!opts.timeLimit || opts.balanceMode || opts.multiPV != 1 || !thread.evaluator || root.size() != Width
+        || root.ply() < 10 || root.ply() > 84 || opts.timeLeft < 350 || root.p4Count(~us, A_FIVE)
+        || (!root.p4Count(us, H_FLEX3) && !root.p4Count(us, G_FLEX3_PLUS) && !root.p4Count(us, F_FLEX3_2X)))
+        return Pos::NONE;
+
+    auto start = ProofClock::now();
+    auto budget = std::clamp<Time>(thread.engine.ctx.timectl.optimum() / 22, 1, 3);
+    auto deadline = start + std::chrono::milliseconds(budget);
+    std::vector<Pos> candidates;
+    Policy local(Width);
+    for (const auto &move : thread.rootMoves) {
+        const Pos p = move.pv[0];
+        const Pattern4 pattern = root.pattern4(p, us);
+        if (pattern >= H_FLEX3 && pattern <= F_FLEX3_2X) {
+            candidates.push_back(p);
+            local.setComputeFlag(p);
+        }
+    }
+    Work work {0, 1100};
+    unsigned attempts = 0, covered = 0;
+    Pos winning = Pos::NONE;
+    if (!candidates.empty()) {
+        thread.evaluator->evaluatePolicy(root, local);
+        std::stable_sort(candidates.begin(), candidates.end(), [&](Pos a, Pos b) {
+            return local.score(a) > local.score(b);
+        });
+        Position position(root, opts.rule);
+        for (Pos p : candidates) {
+            if (attempts >= 4 || work.nodes >= work.limit || ProofClock::now() >= deadline)
+                break;
+            ++attempts;
+            const int cell = cellId(p);
+            if (position.forbidden(cell, us))
+                continue;
+            position.put(cell, us);
+            int plies = proveAllReplies(position, us, work, deadline, covered);
+            position.take(cell);
+            if (plies) {
+                winning = p;
+                mate = mate_in(plies);
+                break;
+            }
+        }
+    }
+    const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(ProofClock::now() - start).count();
+    MESSAGEL("ROOT_THREE_PROOF " << attempts << ' ' << int(bool(winning)) << ' ' << covered << ' ' << work.nodes << ' ' << elapsed);
     return winning;
 }
 

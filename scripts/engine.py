@@ -47,11 +47,17 @@ def root_metrics(lines):
                     metrics.update(root_prior="proof", root_prior_ns=int(duration[0]))
         if line.startswith("MESSAGE ROOT_GATE_NS "):
             metrics["root_gate_ns"] = int(line.split()[-1])
+        if line.startswith("MESSAGE ROOT_THREE_PROOF "):
+            _, _, attempts, win, replies, nodes, duration = line.split()
+            metrics.update(three_attempts=int(attempts), three_wins=int(win), three_verified_replies=int(replies),
+                           three_nodes=int(nodes), three_ns=int(duration))
         if line.startswith("MESSAGE ROOT_PRIOR "):
             _, _, mode, ns = line.split()
             if "root_prior_ns" in metrics or mode != os.environ.get("RAPFI_ROOT_MODE") or int(ns) <= 0:
                 raise ValueError(f"invalid root timing: {line}")
             metrics.update(root_prior=mode, root_prior_ns=int(ns))
+    if os.environ.get("RAPFI_ROOT_MODE") == "vct" and ("three_ns" in metrics or "root_proof_ns" in metrics):
+        metrics.update(root_prior="vct", root_prior_ns=metrics.get("three_ns", 0) + metrics.get("root_proof_ns", 0))
     return metrics
 
 

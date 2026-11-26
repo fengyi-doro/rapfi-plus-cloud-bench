@@ -103,6 +103,10 @@ def render():
                   if timing["turns"] else "")
         if timing.get("threat_extensions"):
             detail += f"实际增加搜索深度 {timing['threat_extensions']:,} 次。"
+        if three := timing.get("three"):
+            detail += (f"根部活三起手尝试 {three['three_attempts']:,} 着，"
+                       f"覆盖所有合法应手的胜着 {three['three_wins']:,} 次，"
+                       f"在实际子局面验证这些胜着的应手 {three['three_verified_replies']:,} 个。")
         if proof := timing.get("proof"):
             detail += f"根部证明直接选出胜着 {proof['root_proven_win']:,} 手，排除已证败着 {proof['root_proven_losses']:,} 个。"
             if "root_proof_ns" in proof:

@@ -158,7 +158,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             p95_ms=wall[math.ceil(.95*len(wall))-1]/1e6 if wall else None,
             threat_extensions=sum(t.get("root_threat_extensions", 0) for t in all_turns))
         prior = sorted(t["root_prior_ns"] for t in all_turns if "root_prior_ns" in t)
-        if name == challenger and reference["root_mode"] in ("d4", "kata", "proof") and not prior:
+        if name == challenger and reference["root_mode"] in ("d4", "kata", "proof", "vct") and not prior:
             raise ValueError("no timed root-oracle calls in the match")
         if prior:
             if name != challenger or any(t["root_prior"] != reference["root_mode"] for t in all_turns if "root_prior_ns" in t):
@@ -172,7 +172,10 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                 result["move_timing"][name]["root_prior"][group] = dict(
                     recorded_depths=len(depths), median_depth=depths[(len(depths)-1)//2] if depths else None,
                     zero_depth=sum(v == 0 for v in depths))
-        if (reference["root_mode"] == "proof" or reference["proof_first"]) and name == challenger:
+        if reference["root_mode"] == "vct" and name == challenger:
+            result["move_timing"][name]["three"] = {
+                k:sum(t.get(k, 0) for t in all_turns) for k in ("three_attempts", "three_wins", "three_verified_replies", "three_nodes", "three_ns")}
+        if (reference["root_mode"] in ("proof", "vct") or reference["proof_first"]) and name == challenger:
             result["move_timing"][name]["proof"] = {
                 k:sum(t.get(k, 0) for t in all_turns)
                 for k in ("root_proven_win", "root_proven_losses", "root_proof_nodes", "root_proof_ns")}
