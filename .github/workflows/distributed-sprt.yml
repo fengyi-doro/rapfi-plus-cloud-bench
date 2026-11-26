@@ -41,9 +41,9 @@ on:
         options: [standard, fischer, guarded]
         default: standard
       oracle_family:
-        description: Public KataGomo model used by kata search mode
+        description: Public KataGomo model or a verified research student used by kata search mode
         type: choice
-        options: [b24, nano, nano-native, nano-u8]
+        options: [b24, nano, nano-native, nano-u8, distilled]
         default: b24
       oracle_usage:
         description: When and how the challenge search uses the KataGomo prior
@@ -57,6 +57,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 env:
   PAIRS: ${{ inputs.pairs }}
@@ -124,17 +125,29 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - if: env.RAPFI_ROOT_MODE == 'kata'
+      - if: env.RAPFI_ROOT_MODE == 'kata' && env.RAPFI_ORACLE_FAMILY != 'distilled'
         id: oracle
         uses: actions/cache@v4
         with:
           path: oracle-dist
           key: katagomo-${{ env.RAPFI_ORACLE_FAMILY }}-cpu-ort-1.22.1-${{ hashFiles('scripts/kata_oracle.py', 'data/positions.json') }}
-      - if: env.RAPFI_ROOT_MODE == 'kata' && steps.oracle.outputs.cache-hit != 'true'
+      - if: env.RAPFI_ROOT_MODE == 'kata' && env.RAPFI_ORACLE_FAMILY != 'distilled' && steps.oracle.outputs.cache-hit != 'true'
         name: Verify the public model and compare the CPU playing heads with the published weights
         run: |
           python -m pip install numpy==2.2.6 onnx==1.18.0 onnxruntime==1.22.1
           python scripts/kata_oracle.py oracle-dist --positions data/positions.json --family "$RAPFI_ORACLE_FAMILY"
+      - if: env.RAPFI_ROOT_MODE == 'kata' && env.RAPFI_ORACLE_FAMILY == 'distilled'
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45835696599
+          name: katagomo-distilled-cpu
+          path: oracle-dist
+      - if: env.RAPFI_ROOT_MODE == 'kata' && env.RAPFI_ORACLE_FAMILY == 'distilled'
+        name: Verify the selected global student and published B24 teacher digests
+        run: |
+          echo "65453d890169b1de8781c308c6eff6fda269bf235ec5db4e445cd11f3ad7a220  oracle-dist/student-fp32.onnx" | sha256sum -c
+          test "$(jq -r '.teacher_sha256' oracle-dist/oracle.json)" = 0cf38a64b3cd3dd9dd39927e4acd29e07872f27af7bfaca6d48c3ecbf4d86fa9
       - if: env.RAPFI_ROOT_MODE == 'kata'
         uses: actions/upload-artifact@v4
         with:

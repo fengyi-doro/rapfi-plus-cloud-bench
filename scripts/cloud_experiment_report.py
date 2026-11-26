@@ -147,11 +147,16 @@ def render():
                        f"摊到挑战方所有手为 {prior['per_turn_ms']:.3f} ms/手。")
         if (folder / "oracle.json").exists():
             model = load(folder / "oracle.json")
+            comparison = "学生浮点与比赛格式" if model.get("family") == "distilled" else "上游权重与比赛格式"
             detail += (f"CPU 模型合计 {model['bytes']:,} 字节，MatMulInteger / DequantizeLinear 节点分别为 "
                        f"{model['operators'].get('MatMulInteger', 0)} / {model['operators'].get('DequantizeLinear', 0)}。"
-                       f"{len(model['probes'])} 个上游权重对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}，"
+                       f"{len(model['probes'])} 个{comparison}对照局面的最大 WDL 得分差 {model['max_wdl_score_delta']:.4f}，"
                        f"空点策略第一选择一致 {sum(p['top1_agree'] for p in model['probes'])}/{len(model['probes'])}。"
                        f"[模型清单]({(folder/'oracle.json').relative_to(ROOT).as_posix()})")
+            if model.get("family") == "distilled":
+                detail += (f"比赛使用 {model['precision']} 学生。在独立源棋谱测试集上与 B24 教师"
+                           f"首选着一致率 {model['test']['teacher_top1']:.1%}，WDL 得分平均绝对差 "
+                           f"{model['test']['mean_abs_score_error']:.4f}。[精度选择 Run]({model['training_run']})")
         probe_files = sorted((ROOT/"cloud_report/root_costs").glob(f"*/root-cost-{folder.name}/root-cost.json"))
         if probe_files:
             path = probe_files[-1]

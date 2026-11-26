@@ -25,6 +25,8 @@ NANO_ARCHIVE_SHA = "48b3d68e1907f70200b3f04a0534b52067ce83bc1d16fc48f7e56506eb39
 NANO_MEMBERS = {1:("standard15x.onnx", 5448739, 0x4b259ad5), 2:("renju15x.onnx", 5448742, 0x1c862737)}
 NANO_MODEL_SHA = {1:"126d2c257d68bf6d9935e8fcdd99247334255040cb1d02373d3ad28afa9376ba",
                   2:"25274c71a97f5087bd45efbe7bd2092fb4d66655e5cf7750ee99e71af0adcc15"}
+STUDENT_SHA = "65453d890169b1de8781c308c6eff6fda269bf235ec5db4e445cd11f3ad7a220"
+B24_INT8_SHA = "0cf38a64b3cd3dd9dd39927e4acd29e07872f27af7bfaca6d48c3ecbf4d86fa9"
 
 
 def sha256(path):
@@ -89,8 +91,11 @@ def playing_session(directory):
     manifest = json.loads((directory / "oracle.json").read_bytes())
     family = os.environ["RAPFI_ORACLE_FAMILY"]
     if (manifest["family"] != family or manifest["ort"] != ort.__version__
-            or manifest["source_sha256"] != (DIGEST if family == "b24" else NANO_ARCHIVE_SHA)):
+            or manifest["source_sha256"] != (DIGEST if family in ("b24", "distilled") else NANO_ARCHIVE_SHA)):
         raise ValueError("oracle model or runtime mismatch")
+    if family == "distilled" and (manifest["teacher_sha256"] != B24_INT8_SHA or manifest["model_sha256"] != STUDENT_SHA
+                                  or manifest["models"]["both"]["sha256"] != STUDENT_SHA):
+        raise ValueError("research student or its B24 teacher differs from the selected validation run")
     rule_sessions = {}
     hashes = {}
     for key, model in manifest["models"].items():
