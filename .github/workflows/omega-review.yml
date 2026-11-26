@@ -1,0 +1,38 @@
+name: Omega CPU cross-run referee review
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: JSON list of completed paired match runs
+        type: string
+        default: '[45841923318,45842160314,45842177668,45843005123,45843201117,45843227445,45843237252]'
+  push:
+    branches: [experiments/omega-cloud-cpu]
+    paths: ['.github/workflows/omega-review.yml']
+permissions:
+  actions: read
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+            omega_cloud
+            data
+      - name: Recheck each clock loss and enumerate every available black placement before each foul
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MATCH_RUNS: ${{ inputs.runs || '[45841923318,45842160314,45842177668,45843005123,45843201117,45843227445,45843237252]' }}
+        run: |
+          python -m pip install psutil==7.0.0 numpy==2.2.6
+          python omega_cloud/review.py "$MATCH_RUNS" cross-run
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omega-review
+          path: cross-run/review.json
+          if-no-files-found: error
+          retention-days: 30
