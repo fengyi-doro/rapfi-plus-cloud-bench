@@ -97,6 +97,8 @@ def prepare(out):
     np.savez_compressed(path, packets=np.frombuffer(b"".join(packets), np.uint8).reshape(-1, 228),
                         split=np.array(splits, np.uint8), source=np.asarray(sources))
     manifest = dict(archive=ARCHIVE, archive_sha256=source_hash, dataset_sha256=digest(path), seed=SEED,
+                    split_method="SHA-256 of rule and D4-canonical final stone sets, grouped by source game",
+                    sampled_plies=[16, 80], temperature=1.25,
                     labels="frozen B24 dynamic INT8 policy and WDL", teacher_run=TEACHER_RUN, teacher_sha256=TEACHER,
                     source_game_counts=list(map(len, game_sets)), held_out_tournament_roots=len(excluded),
                     excluded_exact_or_d4_book_positions=blocked, positions=len(packets),
