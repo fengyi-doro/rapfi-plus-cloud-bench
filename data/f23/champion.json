@@ -11,5 +11,222 @@
   "individual_ablation": 45847727373,
   "interaction_ablation": 45850420120,
   "certification_1t_vs_1t": 45849673591,
-  "certification_4t_vs_1t": 45851428940
+  "certification_4t_vs_1t": 45851428940,
+  "toolchain": "ziglang==0.14.1",
+  "cloud_rebuild_command": [
+    "python",
+    "scripts/build_v3.py",
+    "v4",
+    "--target",
+    "linux",
+    "--profile",
+    "v4",
+    "--out",
+    "dist",
+    "-j",
+    "4"
+  ],
+  "package_run": 45852450242,
+  "package_artifact": 15132724884,
+  "archive_member_verification": "sha256sum --check SHA256SUMS",
+  "certified": {
+    "1t": {
+      "threads": "isolated-1t",
+      "scores": {
+        "All": {
+          "games": 1000,
+          "pairs": 500,
+          "W": 436,
+          "D": 182,
+          "L": 382,
+          "penta": [
+            21,
+            44,
+            329,
+            72,
+            34
+          ],
+          "score": 0.527,
+          "elo": 18.779789789894043,
+          "ci95_elo": [
+            6.2545160855161335,
+            31.354042247812043
+          ],
+          "los": 0.998505227582986,
+          "bootstrap_superiority": 0.99879,
+          "net_pairs": 41,
+          "net_games": 54,
+          "sweeps": 13,
+          "standard_error": 0.009094550201823837,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Standard": {
+          "games": 500,
+          "pairs": 250,
+          "W": 205,
+          "D": 126,
+          "L": 169,
+          "penta": [
+            7,
+            29,
+            150,
+            49,
+            15
+          ],
+          "score": 0.536,
+          "elo": 25.05872365515569,
+          "ci95_elo": [
+            7.644816404437001,
+            42.599336405616064
+          ],
+          "los": 0.9976953170900813,
+          "bootstrap_superiority": 0.99795,
+          "net_pairs": 28,
+          "net_games": 36,
+          "sweeps": 8,
+          "standard_error": 0.01270676384409336,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Renju": {
+          "games": 500,
+          "pairs": 250,
+          "W": 231,
+          "D": 56,
+          "L": 213,
+          "penta": [
+            14,
+            15,
+            179,
+            23,
+            19
+          ],
+          "score": 0.518,
+          "elo": 12.513088602553408,
+          "ci95_elo": [
+            -5.559443806623582,
+            29.95345180759873
+          ],
+          "los": 0.9166760151285729,
+          "bootstrap_superiority": 0.91668,
+          "net_pairs": 13,
+          "net_games": 18,
+          "sweeps": 5,
+          "standard_error": 0.013014665808403136,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        }
+      },
+      "record_comparison": {
+        "delta_elo": -10.123858592225648,
+        "ci95_delta_elo": [
+          -27.28489108839437,
+          6.977528082746888
+        ],
+        "historical_elo": 28.90364838211969,
+        "delta_win_percentage_points": -1.9
+      },
+      "binary_hashes": {
+        "rapfi-plus-v5-1t": "299e3ba3daaed9d3d317285e0c349b4543938b707829729120ecc651841b60d4",
+        "orig": "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9"
+      }
+    },
+    "4t": {
+      "threads": "isolated-4t",
+      "scores": {
+        "All": {
+          "games": 1000,
+          "pairs": 500,
+          "W": 490,
+          "D": 199,
+          "L": 311,
+          "penta": [
+            9,
+            37,
+            288,
+            98,
+            68
+          ],
+          "score": 0.5895,
+          "elo": 62.868259190259366,
+          "ci95_elo": [
+            49.31699223478893,
+            76.61152646884867
+          ],
+          "los": 1,
+          "bootstrap_superiority": 1,
+          "net_pairs": 120,
+          "net_games": 179,
+          "sweeps": 59,
+          "standard_error": 0.0097363332286316,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Standard": {
+          "games": 500,
+          "pairs": 250,
+          "W": 226,
+          "D": 125,
+          "L": 149,
+          "penta": [
+            4,
+            26,
+            136,
+            57,
+            27
+          ],
+          "score": 0.577,
+          "elo": 53.93417831227561,
+          "ci95_elo": [
+            34.860070287560106,
+            72.61072215081448
+          ],
+          "los": 0.9999999931142374,
+          "bootstrap_superiority": 1,
+          "net_pairs": 54,
+          "net_games": 77,
+          "sweeps": 23,
+          "standard_error": 0.01356540011652016,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        },
+        "Renju": {
+          "games": 500,
+          "pairs": 250,
+          "W": 264,
+          "D": 74,
+          "L": 162,
+          "penta": [
+            5,
+            11,
+            152,
+            41,
+            41
+          ],
+          "score": 0.602,
+          "elo": 71.88536767365466,
+          "ci95_elo": [
+            52.51156585572756,
+            91.71069433208923
+          ],
+          "los": 0.9999999999998574,
+          "bootstrap_superiority": 1,
+          "net_pairs": 66,
+          "net_games": 102,
+          "sweeps": 36,
+          "standard_error": 0.013970134524568405,
+          "ci_method": "rule-stratified opening-pair bootstrap"
+        }
+      },
+      "record_comparison": {
+        "delta_elo": -10.46844188798842,
+        "ci95_delta_elo": [
+          -28.79828318170907,
+          7.942892063560905
+        ],
+        "historical_elo": 73.33670107824778,
+        "delta_win_percentage_points": -1.4
+      },
+      "binary_hashes": {
+        "rapfi-plus-v5-4t": "299e3ba3daaed9d3d317285e0c349b4543938b707829729120ecc651841b60d4",
+        "orig": "622200dd31b39e4120cccec3ea3a47eaadda8c7fc231e7763b514474fea26ab9"
+      }
+    }
+  }
 }
