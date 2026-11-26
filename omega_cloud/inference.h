@@ -11,7 +11,7 @@
 #include <thread>
 
 namespace omega {
-struct CpuLayout { int controller,shield; cpu_set_t inference; };
+struct CpuLayout { int controller,shield,threads; cpu_set_t inference; };
 inline const CpuLayout& layout() {
     static const auto result=[] {
         cpu_set_t allowed;
@@ -19,9 +19,14 @@ inline const CpuLayout& layout() {
         std::vector<int> cpus;
         for(int n=0;n<CPU_SETSIZE;++n) if(CPU_ISSET(n,&allowed)) cpus.push_back(n);
         if(cpus.size()!=4) throw std::runtime_error("start Omega with affinity to the four playing vCPUs");
-        CpuLayout result{cpus[0],cpus[3],{}};
-        CPU_ZERO(&result.inference);
-        CPU_SET(cpus[1],&result.inference); CPU_SET(cpus[2],&result.inference);
+        const auto* choice=std::getenv("OMEGA_INTRA_THREADS");
+        const std::string value=choice?choice:"4";
+        if(value!="2" && value!="4") throw std::invalid_argument("OMEGA_INTRA_THREADS must be 2 or 4");
+        CpuLayout result{cpus[0],cpus[3],value=="4"?4:2,allowed};
+        if(result.threads==2) {
+            CPU_ZERO(&result.inference);
+            CPU_SET(cpus[1],&result.inference); CPU_SET(cpus[2],&result.inference);
+        }
         return result;
     }();
     return result;
@@ -87,7 +92,8 @@ struct Slot : Batch {
     ~Slot(){if(pending.valid()) pending.wait();}
 };
 struct Device {
-    std::string name=std::string("ONNX Runtime ")+OrtGetApiBase()->GetVersionString()+" CPUExecutionProvider";
+    std::string name=std::string("ONNX Runtime ")+OrtGetApiBase()->GetVersionString()
+                     +" CPUExecutionProvider intra_op="+std::to_string(layout().threads);
     Ort::Env env{ORT_LOGGING_LEVEL_WARNING,"omega-cloud"};
     InferenceQueue worker;
     std::array<std::unique_ptr<Network>,2> nets;
@@ -95,10 +101,10 @@ struct Device {
         if(rule!=1 && rule!=2) throw std::invalid_argument("supported rules are Standard and Renju");
         auto& net=nets[rule-1];
         if(!net) {
-            // ORT intra-op workers inherit this affinity at creation. The MCTS controller
-            // and the one-thread Rapfi child each have their own remaining vCPU.
+            // ORT workers inherit either two reserved CPUs or the same four CPUs
+            // shared with the controller and the independently pinned v4 shield.
             pin(layout().inference);
-            try { net=std::make_unique<Network>(env,home/(rule==1?"standard15x.onnx":"renju15x.onnx"),2); }
+            try { net=std::make_unique<Network>(env,home/(rule==1?"standard15x.onnx":"renju15x.onnx"),layout().threads); }
             catch(...) {pin(layout().controller);throw;}
             pin(layout().controller);
         }

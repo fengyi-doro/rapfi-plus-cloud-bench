@@ -1,6 +1,6 @@
 """Exercise both models, the shield, and root/leaf inference through Gomocup on Linux."""
 import json
-from pathlib import Path
+import os
 import subprocess
 
 p = subprocess.Popen(["dist/pbrain-omega-cloud"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -22,8 +22,8 @@ def exchange(text, done):
     raise RuntimeError(f"engine closed with {p.poll()}")
 
 try:
-    exchange("START 15", lambda s: s == "OK")
-    book = json.loads(Path("data/v3/cloud_openings.json").read_bytes())
+    intro = exchange("START 15", lambda s: s == "OK")
+    assert any("CPUExecutionProvider intra_op="+os.environ.get("OMEGA_INTRA_THREADS","4") in s for s in intro)
     for rule in (1, 2):
         exchange(f"INFO rule {1 if rule == 1 else 4}\nRESTART", lambda s: s == "OK")
         moves = [112, 113, 97, 128, 81, 96]

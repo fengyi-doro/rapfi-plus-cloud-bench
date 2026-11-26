@@ -49,7 +49,7 @@ jobs:
             -Isrc_plus -Isrc_plus/external/lz4/include -Isrc_plus/external/simde/include -Idist/include \
             omega_cloud/protocol.cpp omega_cloud/search.cpp omega_cloud/shield.cpp omega_cloud/solver_bridge.cpp \
             src_plus/search/ab/rzone.cpp -Ldist -Wl,-rpath,'$ORIGIN' -lonnxruntime -o dist/pbrain-omega-cloud
-          python omega_cloud/smoke.py
+          for intra in 2 4; do OMEGA_INTRA_THREADS="$intra" python omega_cloud/smoke.py; done
       - name: Package the exact tested binaries, models and CPU runtime
         run: |
           cp Copying.txt Networks-LICENSE.txt dist/licenses/
