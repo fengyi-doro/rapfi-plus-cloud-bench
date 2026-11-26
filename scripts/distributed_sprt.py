@@ -178,6 +178,13 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             if not total:
                 raise ValueError("no threat-conditioned history updates in the match")
             result["move_timing"][name]["threat_history_updates"] = total
+        if reference["root_mode"] == "rotate-smp" and name == challenger:
+            observed = [t["rotation_worker_ns"] for t in all_turns if "rotation_worker_ns" in t]
+            if reference["lane_layout"] != "isolated-4t" or not observed:
+                raise ValueError("rotated SMP requires verified four-CPU matches")
+            result["move_timing"][name]["rotations"] = dict(
+                turns=len(observed), max_worker_ms=sum(max(d) for d in observed)/len(observed)/1e6,
+                all_worker_ms=sum(sum(d) for d in observed)/len(observed)/1e6)
         if reference["root_mode"] == "vct" and name == challenger:
             result["move_timing"][name]["three"] = {
                 k:sum(t.get(k, 0) for t in all_turns) for k in ("three_attempts", "three_wins", "three_verified_replies", "three_nodes", "three_ns")}

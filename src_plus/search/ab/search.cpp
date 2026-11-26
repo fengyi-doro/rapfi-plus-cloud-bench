@@ -39,12 +39,14 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <limits>
 #include <optional>
 #include <random>
+#include <stdexcept>
 #include <string_view>
 #include <tuple>
 
@@ -59,6 +61,30 @@ const std::string_view rootExperiment = [] {
     const char *mode = std::getenv("RAPFI_ROOT_MODE");
     return std::string_view(mode ? mode : "control");
 }();
+
+void mapRootLines(SearchThread &worker, TransformType transform)
+{
+    for (auto &move : worker.rootMoves)
+        for (auto *line : {&move.pv, &move.previousPv})
+            for (Pos &p : *line)
+                if (worker.board->isInBoard(p))
+                    p = applyTransform(p, worker.board->size(), transform);
+}
+
+void prepareRotatedWorker(SearchThread &worker, TransformType orientation)
+{
+    const Board &source = *worker.board;
+    const Rule rule = worker.options().rule;
+    Board rotated(source.size());
+    rotated.newGame(rule);
+    for (int i = 0; i < source.ply(); ++i) {
+        const Pos p = source.getHistoryMove(i);
+        rotated.move(rule, source.isInBoard(p) ? applyTransform(p, source.size(), orientation) : p);
+    }
+    Opening::expandCandidate(rotated);
+    worker.setBoardAndEvaluator(rotated);
+    mapRootLines(worker, orientation);
+}
 
 #ifdef POLICY_TRAINING
 struct DeferredPolicyTrace
@@ -369,7 +395,31 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
 
     // Starts worker threads, then starts main thread
     ctx.printer.printSearchStarts(th, ctx.timectl);
-    th.engine.runOnAllThreads([this](SearchThread &t) { search(t); }, true);
+    const bool rotateWorkers = rootExperiment == "rotate-smp" && th.engine.size() == 4
+                               && th.board->size() == 15 && opts.timeLimit && !opts.balanceMode
+                               && opts.multiPV == 1 && !th.dbClient && opts.blockMoves.empty();
+    std::array<int64_t, 4> rotationNs {};
+    th.engine.runOnAllThreads([this, rotateWorkers, &rotationNs](SearchThread &t) {
+        if (!rotateWorkers || t.isMainThread()) {
+            search(t);
+            return;
+        }
+        const TransformType orientation = TransformType(t.id);
+        const auto start = std::chrono::steady_clock::now();
+        prepareRotatedWorker(t, orientation);
+        rotationNs[t.id] = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::steady_clock::now() - start).count();
+        search(t);
+        // Vote and print PVs in the main board's coordinates. TT entries
+        // already hash the physical position searched by each worker.
+        mapRootLines(t, TransformType(4 - t.id));
+    }, true);
+    if (rotateWorkers) {
+        for (const auto &worker : th.engine)
+            if (std::find(th.rootMoves.begin(), th.rootMoves.end(), worker->rootMoves.front().pv[0]) == th.rootMoves.end())
+                throw std::logic_error("rotated SMP choice is outside the original root candidates");
+        MESSAGEL("ROOT_ROTATIONS " << rotationNs[1] << ' ' << rotationNs[2] << ' ' << rotationNs[3]);
+    }
 
     if (rootExperiment == "threat") {
         unsigned extensions = 0;

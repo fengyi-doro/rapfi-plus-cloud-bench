@@ -133,6 +133,10 @@ def render():
             detail += f"威胁条件历史在发生 β 截断后更新 {timing['threat_history_updates']:,} 次。"
         if timing.get("child_positions"):
             detail += f"根部批量评估共覆盖 {timing['child_positions']:,} 个实际候选子局面。"
+        if rotation := timing.get("rotations"):
+            detail += (f"四个搜索线程在 {rotation['turns']:,} 手分别使用 0°、90°、180°、270° 视角。"
+                       f"三名工作线程重建棋盘和累加器的最大单线程耗时平均 {rotation['max_worker_ms']:.3f} ms，"
+                       f"三者耗时之和平均 {rotation['all_worker_ms']:.3f} ms。")
         if three := timing.get("three"):
             detail += (f"根部活三起手尝试 {three['three_attempts']:,} 着，"
                        f"覆盖所有合法应手的胜着 {three['three_wins']:,} 次，"

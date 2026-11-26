@@ -40,6 +40,11 @@ def root_metrics(lines):
             metrics["root_threat_extensions"] = int(line.split()[-1])
         if line.startswith("MESSAGE THREAT_HISTORY "):
             metrics["threat_history_updates"] = int(line.split()[-1])
+        if line.startswith("MESSAGE ROOT_ROTATIONS "):
+            durations = [int(x) for x in line.split()[2:]]
+            if len(durations) != 3 or min(durations) <= 0:
+                raise ValueError("incomplete rotated-worker timing")
+            metrics["rotation_worker_ns"] = durations
         if line.startswith("MESSAGE ROOT_PROOF "):
             _, _, win, excluded, nodes, *duration = line.split()
             metrics.update(root_proven_win=int(win), root_proven_losses=int(excluded), root_proof_nodes=int(nodes))
