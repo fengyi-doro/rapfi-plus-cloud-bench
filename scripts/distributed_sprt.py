@@ -144,6 +144,16 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
             turns=len(wall), mean_ms=sum(wall)/len(wall)/1e6 if wall else None,
             p95_ms=wall[math.ceil(.95*len(wall))-1]/1e6 if wall else None,
             threat_extensions=sum(t.get("root_threat_extensions", 0) for t in all_turns))
+        prior = sorted(t["root_prior_ns"] for t in all_turns if "root_prior_ns" in t)
+        if name == challenger and reference["root_mode"] in ("d4", "kata") and not prior:
+            raise ValueError("no timed root-oracle calls in the match")
+        if prior:
+            if name != challenger or any(t["root_prior"] != reference["root_mode"] for t in all_turns if "root_prior_ns" in t):
+                raise ValueError("oracle telemetry belongs to the wrong player or experiment")
+            result["move_timing"][name]["root_prior"] = dict(
+                calls=len(prior), total_ns=sum(prior), per_turn_ms=sum(prior)/len(wall)/1e6,
+                per_call_ms=sum(prior)/len(prior)/1e6, p50_call_ms=prior[(len(prior)-1)//2]/1e6,
+                p95_call_ms=prior[math.ceil(.95*len(prior))-1]/1e6)
         turns=[t for g in games for t in g["turns"] if t["engine"]==name and t["nodes"] is not None]
         counts=sum(t["nodes"] for t in turns)
         ns=sum(t["wall_ns"] for t in turns)

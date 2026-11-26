@@ -9,7 +9,7 @@ import threading
 import time
 import psutil
 from datasets import DATA, ROOT, SEED, dump, sha
-from engine import COORD, DeadlineExpired, Engine, filename, topology, utc
+from engine import COORD, DeadlineExpired, Engine, filename, root_metrics, topology, utc
 from bit_gate import board_command
 from rules import BITS, FIVES, SIXES, black_status, exact, has_win, valid_history
 
@@ -94,6 +94,7 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
             try:
                 result = e.think(command, timeout=bank[color]/1e9)
             except DeadlineExpired as deadline:
+                interrupted_lines = deadline.lines
                 result = dict(x=None, y=None, wall_ns=deadline.elapsed_ns, nodes=None, depth=None,
                               eval=None, engine_ms=None, no_coordinate=True)
             before = bank[color]
@@ -106,7 +107,8 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
                     # Drain the interrupted search outside the already-decided game clock.
                     # The engine ignores ABOUT until it has returned the final coordinate.
                     if result.get("no_coordinate"):
-                        e.exchange("STOP", COORD.fullmatch)
+                        tail, _ = e.exchange("STOP", COORD.fullmatch)
+                        result.update(root_metrics([*interrupted_lines, *tail]))
                     e.sync("STOP")
                 break
             bank[color] = before - result["wall_ns"] + increment

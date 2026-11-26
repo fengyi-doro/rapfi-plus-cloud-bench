@@ -28,7 +28,7 @@ on:
       search_mode:
         description: Challenger root search experiment
         type: choice
-        options: [control, threat]
+        options: [control, threat, d4]
         default: control
 
 permissions:

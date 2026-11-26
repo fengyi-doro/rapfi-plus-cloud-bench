@@ -22,13 +22,27 @@ COORD = re.compile(r"(-?\d+),(-?\d+)")
 
 
 class DeadlineExpired(TimeoutError):
-    def __init__(self, command, elapsed_ns):
+    def __init__(self, command, elapsed_ns, lines=()):
         self.command = command
         self.elapsed_ns = elapsed_ns
+        self.lines = lines
         super().__init__(f"response deadline for {command[:40]} at {elapsed_ns} ns")
 
     def __reduce__(self):
-        return type(self), (self.command, self.elapsed_ns)
+        return type(self), (self.command, self.elapsed_ns, self.lines)
+
+
+def root_metrics(lines):
+    metrics = {}
+    for line in lines:
+        if line.startswith("MESSAGE ROOT_THREATS "):
+            metrics["root_threat_extensions"] = int(line.split()[-1])
+        if line.startswith("MESSAGE ROOT_PRIOR "):
+            _, _, mode, ns = line.split()
+            if "root_prior_ns" in metrics or mode != os.environ.get("RAPFI_ROOT_MODE") or int(ns) <= 0:
+                raise ValueError(f"invalid root timing: {line}")
+            metrics.update(root_prior=mode, root_prior_ns=int(ns))
+    return metrics
 
 
 if os.name == "nt":
@@ -221,7 +235,7 @@ class Engine:
                 stamp = time.perf_counter_ns()
                 if stamp < deadline:
                     continue
-                raise DeadlineExpired(command,stamp-start) from exc
+                raise DeadlineExpired(command,stamp-start,lines) from exc
             if line is None or line.startswith(("ERROR", "UNKNOWN")) or "Unknown Info Parameter" in line:
                 raise RuntimeError((self.variant, command[:100], line, lines[-4:]))
             lines.append(line)
@@ -323,9 +337,7 @@ class Engine:
                       eval=final[3] if final else fields.get("EVAL"),
                       draw_offer=any(s.strip().upper() == "MESSAGE DRAW_OFFER" for s in lines),
                       engine_ms=int(fields["TOTALTIME"]) if "TOTALTIME" in fields else None)
-        for line in lines:
-            if line.startswith("MESSAGE ROOT_THREATS "):
-                result["root_threat_extensions"] = int(line.split()[-1])
+        result.update(root_metrics(lines))
         if measure_cycles:
             after = self.cycle_snapshot()
             proc_delta = cycles(int(self.proc._handle), K.QueryProcessCycleTime) - process_before

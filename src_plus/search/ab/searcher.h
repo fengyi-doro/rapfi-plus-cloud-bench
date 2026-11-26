@@ -25,6 +25,7 @@
 #include "../searchthread.h"
 #include "../timecontrol.h"
 #include "history.h"
+#include "rootprior.h"
 
 #include <atomic>
 
@@ -39,6 +40,7 @@ struct ABSearchData : SearchData
     Value            rootAlpha;        /// Current alpha value of the root node
     bool             singularRoot;     /// Is there only a single response at root?
     unsigned         rootThreatExtensions;
+    RootPrior        rootPrior;
     std::atomic<int> completedDepth;   /// Previously completed depth
     std::atomic<int> bestMoveChanges;  /// How many time best move has changed in this search
 

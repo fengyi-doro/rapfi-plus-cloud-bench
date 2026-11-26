@@ -344,7 +344,11 @@ void MovePicker::scoreAllMoves()
         for (auto &m : *this)
             policyBuf->setComputeFlag(m.pos);
 
-        evaluator->evaluatePolicy(board, *policyBuf);
+        if (rootPolicy) {
+            for (auto &m : *this)
+                (*policyBuf)[m.pos] = float(rootPolicy[m.pos]) / PolicyBuffer::ScoreScale;
+        } else
+            evaluator->evaluatePolicy(board, *policyBuf);
         hasPolicy      = true;
         maxPolicyScore = std::numeric_limits<Score>::lowest() / 2;
     }

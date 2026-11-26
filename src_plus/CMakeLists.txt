@@ -201,6 +201,7 @@ set(CORE_SOURCES
     search/searchthread.cpp
     search/timecontrol.cpp
     search/ab/history.cpp
+    search/ab/rootprior.cpp
     search/ab/search.cpp
     search/ab/rzone.cpp
     search/mcts/node.cpp
@@ -316,6 +317,7 @@ set(HEADERS
     search/skill.h
     search/timecontrol.h
     search/ab/history.h
+    search/ab/rootprior.h
     search/ab/parameter.h
     search/ab/searcher.h
     search/ab/rzone.h

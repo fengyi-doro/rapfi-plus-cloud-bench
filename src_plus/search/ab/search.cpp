@@ -344,6 +344,7 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
     }
 #endif
     // Init transposition table generation
+    prepareRootPrior(th, th.searchDataAs<ABSearchData>()->rootPrior, rootExperiment);
     TT.incGeneration();
 
     // Starts worker threads, then starts main thread
@@ -397,7 +398,8 @@ void ABSearcher::search(SearchThread &th)
     ABSearchData  &sd        = *th.searchDataAs<ABSearchData>();
     SearchContext &ctx       = th.engine.ctx;
     SearchOptions &options   = th.options();
-    Value          initValue = Evaluation::evaluate(*th.board, options.rule);
+    const auto &prior = th.engine.main()->searchDataAs<ABSearchData>()->rootPrior;
+    Value initValue = prior.value != VALUE_NONE ? prior.value : Evaluation::evaluate(*th.board, options.rule);
     StackArray     stackArray(MAX_PLY, initValue);
     Value          bestValue           = -VALUE_INFINITE;
     Pos            lastBestMove        = Pos::NONE;
@@ -1474,6 +1476,11 @@ moves_loop:
                   });
 
     // Step 11. Loop through all legal moves until no moves remain
+    if constexpr (RootNode) {
+        const auto &prior = thisThread->engine.main()->searchDataAs<ABSearchData>()->rootPrior;
+        if (prior.value != VALUE_NONE)
+            mp.useRootPolicy(prior.policy.data());
+    }
     // or a beta cutoff occurs.
     while (Pos move = mp()) {
 #ifdef POLICY_TRAINING
