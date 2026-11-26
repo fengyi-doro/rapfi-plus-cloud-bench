@@ -6,7 +6,7 @@ on:
       phase:
         type: choice
         description: Frozen builds, direct ablations, selected combination or isolated certification
-        options: [screen, build, combine, cert1, cert4]
+        options: [screen, bundles, build, combine, cert1, cert4]
         default: screen
         required: true
       build_run:
@@ -15,7 +15,7 @@ on:
         required: false
       mask:
         type: string
-        description: "screen builds the five single-module arms, or supply a selected decimal mask"
+        description: "screen builds the individual arms, bundles builds B1+B4 and all B arms, or supply a decimal mask"
         default: screen
         required: true
 permissions:
@@ -64,6 +64,8 @@ jobs:
           test "$(git rev-parse HEAD:data/v3/cloud_openings.json)" = 10d9933c22ed7bbb81d7593b3eec7d52a03e0740
           if [[ "$MASK" == screen ]]; then
             python scripts/f23_build.py 1 2 4 8 16
+          elif [[ "$MASK" == bundles ]]; then
+            python scripts/f23_build.py 18 30
           else
             python scripts/f23_build.py "$MASK"
           fi
@@ -108,12 +110,12 @@ jobs:
           python -m pip install numpy==2.2.6 psutil==7.0.0
           chmod +x dist/pbrain-rapfi-*
           python scripts/f23_match.py check
-      - if: inputs.phase == 'screen'
+      - if: inputs.phase == 'screen' || inputs.phase == 'bundles'
         name: Reprove all 9069 Renju prefixes, replay certificates independently and measure identical search roots
         run: |
           g++ -std=c++20 -O3 -march=x86-64-v3 scripts/f23_gate.cpp -o f23-gate
           python scripts/f23_diagnostics.py
-      - if: inputs.phase == 'screen'
+      - if: inputs.phase == 'screen' || inputs.phase == 'bundles'
         uses: actions/upload-artifact@v4
         with:
           name: f23-diagnostics

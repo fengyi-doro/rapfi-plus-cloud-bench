@@ -41,6 +41,10 @@ def schedule(phase, mask):
     if phase == "screen":
         return [Duel(arm_name(bit), bit, opp, "packed-1t") for i, bit in enumerate(ARMS.values())
                 for opp in (("v4", "orig") if i % 2 == 0 else ("orig", "v4"))]
+    if phase == "bundles":
+        return [Duel(arm_name(bit), bit, opp, "packed-1t")
+                for bit, opponents in ((18, ("v4", "orig")), (30, ("orig", "v4")))
+                for opp in opponents]
     bits = int(mask)
     if not 0 <= bits <= 31:
         raise ValueError("unknown module mask")
@@ -119,6 +123,7 @@ def publish(duels, build, phase):
                   "referee_mismatches","hard_flags","illegal_moves","overlapping_vcpu_assignments")}
         assert audit["pairs"] == 500 and all(audit[k] == 0 for k in
                    ("referee_mismatches","json_psq_mismatches","overlapping_vcpu_assignments"))
+        audit["no_legal_black_reply"] = sum(len(s["audit"]["no_legal_black_reply"]) for s in r["shards"])
         totals = r["f23_telemetry"][duel.label]["counts"]
         results[duel.slug] = dict(players=r["players"], mask=duel.mask, layout=duel.layout,
                                   scores=r["scores"], audit=audit, span_seconds=r["playing_span_seconds"],
@@ -133,8 +138,9 @@ def publish(duels, build, phase):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
             f.write((out / "summary.md").read_text() + "\n")
     decision = {}
-    if phase == "screen":
-        for name, bit in ARMS.items():
+    if phase in ("screen", "bundles"):
+        hypotheses = ARMS if phase == "screen" else {"b1-b4": 18, "b1-b2-b3-b4": 30}
+        for name, bit in hypotheses.items():
             challenger = arm_name(bit)
             versus_v4 = results[challenger + "-vs-v4"]
             versus_orig = results[challenger + "-vs-orig"]

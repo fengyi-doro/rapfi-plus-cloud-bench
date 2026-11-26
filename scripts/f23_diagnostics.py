@@ -110,7 +110,9 @@ def measure(out, build, white_positions):
                         rows.append(dict(rule=rule, position=pos["id"], repeat=rep, player=name, **t))
             if rule == 2:
                 for game, history in white_positions:
-                    for depth, arm in ((4, "orig"), (4, "v4"), (4, arm_name(1)), (8, "v4"), (8, arm_name(2))):
+                    tactics = [(4, "orig"), (4, "v4"), (4, arm_name(1)), (8, "v4"), (8, arm_name(2))]
+                    tactics += [(8, label) for label in (arm_name(18), arm_name(30)) if label in players]
+                    for depth, arm in tactics:
                         if arm not in players:
                             continue
                         t = search(players[arm], history, depth)
