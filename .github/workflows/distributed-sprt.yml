@@ -28,8 +28,13 @@ on:
       search_mode:
         description: Challenger root search experiment
         type: choice
-        options: [control, threat, d4]
+        options: [control, threat, d4, kata]
         default: control
+      lane_layout:
+        description: CPU allocation per match on each four-vCPU runner
+        type: choice
+        options: [packed-1t, isolated-1t, isolated-4t]
+        default: packed-1t
 
 permissions:
   contents: read
@@ -40,6 +45,7 @@ env:
   RAPFI_CANDIDATE_LABEL: ${{ inputs.candidate_label }}
   RAPFI_BUILD_PROFILE: ${{ inputs.candidate_profile }}
   RAPFI_ROOT_MODE: ${{ inputs.search_mode || 'control' }}
+  RAPFI_LANE_LAYOUT: ${{ inputs.lane_layout || 'packed-1t' }}
   OPENBLAS_NUM_THREADS: 1
   OMP_NUM_THREADS: 1
 
@@ -95,6 +101,25 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - if: env.RAPFI_ROOT_MODE == 'kata'
+        id: oracle
+        uses: actions/cache@v4
+        with:
+          path: oracle-dist
+          key: katagomo-92ec1e7c-cpu-ort-1.22.1-${{ hashFiles('scripts/kata_oracle.py', 'data/positions.json') }}
+      - if: env.RAPFI_ROOT_MODE == 'kata' && steps.oracle.outputs.cache-hit != 'true'
+        name: Quantize the official B24 projection weights and compare CPU outputs with FP32
+        run: |
+          python -m pip install numpy==2.2.6 onnx==1.18.0 onnxruntime==1.22.1
+          python scripts/kata_oracle.py oracle-dist --positions data/positions.json
+      - if: env.RAPFI_ROOT_MODE == 'kata'
+        uses: actions/upload-artifact@v4
+        with:
+          name: katagomo-cpu
+          path: oracle-dist/
+          if-no-files-found: error
+          retention-days: 7
+
   play:
     name: Shard ${{ matrix.shard }} of ${{ needs.build.outputs.shards }}
     needs: build
@@ -127,11 +152,18 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install psutil==7.0.0
+      - if: env.RAPFI_ROOT_MODE == 'kata'
+        run: python -m pip install numpy==2.2.6 onnxruntime==1.22.1
       - uses: actions/download-artifact@v4
         with:
           name: engines-linux
           path: dist
-      - name: Play colour pairs on four dedicated vCPU lanes
+      - if: env.RAPFI_ROOT_MODE == 'kata'
+        uses: actions/download-artifact@v4
+        with:
+          name: katagomo-cpu
+          path: dist
+      - name: Play colour pairs using the dispatched CPU allocation
         run: |
           (cd dist && sha256sum -c SHA256SUMS && chmod +x pbrain-rapfi-*)
           python scripts/arena_fast.py --book data/v3/cloud_openings.json --pairs "$PAIRS" \
@@ -176,6 +208,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: engines-linux
+          path: dist
+      - if: env.RAPFI_ROOT_MODE == 'kata'
+        uses: actions/download-artifact@v4
+        with:
+          name: katagomo-cpu
           path: dist
       - name: Replay every game and compute paired statistics
         env:

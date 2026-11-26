@@ -135,11 +135,12 @@ def game(opening, leg, cores, lane, initial=INITIAL, increment=INCREMENT, reside
                 pending[e]=announce(e,bank[color])
         for e,(stamp,cmd) in pending.items():
             e.collect(stamp,cmd,lambda s:"author=" in s)
-        assert all(e.ps.cpu_affinity() == [core] for e,core in zip(engines,cores,strict=True))
+        assert all(sorted(e.ps.cpu_affinity()) == (e.cpu_pool or [core]) for e,core in zip(engines,cores,strict=True))
         final_affinity = {n:e.affinity_masks() for n,e in zip(names,engines,strict=True)}
         weights = {n:list(dict.fromkeys(e.weights)) for n,e in zip(names,engines,strict=True)}
     return dict(opening=opening["id"], leg=leg, rule=rule, black=names[0], white=names[1],
                 lane=lane, cores=dict(zip(names,cores)), pids=dict(zip(names,pids)), started=started, ended=utc(),
+                search_threads={name:e.search_threads for name,e in zip(names,engines,strict=True)},
                 started_qpc_ns=started_qpc, ended_qpc_ns=time.perf_counter_ns(),
                 boot_time=int(psutil.boot_time()) if boot_epoch is None else boot_epoch,
                 initial_ns=initial, increment_ns=increment, opening_plies=len(opening["moves"]),

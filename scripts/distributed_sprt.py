@@ -81,7 +81,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if d["opening_ids"]!=planned: raise ValueError(("shard schedule mismatch",ix))
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
-            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode")}
+            "one_vcpu_per_game","build_profile","per_rule_engines","root_mode","lane_layout","threads_by_player","oracle_sha256")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())
@@ -108,6 +108,11 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
                                             opponent: compiled["binaries"]["orig"]}}):
             raise ValueError("shard engines or weights differ from the verified build")
         dump(out/"build-info.json", compiled)
+        if reference["root_mode"] == "kata":
+            manifest = json.loads((build_info.parent/"oracle.json").read_bytes())
+            if reference["oracle_sha256"] != manifest["model_sha256"] or manifest["providers"] != ["CPUExecutionProvider"]:
+                raise ValueError("playing oracle differs from the verified CPU model")
+            dump(out/"oracle.json", manifest)
     by_id={}
     for g in games: by_id.setdefault(g["opening"],[]).append(g)
     ordered=[o["id"] for o in load_book(book,pairs,1,1)]

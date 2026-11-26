@@ -105,7 +105,7 @@ def load_book(path, pairs, shard, shards):
 
 
 def play_lane(lane, cores, helper, openings, directory, design, work_queue=None):
-    if design.get("one_vcpu_per_game"):
+    if design.get("one_vcpu_per_game") or design.get("lane_layout"):
         psutil.Process().cpu_affinity([cores[0]])
     elif helper:
         psutil.Process().cpu_affinity(helper)
@@ -126,7 +126,11 @@ def play_lane(lane, cores, helper, openings, directory, design, work_queue=None)
         for o in work():
             if not engines or (design.get("per_rule_engines") and active_rule != o["rule"]):
                 stack.close()
-                engines = {v:stack.enter_context(Engine(v, c)) for v,c in zip(names, cores, strict=True)}
+                engines = {}
+                for v, c in zip(names, cores, strict=True):
+                    threads = design.get("threads_by_player", {}).get(v, 1)
+                    pool = design["lanes"][lane]["reserved_vcpus"] if threads > 1 else None
+                    engines[v] = stack.enter_context(Engine(v, c, pool, threads))
                 if fast:
                     for e in engines.values():
                         e.sync(f"INFO max_depth 99\nINFO show_detail 0\nINFO timeout_match {initial//1_000_000}\nINFO timeout_turn 0")
@@ -185,6 +189,9 @@ def run_locked(args):
     excluded = set(args.exclude)
     limit = min(args.lanes, len(openings))
     if args.vcpu_lanes:
+        layout = os.environ.get("RAPFI_LANE_LAYOUT", "packed-1t")
+        if layout not in ("packed-1t", "isolated-1t", "isolated-4t"):
+            raise ValueError(f"invalid experiment lane layout {layout}")
         required = {"avx", "avx2", "bmi1", "bmi2", "f16c", "fma", "movbe", "xsave",
                     "cx16", "lahf_lm", "popcnt", "pni", "ssse3", "sse4_1", "sse4_2"}
         flags = set(hardware.get("cpu_flags", []))
@@ -198,9 +205,13 @@ def run_locked(args):
             raise ValueError(f"requested {limit} vCPU lanes, runner exposes {len(available)}")
         # With pondering disabled, black and white alternate searches on the same vCPU.
         lanes = [dict(cpus=[cpu, cpu]) for cpu in available[:limit]]
+        if layout.startswith("isolated"):
+            if len(available) < 4:
+                raise ValueError("isolated experiments reserve four runner vCPUs for one match")
+            lanes = [dict(cpus=[available[0], available[0]], reserved_vcpus=available[:4])]
     else:
         lanes = core_groups(hardware, excluded, limit)
-    used = {cpu for lane in lanes for cpu in lane["cpus"]}
+    used = {cpu for lane in lanes for cpu in lane.get("reserved_vcpus", lane["cpus"])}
     helper = sorted(set(psutil.Process().cpu_affinity()) - used - excluded)
     names = [args.challenger, args.opponent]
     design = dict(players=names, exe={v:sha(filename(v)) for v in names}, commit=os.environ.get("GITHUB_SHA"),
@@ -215,10 +226,16 @@ def run_locked(args):
         scheduler = "next available vCPU" if args.vcpu_lanes else "next available homogeneous pair"
         design.update(scheduler=scheduler,parallel_reset=True)
     if args.vcpu_lanes:
-        design["one_vcpu_per_game"] = True
+        design["one_vcpu_per_game"] = layout == "packed-1t"
+        design["lane_layout"] = layout
+        design["threads_by_player"] = {names[0]:4 if layout == "isolated-4t" else 1, names[1]:1}
+        if layout == "isolated-4t":
+            design["thread_num"] = None
         design["per_rule_engines"] = True
         design["build_profile"] = os.environ.get("RAPFI_BUILD_PROFILE")
         design["root_mode"] = os.environ.get("RAPFI_ROOT_MODE", "control")
+        if design["root_mode"] == "kata":
+            design["oracle_sha256"] = json.loads((Path(os.environ["RAPFI_ARENA_BIN"])/"oracle.json").read_bytes())["model_sha256"]
     if any(sha(ROOT/p) != h for p,h in design["runtime"].items()):
         raise ValueError("weight/config checksum mismatch")
     if (out/"design.json").exists():

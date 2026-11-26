@@ -182,12 +182,21 @@ def early_verdict(grid, game, names):
 def verify(directory, book=None):
     fixtures=referee_fixtures()
     design=json.loads((directory/"design.json").read_bytes())
-    vcpu_lanes = design.get("one_vcpu_per_game", False)
+    layout = design.get("lane_layout")
+    vcpu_lanes = bool(design.get("one_vcpu_per_game") or layout)
     if vcpu_lanes:
-        assert design["thread_num"] == 1 and design["pondering"] is False
+        assert design["pondering"] is False
+        a, b = design["players"]
+        threads = design.get("threads_by_player", {a:1, b:1})
+        assert threads == {a:4 if layout == "isolated-4t" else 1, b:1}
+        assert design["thread_num"] == (None if threads[a] == 4 else 1)
         slots = [lane["cpus"] for lane in design["lanes"]]
         assert all(len(cpus) == 2 and cpus[0] == cpus[1] for cpus in slots)
         assert len({cpus[0] for cpus in slots}) == len(slots)
+        if layout in ("isolated-1t", "isolated-4t"):
+            assert len(slots) == 1
+            reserved = design["lanes"][0]["reserved_vcpus"]
+            assert len(set(reserved)) == len(reserved) == 4 and slots[0][0] in reserved
     v2=design.get("stage")==2
     fast="opening_ids" in design
     book=book or (DATA/"v3"/design["book"] if fast and design["book"]!="openings.json" else
@@ -229,8 +238,16 @@ def verify(directory, book=None):
             assert set(game["cores"].values()) == set(design["lanes"][game["lane"]]["cpus"])
         for name in names:
             expected=1<<game["cores"][name]
+            mask = [game["cores"][name]]
+            if vcpu_lanes and layout:
+                assert game["search_threads"] == threads
+                if threads[name] == 4:
+                    mask = sorted(design["lanes"][game["lane"]]["reserved_vcpus"])
             for key in ("affinity_before","affinity_after"):
-                assert game[key][name] and all((meta==[game["cores"][name]] if isinstance(meta,list) else
+                if len(mask) == 4:
+                    # The protocol thread and four native search workers must all exist.
+                    assert len(game[key][name]) >= 5
+                assert game[key][name] and all((meta==mask if isinstance(meta,list) else
                                                    meta["effective_mask"]==expected and meta["group"]==0)
                                                for meta in game[key][name].values())
         reason,winner = None,None
@@ -315,6 +332,9 @@ def verify(directory, book=None):
         physical={(topology[c]["group"],topology[c]["physical"]) for c in logical}
         assert len(physical) == (1 if vcpu_lanes else 2)
         resources = set(logical) if vcpu_lanes else physical
+        if layout in ("isolated-1t", "isolated-4t"):
+            resources = set(design["lanes"][game["lane"]]["reserved_vcpus"])
+            assert resources <= topology.keys() and not resources.intersection(design["exclude"])
         events.extend([(game["boot_time"],game["started_qpc_ns"],1,key,resources),
                        (game["boot_time"],game["ended_qpc_ns"],0,key,resources)])
     maximum=0

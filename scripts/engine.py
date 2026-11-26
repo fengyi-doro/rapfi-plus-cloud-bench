@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import queue
 import re
+import socket
 import struct
 import subprocess
 import threading
@@ -122,10 +123,11 @@ def topology(core_domains=False):
                 sampled_utc=utc())
 
 
-def pin_handle(proc, core):
+def pin_handle(proc, core, cpu_pool=None):
     child = psutil.Process(proc.pid)
-    child.cpu_affinity([core])
-    assert child.cpu_affinity() == [core]
+    cpus = cpu_pool or [core]
+    child.cpu_affinity(cpus)
+    assert sorted(child.cpu_affinity()) == sorted(cpus)
     if os.name == "nt":
         child.nice(psutil.ABOVE_NORMAL_PRIORITY_CLASS)
     return child
@@ -182,14 +184,36 @@ def node_layout(variant):
 
 
 class Engine:
-    def __init__(self, variant, core):
+    def __init__(self, variant, core, cpu_pool=None, search_threads=1):
         self.variant, self.core = variant, core
-        self.proc = subprocess.Popen([str(filename(variant)), "--config", str(ROOT/"config.toml")],
-             cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        self.cpu_pool = sorted(cpu_pool) if cpu_pool else None
+        self.search_threads = search_threads
+        self.oracle_reader = None
+        child_options = {}
+        oracle_connection = child_connection = None
+        if variant == os.environ.get("RAPFI_CANDIDATE_LABEL") and os.environ.get("RAPFI_ROOT_MODE") == "kata":
+            from kata_oracle import playing_session, serve
+            net = playing_session(Path(os.environ["RAPFI_ARENA_BIN"]))
+            oracle_connection, child_connection = socket.socketpair()
+            fd = child_connection.fileno()
+            child_options = dict(pass_fds=(fd,), env=dict(os.environ, RAPFI_ORACLE_FD=str(fd)))
+        try:
+            self.proc = subprocess.Popen([str(filename(variant)), "--config", str(ROOT/"config.toml")],
+                 cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                 creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), **child_options)
+        except BaseException:
+            if oracle_connection is not None:
+                oracle_connection.close()
+            raise
+        finally:
+            if child_connection is not None:
+                child_connection.close()
+        if oracle_connection is not None:
+            self.oracle_reader = threading.Thread(target=serve, args=(oracle_connection, net, core), daemon=True)
+            self.oracle_reader.start()
         self.handles = {}
         try:
-            self.ps = pin_handle(self.proc, core)
+            self.ps = pin_handle(self.proc, core, self.cpu_pool)
             self.inbox = queue.Queue()
             def drain():
                 for raw in self.proc.stdout:
@@ -202,7 +226,7 @@ class Engine:
             self.weights = []
             first, _ = self.exchange("START 15", lambda s: s == "OK")
             assert any("Evaluator set to mix9svq" in s for s in first), first
-            self.sync("INFO thread_num 1\nINFO hash_size 8192\nINFO pondering 0\n"
+            self.sync(f"INFO thread_num {search_threads}\nINFO hash_size 8192\nINFO pondering 0\n"
                       "INFO max_node 0\nINFO show_detail 2")
             layout = node_layout(variant)
             self.counter = None
@@ -278,7 +302,7 @@ class Engine:
         if os.name != "nt":
             tids = self.ps.threads()
             result = {t.id:sorted(os.sched_getaffinity(t.id)) for t in tids}
-            if any(cpus != [self.core] for cpus in result.values()):
+            if any(cpus != (self.cpu_pool or [self.core]) for cpus in result.values()):
                 raise RuntimeError(("worker affinity mismatch", result, self.core))
             return result
         self.cycle_snapshot()
@@ -295,10 +319,11 @@ class Engine:
         return observed
 
     def repin(self, core):
-        self.ps.cpu_affinity([core])
+        cpus = self.cpu_pool or [core]
+        self.ps.cpu_affinity(cpus)
         if os.name != "nt":
             for thread in self.ps.threads():
-                os.sched_setaffinity(thread.id, {core})
+                os.sched_setaffinity(thread.id, cpus)
         self.core = core
 
     def read_word(self, address):
@@ -360,6 +385,8 @@ class Engine:
             K.CloseHandle(h)
         if hasattr(self, "reader"):
             self.reader.join(timeout=1)
+        if self.oracle_reader is not None:
+            self.oracle_reader.join(timeout=2)
         self.proc.stdin.close()
         self.proc.stdout.close()
 
