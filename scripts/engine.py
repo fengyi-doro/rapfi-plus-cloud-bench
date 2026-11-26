@@ -36,6 +36,11 @@ class DeadlineExpired(TimeoutError):
 def root_metrics(lines):
     metrics = {}
     for line in lines:
+        if line.startswith("MESSAGE F23 "):
+            values = list(map(int, line.split()[2:]))
+            if len(values) != 13 or "f23_mask" in metrics:
+                raise ValueError(f"malformed F23 counters: {line}")
+            metrics.update(f23_mask=values[0], f23_counts=values[1:])
         if line.startswith("MESSAGE ROOT_THREATS "):
             metrics["root_threat_extensions"] = int(line.split()[-1])
         if line.startswith("MESSAGE ROOT_PROOF "):
@@ -358,7 +363,7 @@ class Engine:
         elif final and final[4].isdigit():
             nodes = int(final[4])
         elif final and (os.name != "nt" or os.environ.get("RAPFI_ARENA_BIN")):
-            nodes = None
+            nodes = nodes if "TOTALNODES" in fields else None
         elif final and not fields.get("TOTALNODES"):
             raise RuntimeError(("missing exact node telemetry", lines[-12:]))
         x, y = map(int, lines[-1].split(","))

@@ -1,8 +1,18 @@
 name: Distributed Rapfi SPRT
-run-name: F23 frozen AVX2 build · mask ${{ inputs.mask }}
+run-name: F23 ${{ inputs.phase }} · mask ${{ inputs.mask }}
 on:
   workflow_dispatch:
     inputs:
+      phase:
+        type: choice
+        description: Frozen builds, direct ablations, selected combination or isolated certification
+        options: [screen, build, combine, cert1, cert4]
+        default: screen
+        required: true
+      build_run:
+        type: string
+        description: Successful F23 build run containing the exact playing binaries
+        required: false
       mask:
         type: string
         description: "screen builds the five single-module arms, or supply a selected decimal mask"
@@ -12,11 +22,15 @@ permissions:
   contents: read
   actions: read
 env:
+  PHASE: ${{ inputs.phase }}
+  MASK: ${{ inputs.mask }}
+  BUILD_RUN: ${{ inputs.build_run }}
   OMP_NUM_THREADS: 1
   OPENBLAS_NUM_THREADS: 1
   CUDA_VISIBLE_DEVICES: "-1"
 jobs:
   build:
+    if: inputs.phase == 'build'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -57,5 +71,132 @@ jobs:
         with:
           name: f23-engines
           path: dist/
+          if-no-files-found: error
+          retention-days: 90
+
+  verify:
+    if: inputs.phase != 'build'
+    runs-on: ubuntu-24.04
+    outputs:
+      build_sha: ${{ steps.provenance.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: provenance
+        name: Verify the successful binary build against this exact search tree
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$BUILD_RUN" =~ ^[0-9]+$ ]]
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN")
+          test "$(jq -r '.conclusion' <<<"$run")" = success
+          sha=$(jq -r '.head_sha' <<<"$run")
+          git fetch --depth=1 origin "$sha"
+          test "$(git rev-parse "$sha:src_plus")" = "$(git rev-parse HEAD:src_plus)"
+          test "$(git rev-parse HEAD:src_orig)" = 5a506c21eda356315d2cfb650db0332dcc760b2f
+          test "$(git rev-parse HEAD:data/v3/cloud_openings.json)" = 10d9933c22ed7bbb81d7593b3eec7d52a03e0740
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-engines
+          path: dist
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run }}
+      - run: |
+          python -m pip install numpy==2.2.6 psutil==7.0.0
+          chmod +x dist/pbrain-rapfi-*
+          python scripts/f23_match.py check
+      - if: inputs.phase == 'screen'
+        name: Reprove all 9069 Renju prefixes, replay certificates independently and measure identical search roots
+        run: |
+          g++ -std=c++20 -O3 -march=x86-64-v3 scripts/f23_gate.cpp -o f23-gate
+          python scripts/f23_diagnostics.py
+      - if: inputs.phase == 'screen'
+        uses: actions/upload-artifact@v4
+        with:
+          name: f23-diagnostics
+          path: diagnostics/
+          if-no-files-found: error
+          retention-days: 90
+
+  play:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    env:
+      SHARD: ${{ matrix.shard }}
+      BUILD_SHA: ${{ needs.verify.outputs.build_sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-engines
+          path: dist
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run }}
+      - run: |
+          python -m pip install numpy==2.2.6 psutil==7.0.0
+          chmod +x dist/pbrain-rapfi-*
+          python scripts/f23_match.py play
+          tar -C results -czf "shard-$SHARD.tgz" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f23-shard-${{ matrix.shard }}
+          path: shard-${{ matrix.shard }}.tgz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+
+  aggregate:
+    needs: [verify, play]
+    runs-on: ubuntu-24.04
+    env:
+      BUILD_SHA: ${{ needs.verify.outputs.build_sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: f23-engines
+          path: dist
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: f23-shard-*
+          path: archives
+          merge-multiple: true
+      - if: startsWith(inputs.phase, 'cert')
+        uses: actions/download-artifact@v4
+        with:
+          name: pentanomial-elo-los-sprt
+          path: historical-summary
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.phase == 'cert1' && '45832263308' || '45833773520' }}
+      - name: Independently replay all games again and compute paired, rule-stratified intervals
+        run: |
+          python -m pip install numpy==2.2.6 psutil==7.0.0
+          for file in archives/*.tgz; do
+            folder=shards/$(basename "$file" .tgz)
+            mkdir -p "$folder"
+            tar -C "$folder" -xzf "$file"
+          done
+          python scripts/f23_match.py publish
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f23-report
+          path: report/
           if-no-files-found: error
           retention-days: 90

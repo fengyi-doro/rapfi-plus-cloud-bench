@@ -106,7 +106,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         compiled = json.loads(build_info.read_bytes())
         if (reference["build_profile"] != compiled["profile"] or reference["runtime"] != compiled["runtime"]
                 or identities != {"Linux": {challenger: compiled["binaries"][compiled["profile"]],
-                                            opponent: compiled["binaries"]["orig"]}}):
+                                            opponent: compiled["binaries"][opponent]}}):
             raise ValueError("shard engines or weights differ from the verified build")
         dump(out/"build-info.json", compiled)
         if reference["root_mode"] == "kata":
@@ -152,6 +152,19 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         result["mother_cluster_ci95_elo"]=mother_interval(games,source,challenger)
     for name in reference["players"]:
         all_turns = [t for g in games for t in g["turns"] if t["engine"] == name]
+        if build_info is not None and "mask" in compiled:
+            expected = compiled["mask"] if name == challenger else 0
+            measured = [t for t in all_turns if "f23_mask" in t]
+            if any(t["f23_mask"] != expected for t in measured) or bool(expected) != bool(measured):
+                raise ValueError(f"played module mask differs from build: {name}")
+            by_rule = {}
+            for rule, label in ((1, "Standard"), (2, "Renju")):
+                counters = [t["f23_counts"] for g in games if g["rule"] == rule
+                            for t in g["turns"] if t["engine"] == name and "f23_counts" in t]
+                by_rule[label] = [sum(c[i] for c in counters) for i in range(12)]
+            if expected & 1 and any(by_rule["Standard"][:7]):
+                raise ValueError("Renju F15 activated in Standard")
+            result.setdefault("f23_telemetry", {})[name] = dict(mask=expected, measured_turns=len(measured), counts=by_rule)
         wall = sorted(t["wall_ns"] for t in all_turns)
         result.setdefault("move_timing", {})[name] = dict(
             turns=len(wall), mean_ms=sum(wall)/len(wall)/1e6 if wall else None,
