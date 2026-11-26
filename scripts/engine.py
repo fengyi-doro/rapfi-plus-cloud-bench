@@ -239,12 +239,12 @@ class Engine:
     def select(self, rule):
         if self.rule == rule:
             return
-        self.exchange(f"INFO rule {4 if rule == 2 else rule}\nRESTART", lambda s: s == "OK")
-        self.rule = rule
+        self.exchange(f"STOP\nINFO rule {4 if rule == 2 else rule}\nRESTART", lambda s: s == "OK")
         self.sync(board_command([112, 113, 100, 126, 98]) + "\nTRACESEARCH")
         expected = (("freestyle_bsmix",), ("standard_bs15",), ("renju_bs15_black", "renju_bs15_white"))[rule]
         assert all(any("mix9svq" + part in s for s in self.weights) for part in expected), self.weights
         assert any("weight loaded in " in s for s in self.weights)
+        self.rule = rule
 
     def clean_position(self, moves):
         self.sync("STOP\nRESTART\nYXHASHCLEAR\n" + board_command(moves))

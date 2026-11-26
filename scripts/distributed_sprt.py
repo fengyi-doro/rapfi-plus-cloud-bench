@@ -81,7 +81,7 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if d["opening_ids"]!=planned: raise ValueError(("shard schedule mismatch",ix))
         parameters={key:d.get(key) for key in ("players","initial_ns","increment_ns","runtime","book_sha256",
             "adjudication","thread_num","hash_kib","pondering","commit","scheduler","parallel_reset",
-            "one_vcpu_per_game","build_profile")}
+            "one_vcpu_per_game","build_profile","per_rule_engines")}
         if reference is not None and parameters!=reference: raise ValueError("shard protocol or revision mismatch")
         reference=parameters
         hardware=json.loads((directory/"hardware.json").read_bytes())

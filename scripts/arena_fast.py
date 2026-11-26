@@ -121,11 +121,16 @@ def play_lane(lane, cores, helper, openings, directory, design, work_queue=None)
             while (o:=work_queue.get()) is not None:
                 yield o
     with ExitStack() as stack:
-        engines = {v:stack.enter_context(Engine(v, c)) for v,c in zip(names, cores, strict=True)}
-        if fast:
-            for e in engines.values():
-                e.sync(f"INFO max_depth 99\nINFO show_detail 0\nINFO timeout_match {initial//1_000_000}\nINFO timeout_turn 0")
+        engines = {}
+        active_rule = None
         for o in work():
+            if not engines or (design.get("per_rule_engines") and active_rule != o["rule"]):
+                stack.close()
+                engines = {v:stack.enter_context(Engine(v, c)) for v,c in zip(names, cores, strict=True)}
+                if fast:
+                    for e in engines.values():
+                        e.sync(f"INFO max_depth 99\nINFO show_detail 0\nINFO timeout_match {initial//1_000_000}\nINFO timeout_turn 0")
+                active_rule = o["rule"]
             index=(schedule_order if work_queue is not None else start_order)[o["id"]]
             slots = cores if (index+lane) % 2 == 0 else cores[::-1]
             for leg in (0,1):
@@ -211,6 +216,7 @@ def run_locked(args):
         design.update(scheduler=scheduler,parallel_reset=True)
     if args.vcpu_lanes:
         design["one_vcpu_per_game"] = True
+        design["per_rule_engines"] = True
         design["build_profile"] = os.environ.get("RAPFI_BUILD_PROFILE")
     if any(sha(ROOT/p) != h for p,h in design["runtime"].items()):
         raise ValueError("weight/config checksum mismatch")

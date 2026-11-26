@@ -217,6 +217,13 @@ def verify(directory, book=None):
         assert (game["initial_ns"],game["increment_ns"])==(initial,increment)
         bank = [initial,initial]
         names = game["black"],game["white"]
+        if design.get("per_rule_engines"):
+            expected_weights = ({"mix9svqstandard_bs15.bin.lz4"} if rule == 1 else
+                                {"mix9svqrenju_bs15_black.bin.lz4", "mix9svqrenju_bs15_white.bin.lz4"})
+            for name in names:
+                logs = game["weights"][name]
+                loaded = {Path(line.split("load weight from ", 1)[1]).name for line in logs if "load weight from " in line}
+                assert loaded == expected_weights and any("weight loaded in " in line for line in logs), (game["opening"], name, loaded)
         if fast:
             assert set(names) == set(design["players"])
             assert set(game["cores"].values()) == set(design["lanes"][game["lane"]]["cpus"])
