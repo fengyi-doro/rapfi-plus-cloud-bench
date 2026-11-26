@@ -21,7 +21,10 @@ SOURCE = "https://github.com/hzyhhzy/KataGomo/releases/download/gomoku20261004/k
 DIGEST = "92ec1e7cf101e41c128ec8b0093f6eec893ee5fa757730edeb619e5334c8147c"
 MODEL = "katagomo-pv-int8.onnx"
 NANO_URL = "https://download.gomocup.com/ai/KATAGOMO26.zip"
+NANO_ARCHIVE_SHA = "48b3d68e1907f70200b3f04a0534b52067ce83bc1d16fc48f7e56506eb39c026"
 NANO_MEMBERS = {1:("standard15x.onnx", 5448739, 0x4b259ad5), 2:("renju15x.onnx", 5448742, 0x1c862737)}
+NANO_MODEL_SHA = {1:"126d2c257d68bf6d9935e8fcdd99247334255040cb1d02373d3ad28afa9376ba",
+                  2:"25274c71a97f5087bd45efbe7bd2092fb4d66655e5cf7750ee99e71af0adcc15"}
 
 
 def sha256(path):
@@ -86,7 +89,7 @@ def playing_session(directory):
     manifest = json.loads((directory / "oracle.json").read_bytes())
     family = os.environ["RAPFI_ORACLE_FAMILY"]
     if (manifest["family"] != family or manifest["ort"] != ort.__version__
-            or family == "b24" and manifest["source_sha256"] != DIGEST):
+            or manifest["source_sha256"] != (DIGEST if family == "b24" else NANO_ARCHIVE_SHA)):
         raise ValueError("oracle model or runtime mismatch")
     rule_sessions = {}
     hashes = {}
@@ -124,7 +127,7 @@ def position_packets(rows):
         yield bytes((rule, side, moves[-1] if moves else 255)) + cells
 
 
-def prepare_one(source, pv, model, rows):
+def prepare_one(source, pv, model, rows, family):
     import onnx
     from onnxruntime.quantization import CalibrationDataReader, QuantFormat, QuantType, quantize_dynamic, quantize_static
 
@@ -155,14 +158,18 @@ def prepare_one(source, pv, model, rows):
         if group:
             probes.extend(position_packets(group[:6]))
             calibration.extend(position_packets(group[6:30]))
-    if op["MatMulInteger"] or op["QLinearConv"] or op["DequantizeLinear"]:
+    if family == "nano-native":
+        shutil.copyfile(pv, model)
+        precision = "published tournament weights, policy/value subgraph"
+    elif op["MatMulInteger"] or op["QLinearConv"] or op["DequantizeLinear"]:
         # Tournament releases may already contain quantized weights.
         shutil.copyfile(pv, model)
         precision = "upstream quantization, policy/value subgraph"
     elif op["MatMul"] > op["Conv"]:
-        quantize_dynamic(pv, model, weight_type=QuantType.QInt8, per_channel=True,
+        weight_type = QuantType.QUInt8 if family == "nano-u8" else QuantType.QInt8
+        quantize_dynamic(pv, model, weight_type=weight_type, per_channel=True,
                          op_types_to_quantize=["MatMul", "Gemm"], extra_options={"MatMulConstBOnly": True})
-        precision = "dynamic QInt8 constant MatMul/Gemm, other ops FP32"
+        precision = f"dynamic {weight_type} constant MatMul/Gemm, other ops FP32"
     else:
         class Calibration(CalibrationDataReader):
             def __init__(self):
@@ -177,7 +184,7 @@ def prepare_one(source, pv, model, rows):
                         op_types_to_quantize=["Conv", "MatMul", "Gemm"])
         precision = "static per-channel INT8 QDQ Conv/MatMul/Gemm, other ops FP32"
     operators = Counter(n.op_type for n in onnx.load(model).graph.node)
-    if not any(operators[op] for op in ("MatMulInteger", "QLinearConv", "DequantizeLinear")):
+    if family != "nano-native" and not any(operators[op] for op in ("MatMulInteger", "QLinearConv", "DequantizeLinear")):
         raise ValueError(f"no quantized operators: {operators}")
     quantized = session(model)
     if quantized.get_providers() != ["CPUExecutionProvider"]:
@@ -211,13 +218,13 @@ def prepare(directory, book, family):
             if sha256(source) != DIGEST:
                 raise ValueError("upstream model digest mismatch")
             url, source_digest = SOURCE, DIGEST
-            models = {"both":prepare_one(source, work/"pv.onnx", directory/MODEL, rows)}
+            models = {"both":prepare_one(source, work/"pv.onnx", directory/MODEL, rows, family)}
         else:
             package = work / "KATAGOMO26.zip"
             subprocess.run(["curl", "-fLsS", "--retry", "3", "-o", str(package), NANO_URL], check=True)
             url, source_digest = NANO_URL, sha256(package)
-            if package.stat().st_size != 34770229:
-                raise ValueError("tournament package size changed")
+            if package.stat().st_size != 34770229 or source_digest != NANO_ARCHIVE_SHA:
+                raise ValueError("tournament package identity changed")
             models = {}
             with zipfile.ZipFile(package) as archive:
                 for rule, (member, size, crc) in NANO_MEMBERS.items():
@@ -226,8 +233,10 @@ def prepare(directory, book, family):
                         raise ValueError(f"unexpected tournament member: {member}")
                     source = work / member
                     source.write_bytes(archive.read(meta))
-                    models[str(rule)] = prepare_one(source, work/"pv.onnx", directory/("pv-int8-"+member),
-                                                    [r for r in rows if r["rule"] == rule])
+                    if sha256(source) != NANO_MODEL_SHA[rule]:
+                        raise ValueError(f"source digest mismatch for {member}")
+                    models[str(rule)] = prepare_one(source, work/"pv.onnx", directory/(family+"-"+member),
+                                                    [r for r in rows if r["rule"] == rule], family)
         probes = [p for m in models.values() for p in m["probes"]]
         if {p["rule"] for p in probes} != {1, 2}:
             raise ValueError("missing rule coverage in model probes")
@@ -248,6 +257,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("out", type=Path)
     parser.add_argument("--positions", type=Path, required=True)
-    parser.add_argument("--family", choices=("b24", "nano"), default="b24")
+    parser.add_argument("--family", choices=("b24", "nano", "nano-native", "nano-u8"), default="b24")
     args = parser.parse_args()
     prepare(args.out, args.positions, args.family)

@@ -43,7 +43,7 @@ on:
       oracle_family:
         description: Public KataGomo model used by kata search mode
         type: choice
-        options: [b24, nano]
+        options: [b24, nano, nano-native, nano-u8]
         default: b24
 
 permissions:
