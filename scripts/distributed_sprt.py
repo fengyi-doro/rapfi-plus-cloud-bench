@@ -188,6 +188,16 @@ def aggregate(directories, book, pairs, shards, out, elo0, elo1, workflow_start=
         if reference["root_mode"] == "vct" and name == challenger:
             result["move_timing"][name]["three"] = {
                 k:sum(t.get(k, 0) for t in all_turns) for k in ("three_attempts", "three_wins", "three_verified_replies", "three_nodes", "three_ns")}
+        if name == challenger and reference["root_mode"] == "outcome":
+            adjusted = [t for t in all_turns if "draw_utility_permille" in t]
+            if not adjusted or any(t["utility_color"] != t["color"] or t["draw_utility_permille"] != 255 for t in adjusted):
+                raise ValueError("unexpected NNUE draw utility or colour")
+            result["move_timing"][name]["utility_turns"] = len(adjusted)
+        if name == challenger and reference["root_mode"] == "puct":
+            trees = [t for t in all_turns if "mcts_new_visits" in t]
+            if not trees or any(t["mcts_memory_kib"] != 8192 for t in trees):
+                raise ValueError("native MCTS did not use the fixed 8192 KiB search budget")
+            result["move_timing"][name]["mcts"] = dict(turns=len(trees), visits=sum(t["mcts_new_visits"] for t in trees))
         if (reference["root_mode"] in ("proof", "vct") or reference["proof_first"]) and name == challenger:
             result["move_timing"][name]["proof"] = {
                 k:sum(t.get(k, 0) for t in all_turns)

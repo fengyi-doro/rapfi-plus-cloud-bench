@@ -40,6 +40,12 @@ def root_metrics(lines):
             metrics["root_threat_extensions"] = int(line.split()[-1])
         if line.startswith("MESSAGE THREAT_HISTORY "):
             metrics["threat_history_updates"] = int(line.split()[-1])
+        if line.startswith("MESSAGE DRAW_UTILITY "):
+            _, _, color, utility = line.split()
+            metrics.update(utility_color=int(color), draw_utility_permille=int(utility))
+        if line.startswith("MESSAGE MCTS_ROOT "):
+            _, _, visits, memory = line.split()
+            metrics.update(mcts_new_visits=int(visits), mcts_memory_kib=int(memory))
         if line.startswith("MESSAGE ROOT_ROTATIONS "):
             durations = [int(x) for x in line.split()[2:]]
             if len(durations) != 3 or min(durations) <= 0:
@@ -253,6 +259,8 @@ class Engine:
             self.weights = []
             first, _ = self.exchange("START 15", lambda s: s == "OK")
             assert any("Evaluator set to mix9svq" in s for s in first), first
+            if variant == os.environ.get("RAPFI_CANDIDATE_LABEL") and os.environ.get("RAPFI_ROOT_MODE") == "puct":
+                self.sync("INFO search_type mcts")
             self.sync(f"INFO thread_num {search_threads}\nINFO hash_size 8192\nINFO pondering 0\n"
                       "INFO max_node 0\nINFO show_detail 2")
             layout = node_layout(variant)

@@ -21,6 +21,7 @@
 #include "../../core/platform.h"
 #include "../../database/dbclient.h"
 #include "../../eval/eval.h"
+#include "../../eval/evalconfig.h"
 #include "../../eval/evaluator.h"
 #include "../../game/board.h"
 #include "../../game/movegen.h"
@@ -326,6 +327,11 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
 {
     SearchContext &ctx  = th.engine.ctx;
     SearchOptions &opts = th.options();
+    if (rootExperiment == "outcome") {
+        Evaluation::EvalCfg.drawRatio = .30f;
+        Evaluation::EvalCfg.drawBlackWinRate = th.board->sideToMove() == BLACK ? .15f : .85f;
+        MESSAGEL("DRAW_UTILITY " << int(th.board->sideToMove()) << " 255");
+    }
 
     // Check for forced database move
     Pos   dbWinMove  = Pos::NONE;
@@ -369,26 +375,11 @@ const RootMove *ABSearcher::searchMain(SearchThread &th)
         }
     }
 
-#if defined(RAPFI_F10) && !defined(RAPFI_DISABLE_PAIRING)
-    // Timed play can immediately use the witnessed drawing move. In fixed-depth
-    // analysis, complete the requested root search and keep the normal PV tie order.
-    if (opts.timeLimit && !ctx.inPonder && !SkillMovePicker(opts.strengthLevel).enabled()
-        && th.board->ply() >= PairingSearch::MinRootPly) {
-        PairingSearch::prepare(th);
-        f10::Proof defence;
-        if (PairingSearch::active && f10::rootDraw(PairingSearch::active->position[0], defence)) {
-            // A certified preplay is compulsory. Without one, taking any
-            // legal candidate first already blocks or leaves intact every pair.
-            Pos move = defence.pre < 0 ? th.rootMoves.front().pv[0]
-                                       : Pos(defence.pre % f8::N, defence.pre / f8::N);
-            if (std::find(th.rootMoves.begin(), th.rootMoves.end(), move) != th.rootMoves.end()) {
-                ctx.bestMove = move;
-                ctx.printer.printBestmoveWithoutSearch(th, move, VALUE_DRAW, 0, nullptr);
-                return nullptr;
-            }
-        }
+    if (Pos move = PairingSearch::rootDrawMove(th)) {
+        ctx.bestMove = move;
+        ctx.printer.printBestmoveWithoutSearch(th, move, VALUE_DRAW, 0, nullptr);
+        return nullptr;
     }
-#endif
     // Init transposition table generation
     prepareRootPrior(th, th.searchDataAs<ABSearchData>()->rootPrior, rootExperiment);
     TT.incGeneration();

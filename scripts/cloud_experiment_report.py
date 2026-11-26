@@ -133,6 +133,11 @@ def render():
             detail += f"威胁条件历史在发生 β 截断后更新 {timing['threat_history_updates']:,} 次。"
         if timing.get("child_positions"):
             detail += f"根部批量评估共覆盖 {timing['child_positions']:,} 个实际候选子局面。"
+        if timing.get("utility_turns"):
+            detail += f"按挑战方颜色核验 {timing['utility_turns']:,} 手，NNUE 的和棋效用为 0.255。"
+        if mcts := timing.get("mcts"):
+            detail += (f"原生 MCTS 处理 {mcts['turns']:,} 手，共增加 {mcts['visits']:,} 次访问。"
+                       f"图与战术置换表合计预算 8 MiB。")
         if rotation := timing.get("rotations"):
             detail += (f"四个搜索线程在 {rotation['turns']:,} 手分别使用 0°、90°、180°、270° 视角。"
                        f"三名工作线程重建棋盘和累加器的最大单线程耗时平均 {rotation['max_worker_ms']:.3f} ms，"
@@ -200,9 +205,10 @@ def render():
         if group:
             name, r = max(group, key=lambda entry:(entry[1]["W"]/entry[1]["games"], entry[1]["score"]))
             best_rows.append(f"| {category} | {name} | {r['W']}/{r['games']} | "
-                             f"{r['W']/r['games']:.2%} | {90-100*r['W']/r['games']:.2f} 个百分点 |")
+                             f"{r['W']/r['games']:.2%} | {r['penta'][4]}/{r['pairs']} | {90-100*r['W']/r['games']:.2f} 个百分点 |")
     table = ["## 90% 实胜率进度", "", "下表按每组实际赢局占比选取已观测到的最高点估计。各组使用相同的原版对手。", "",
-             "| 实验组 | 挑战方 | 胜 / 总局数 | 实胜率 | 距 90% |", "|---|---|---:|---:|---:|", *best_rows, "",
+             "| 实验组 | 挑战方 | 胜 / 总局数 | 实胜率 | 换色两局全胜的开局 | 距 90% |", "|---|---|---:|---:|---:|---:|", *best_rows, "",
+             "在这 500 对开局上，要取得至少 901 胜，即使每个未双胜的开局都能赢一局，也至少需要 401 对换色双胜。", "",
              "## 已完成的云端对局", "", "实胜率的 95% 区间按 Standard 和 Renju 分层，将同一开局两局的胜局比例作为一个观测计算标准误。Elo 区间采用云端按开局配对的自助法。", "",
              "| 挑战方 | 实验组 | 线程（挑战方 / 原版） | 规则 | 胜 / 和 / 负 | 实胜率 [95% CI] | 得分率 | Elo [95% CI] | LOS | Run 与汇总 |",
              "|---|---|---|---|---:|---:|---:|---:|---:|---|", *rows, "",

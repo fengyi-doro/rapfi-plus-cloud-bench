@@ -20,6 +20,7 @@
 #include "../../eval/eval.h"
 #include "../../eval/evaluator.h"
 #include "../../game/wincheck.h"
+#include "../ab/pairing/search_hook.h"
 #include "../hashtable.h"
 #include "../opening.h"
 #include "../searchcommon.h"
@@ -28,7 +29,9 @@
 #include "searcher.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <limits>
+#include <string_view>
 
 using namespace Search;
 using namespace Search::MCTS;
@@ -1036,6 +1039,17 @@ const RootMove *MCTSSearcher::searchMain(SearchThread &th)
 {
     SearchContext &ctx   = th.engine.ctx;
     Board         &board = *th.board;
+    static const bool useRootCertificate = [] {
+        const char *mode = std::getenv("RAPFI_ROOT_MODE");
+        return mode && std::string_view(mode) == "puct";
+    }();
+    if (useRootCertificate) {
+        if (Pos move = PairingSearch::rootDrawMove(th)) {
+            ctx.bestMove = move;
+            ctx.printer.printBestmoveWithoutSearch(th, move, VALUE_DRAW, 0, nullptr);
+            return nullptr;
+        }
+    }
 
     // Evaluator must be enabled for MCTS search
     if (!board.evaluator()) {
@@ -1065,6 +1079,8 @@ const RootMove *MCTSSearcher::searchMain(SearchThread &th)
     // Rank root moves and record best move
     updateRootMovesData(th);
     ctx.printer.printRootMoves(th, ctx.timectl, scratch.numSelectableRootMoves);
+    if (useRootCertificate)
+        MESSAGEL("MCTS_ROOT " << th.engine.nodesSearched() << ' ' << getMemoryLimit());
 
     return &th.rootMoves[0];
 }

@@ -3,6 +3,7 @@
 #include "lazy.h"
 #include "../../../game/board.h"
 #include "../../searchthread.h"
+#include "../../skill.h"
 #include "../searchstack.h"
 #ifdef RAPFI_F10
 #include "f10/search.h"
@@ -102,6 +103,25 @@ inline void prepare(Search::SearchThread &thread)
         return;
     static thread_local PathCache cache;
     if (cache.init(b, o.rule == STANDARD ? f8::Standard : f8::Renju)) active = &cache;
+}
+
+inline Pos rootDrawMove(Search::SearchThread &thread)
+{
+#if defined(RAPFI_F10) && !defined(RAPFI_DISABLE_PAIRING)
+    const auto &opts = thread.options();
+    if (opts.timeLimit && !thread.engine.ctx.inPonder && !Search::SkillMovePicker(opts.strengthLevel).enabled()
+        && thread.board->ply() >= MinRootPly) {
+        prepare(thread);
+        f10::Proof defence;
+        if (active && f10::rootDraw(active->position[0], defence)) {
+            Pos move = defence.pre < 0 ? thread.rootMoves.front().pv[0]
+                                       : Pos(defence.pre % f8::N, defence.pre / f8::N);
+            if (std::find(thread.rootMoves.begin(), thread.rootMoves.end(), move) != thread.rootMoves.end())
+                return move;
+        }
+    }
+#endif
+    return Pos::NONE;
 }
 
 template <Rule R>

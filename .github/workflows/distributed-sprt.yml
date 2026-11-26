@@ -28,7 +28,7 @@ on:
       search_mode:
         description: Challenger root search experiment
         type: choice
-        options: [control, threat, d4, kata, proof, vct, history, rotate-smp]
+        options: [control, threat, d4, kata, proof, vct, history, rotate-smp, outcome, puct]
         default: control
       lane_layout:
         description: CPU allocation per match on each four-vCPU runner
