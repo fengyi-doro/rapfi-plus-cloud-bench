@@ -1,0 +1,91 @@
+{
+  "renju_positions": 9069,
+  "ordinary": 172,
+  "augmented": 252,
+  "additional_white_to_move": 41,
+  "additional_black_to_move": 39,
+  "native_replay_mismatches": 0,
+  "independent_certificate_mismatches": 0,
+  "cpu": 0,
+  "depth_cap": 7,
+  "positions": 32,
+  "repeats": 2,
+  "costs": {
+    "orig": {
+      "observations": 64,
+      "nodes": 93974,
+      "wall_ms": 280.538762,
+      "mean_ms": 4.38341815625,
+      "completed_depth7": 58
+    },
+    "v4": {
+      "observations": 64,
+      "nodes": 93974,
+      "wall_ms": 259.521393,
+      "mean_ms": 4.055021765625,
+      "completed_depth7": 58
+    },
+    "f23-a": {
+      "observations": 64,
+      "nodes": 87406,
+      "wall_ms": 284.425619,
+      "mean_ms": 4.444150296875,
+      "completed_depth7": 56
+    },
+    "f23-b1": {
+      "observations": 64,
+      "nodes": 93838,
+      "wall_ms": 259.080729,
+      "mean_ms": 4.048136390625,
+      "completed_depth7": 58
+    },
+    "f23-b2": {
+      "observations": 64,
+      "nodes": 94014,
+      "wall_ms": 261.247806,
+      "mean_ms": 4.08199696875,
+      "completed_depth7": 58
+    },
+    "f23-b3": {
+      "observations": 64,
+      "nodes": 93974,
+      "wall_ms": 257.577211,
+      "mean_ms": 4.024643921875,
+      "completed_depth7": 58
+    },
+    "f23-b4": {
+      "observations": 64,
+      "nodes": 93980,
+      "wall_ms": 257.681323,
+      "mean_ms": 4.026270671875,
+      "completed_depth7": 58
+    }
+  },
+  "tactics": {
+    "orig-d4": {
+      "positions": 41,
+      "certified": 31,
+      "mate_reports": 29
+    },
+    "v4-d4": {
+      "positions": 41,
+      "certified": 31,
+      "mate_reports": 29
+    },
+    "f23-a-d4": {
+      "positions": 41,
+      "certified": 41,
+      "mate_reports": 41
+    },
+    "v4-d8": {
+      "positions": 41,
+      "certified": 32,
+      "mate_reports": 33
+    },
+    "f23-b1-d8": {
+      "positions": 41,
+      "certified": 32,
+      "mate_reports": 33
+    }
+  }
+}
